@@ -7,7 +7,7 @@ title = "Sylvia book"
 description = "Guide to building CosmWasm smart contracts"
 
 [rust]
-edition = "2022"
+edition = "2021"
 
 [preprocessor.plantuml]
 plantuml-cmd = "plantuml"
