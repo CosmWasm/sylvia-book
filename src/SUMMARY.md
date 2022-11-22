@@ -9,6 +9,7 @@
     - [Testnet setup](wasmd-quick-start/testnet.md)
     - [Preparing account](wasmd-quick-start/preparing-account.md)
     - [Interaction with testnet](wasmd-quick-start/testnet-interaction.md)
+    - [Building the contract](basics/building-contract.md)
 
 # Smart contracts
 
