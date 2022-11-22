@@ -14,3 +14,4 @@
 
 - [Basics](basics.md)
     - [Create a Rust project](basics/create-project.md)
+    - [Entry points](basics/entry-points.md)
