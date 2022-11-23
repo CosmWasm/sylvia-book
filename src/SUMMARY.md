@@ -16,3 +16,6 @@
 - [Basics](basics.md)
     - [Create a Rust project](basics/create-project.md)
     - [Entry points](basics/entry-points.md)
+    - [Generating first messages](basics/first-messages.md)
+    - [Contract state](basics/state.md)
+    - [Creating a query](basics/query.md)
