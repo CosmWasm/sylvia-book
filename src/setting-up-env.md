@@ -88,3 +88,8 @@ target/wasm32-unknown-unknown/release/cw1_whitelist.wasm: pass
 
 All contracts (1) passed checks!
 ```
+
+## Macro expansion
+
+Sylvia generates a lot of code for us which is not visible in code. To see what code is generated with it go to `contracts/cw1-whitelist/src/contract.rs`. In VSCode you can click on `#[contract]`, do `shift+p` and then type: `rust analyzer: Expand macro recursively`. This will open a window with fully expanded macro which you can browse. This is also possible f.e. in VIM depending on your configuration.
+You can also use `cargo expand` tool from CLI for this.
