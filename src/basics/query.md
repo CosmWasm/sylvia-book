@@ -110,19 +110,19 @@ should be presented directly to the querier.
 Sylvia does that returning encoded response to the [`Binary`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Binary.html) by calling [`to_binary`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/fn.to_binary.html) function in dispatch.
 
 In case of `query` `ctx` is tuple of [`Deps`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Deps.html) and `Env`.
-Using `Deps` instead of `DepsMut` as it was done in case of instantiate is because the query can never alter the smart
+We use `Deps` instead of `DepsMut` as it was done in case of instantiate is because the query can never alter the smart
 contract's internal state. It can only read the state. It comes with some consequences - for example,
 it is impossible to implement caching for future queries (as it would require some data cache to write
 to).
 
 The other difference is the lack of the `info` argument. The reason here is that the entry point which
-performs actions (like instantiation or execution) can differ how an action is performed based on the
+performs actions (like instantiation or execution) can differ in how an action is performed based on the
 message metadata - for example, they can limit who can perform an action (and do so by checking the
 message `sender`). It is not a case for queries. Queries are supposed just purely to return some
 transformed contract state. It can be calculated based on some chain metadata (so the state can
 "automatically" change after some time), but not on message info.
 
-Now that QueryMsg is created let's allow users to actually call it by defining entry point for query.
+Now that QueryMsg is created let's allow users to actually call it by defining entry point for query in `src/lib.rs`.
 
 ```rust,noplayground
 #[cfg(not(feature = "library"))]
@@ -142,6 +142,6 @@ mod entry_points {
 ```
 
 There is one more new thing here. We were still talking about `QueryMsg`, but now we use `ContractQueryMsg` out of nowhere.
-Let me explain. Sylvia framework allows us to define [`interfaces`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html). Users can create interfaces with specific functionalities and then implement them on contract. `ContractQueryMsg` is wrapper over `QueryMsg` from contract and it's interfaces which dispatches message to appropriate enum
+Let me explain. Sylvia framework allows us to define [`interfaces`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html). Users can create interfaces with specific functionalities and then implement them on contract. `ContractQueryMsg` is wrapper over `QueryMsg` from contract and it's interfaces which dispatches message to appropriate enum. `Interfaces` will be handled further in the book.
 
 Now, when we have the contract ready to do something, let's go and test it.

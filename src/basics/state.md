@@ -1,6 +1,6 @@
 # Contract state
 
-The contract we are working on can be instantiated but there it doesn't do anything afterward. Let's make it more complex.
+The contract we are working on can be instantiated but it doesn't do anything afterward. Let's make it more complex.
 In this chapter we will introduce contracts state.
 
 ## Adding contract state
@@ -64,7 +64,7 @@ impl AdminContract<'_> {
 
 New types: [`Map<_, _>`](https://docs.rs/cw-storage-plus/0.16.0/cw_storage_plus/struct.Map.html), [`Addr`](https://docs.rs/cosmwasm-std/0.16.0/cosmwasm_std/struct.Addr.html), [`Empty`](https://docs.rs/cosmwasm-std/0.16.0/cosmwasm_std/struct.Empty.html)
 We declared state `admins` as immutable `Map<'static, &'a Addr, Empty>`.
-It might seem weird that we created `Map` with `Empty` value containing no information, but our alternative would be to store it as `Vec<Addr>` which would force us to load whole `Vec` to alternate it or read a single element which would be costly operation.
+It might seem weird that we created `Map` with `Empty` value containing no information, but our alternative would be to store it as `Vec<Addr>` which would force us to load whole `Vec` to alternate it or read a single element which would be a costly operation.
 Because of that it is better to declare it as a `Map`.
 
 But why isn't it mutable? How will we modify the elements?

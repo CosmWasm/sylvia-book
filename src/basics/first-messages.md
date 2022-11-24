@@ -3,7 +3,7 @@
 We have already created a simple contract reacting to an `Empty` message on instantiate. Unfortunately, it
 is not very useful. Let's make it a bit reactive.
 
-# Updating dependencies
+## Updating dependencies
 
 First we need to add [`sylvia`](https://crates.io/crates/sylvia) and some other crates to our project.
 
@@ -25,7 +25,7 @@ schemars = "0.8.11"
 thiserror = "1.0.37"
 ```
 
-# Creating InstantiateMsg
+## Creating InstantiateMsg
 
 For this step we will create two files:
 - `src/error.rs` - here we will define our custom error messages
@@ -85,7 +85,7 @@ impl Admin {
 }
 ```
 
-So what is going on here? First we define Admin struct. It is empty right now but later when we will learn about states its fields will be used to store them.
+So what is going on here? First we define Admin struct. It is empty right now but later when we will learn about states and its fields will be used to store them.
 Next we create `impl` block for `Admin` and invoke `contract `attribute macro from `sylvia`. It will generate a lot of boilerplate for us regarding messages generation and their dispatch. It will also make sure that none of the messages overlap and will catch it on compile time.
 Then there is a method instantiate which currently doesn't do much.
 What's important here is the `#[msg(instantiate)]`. `contract` macro will parse through the method and basing on it's structure generate InstantiateMsg with parameters equal to ones declared in `instantiate` method past `_ctx`. F.e. this will generate among others 
@@ -131,12 +131,9 @@ impl InstantiateMsg {
 }
 ```
 
-If you want to expand macro in your IDE in case of VSCode with click on `#[contract]`, `shift+p` and then type: `rust analyzer: Expand macro recursively`. This will open a window with fully expanded macro which you can browse.
-
 Let's focus on instantiate right now. As you can see struct InstantiateMsg with all needed derives is being generated for you.
-
-We have some derives for serialization and debugging. There is also `#[serde(rename_all = "snake_case")]`.
-It's purpose is for message to be generated in schema.json as insantiate_msg as it is a standarized way.
+Most important are [`Serialize`](https://docs.rs/serde/latest/serde/trait.Serialize.html) and [`Deserialize`](https://docs.rs/serde/latest/serde/trait.Deserialize.html)
+There is also `#[serde(rename_all = "snake_case")]`. It's purpose is for message to be generated in schema.json as insantiate_msg as it is a standarized way.
 
 Sylvia also generates dispatch method for every msg linking it with user specifed behavior. Let's use the dispatch method in our entry point to instantiate the contract.
 
