@@ -19,3 +19,4 @@
     - [Generating first messages](basics/first-messages.md)
     - [Contract state](basics/state.md)
     - [Creating a query](basics/query.md)
+    - [Testing a query](basics/query-testing.md)
