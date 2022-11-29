@@ -37,3 +37,7 @@ This book is maintained on [Github](https://github.com/CosmWasm/sylvia-book) and
 deployed from there. Please create an
 [issue](https://github.com/CosmWasm/sylvia-book/issues) or pull request if you find
 any mistakes, bugs, or ambiguities.
+
+## Warning
+This book is still under construction so be aware that in places it might feel a little bit disjointed.
+

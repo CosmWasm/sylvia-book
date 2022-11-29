@@ -1,6 +1,6 @@
 # The Sylvia Book
 
-The book about writing Smart Contracts for CosmWasm using Rust with Sylvia framework
+The book about writing Smart Contracts for CosmWasm using Rust with Sylvia framework.
 
 ## About
 

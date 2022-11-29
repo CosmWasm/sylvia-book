@@ -90,12 +90,12 @@ impl AdminContract<'_> {
         }
         let admin = deps.api.addr_validate(&admin)?;
         if self.admins.has(deps.storage, &admin) {
-            return Ok(Response::new().add_attribute("action", "add_member"));
+            return Ok(Response::new());
         }
 
         self.admins.save(deps.storage, &admin, &Empty {})?;
 
-        Ok(Response::new().add_attribute("action", "add_member"))
+        Ok(Response::new())
     }
 }
 

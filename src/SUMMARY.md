@@ -22,4 +22,9 @@
     - [Testing a query](basics/query-testing.md)
     - [Introducing multitest](basics/multitest-intro.md)
     - [Execution messsages](basics/execute.md)
+    - [Events attributes and data](basics/events.md)
+    - [Interfaces]()
+    - [Dealing with funds]()
+    - [Good practices]()
+    - [Floating point types]()
 
