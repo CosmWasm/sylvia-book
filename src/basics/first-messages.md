@@ -25,7 +25,7 @@ schemars = "0.8.11"
 thiserror = "1.0.37"
 ```
 
-## Creating InstantiateMsg
+## Creating instantiation message
 
 For this step we will create two files:
 - `src/error.rs` - here we will define our custom error messages
