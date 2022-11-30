@@ -34,7 +34,6 @@ cw-storage-plus = "0.16.0"
 Now add the state as a field in your contract and instantiate it in new method.
 
 ```rust,noplayground
-use crate::error::ContractError;
 use cosmwasm_std::{Addr, DepsMut, Empty, Env, MessageInfo, Response, StdResult};
 use cw_storage_plus::Map;
 use schemars;
@@ -56,7 +55,7 @@ impl AdminContract<'_> {
     pub fn instantiate(
         &self,
         _ctx: (DepsMut, Env, MessageInfo),
-    ) -> Result<Response, ContractError> {
+    ) -> StdResult<Response> {
         Ok(Response::new())
     }
 }
@@ -86,7 +85,6 @@ The key to the `Map` doesn't matter to us - it would be figured out to be unique
 Now that state field is added we can improve our instantiate. We will make it possible for user to add new admins at contract instatiation.
 
 ```rust,noplayground
-use crate::error::ContractError;
 use cosmwasm_std::{Addr, DepsMut, Empty, Env, MessageInfo, Response};
 use cw_storage_plus::Map;
 use schemars;
@@ -109,7 +107,7 @@ impl AdminContract<'_> {
         &self,
         ctx: (DepsMut, Env, MessageInfo),
         admins: Vec<String>,
-    ) -> Result<Response, ContractError> {
+    ) -> StdResult<Response> {
         let (deps, _, _) = ctx;
 
         for admin in admins {
@@ -147,7 +145,7 @@ impl InstantiateMsg {
             cosmwasm_std::Env,
             cosmwasm_std::MessageInfo,
         ),
-    ) -> Result<Response, ContractError> {
+    ) -> StdResult<Response> {
         let Self { admins } = self;
         contract.instantiate(ctx.into(), admins).map_err(Into::into)
     }
@@ -170,3 +168,4 @@ storage. As emphasized, the `Map` object stores nothing and is just an accessor.
 in the storage given to it. The second argument is the serializable data to be stored and the last one is the value which in our case is simply `Empty`.
 
 Nice we now have state initialized on our contract, but we can't really validate if the data is stored correctly. Let's change it in next chapter in which we will introduce `query`.
+

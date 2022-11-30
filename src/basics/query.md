@@ -27,7 +27,6 @@ pub mod responses;
 Now that we have response created go to your `src/contract.rs` file and declare new `query`.
 
 ```rust,noplayground
-use crate::error::ContractError;
 use crate::responses::AdminListResp;
 use cosmwasm_std::{Addr, Deps, DepsMut, Empty, Env, MessageInfo, Order, Response, StdResult};
 use cw_storage_plus::Map;
@@ -130,7 +129,6 @@ mod entry_points {
     use cosmwasm_std::{entry_point, Deps, DepsMut, Env, MessageInfo, Response, Binary};
 
     use crate::contract::{AdminContract, ContractQueryMsg, InstantiateMsg};
-    use crate::error::ContractError;
 
     ...
 
@@ -145,3 +143,4 @@ There is one more new thing here. We were still talking about `QueryMsg`, but no
 Let me explain. Sylvia framework allows us to define [`interfaces`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html). Users can create interfaces with specific functionalities and then implement them on contract. `ContractQueryMsg` is wrapper over `QueryMsg` from contract and it's interfaces which dispatches message to appropriate enum. `Interfaces` will be handled further in the book.
 
 Now, when we have the contract ready to do something, let's go and test it.
+

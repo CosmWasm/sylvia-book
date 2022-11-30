@@ -49,7 +49,6 @@ Now we will create a new module multitest. Let's first add it to `src/lib.rs`
 
 ```rust,noplayground
 pub mod contract;
-pub mod error;
 pub mod responses;
 
 #[cfg(test)]
@@ -60,7 +59,6 @@ mod multitest;
 #    use cosmwasm_std::{entry_point, Binary, Deps, DepsMut, Env, MessageInfo, Response};
 #
 #    use crate::contract::{AdminContract, ContractQueryMsg, InstantiateMsg};
-#    use crate::error::ContractError;
 #
 #    const CONTRACT: AdminContract = AdminContract::new();
 #
@@ -70,12 +68,12 @@ mod multitest;
 #        env: Env,
 #        info: MessageInfo,
 #        msg: InstantiateMsg,
-#    ) -> Result<Response, ContractError> {
+#    ) -> StdResult<Response> {
 #        msg.dispatch(&CONTRACT, (deps, env, info))
 #    }
 #
 #    #[entry_point]
-#    pub fn query(deps: Deps, env: Env, msg: ContractQueryMsg) -> Result<Binary, ContractError> {
+#    pub fn query(deps: Deps, env: Env, msg: ContractQueryMsg) -> StdResult<Binary> {
 #        msg.dispatch(&CONTRACT, (deps, env))
 #    }
 #}
@@ -182,7 +180,6 @@ use cw_multi_test::{App, Executor};
 
 use crate::{
     contract::{AdminContract, InstantiateMsg, QueryMsg},
-    error::ContractError,
     responses::AdminListResp,
 };
 
@@ -203,7 +200,7 @@ impl AdminContractCodeId {
         admins: Vec<String>,
         label: &str,
         admin: Option<String>,
-    ) -> Result<AdminContractProxy, ContractError> {
+    ) -> StdResult<AdminContractProxy> {
         let msg = InstantiateMsg { admins };
 
         app.instantiate_contract(self.0, sender.clone(), &msg, &[], label, admin)
@@ -269,3 +266,4 @@ We will first create default [`App`](https://docs.rs/cw-multi-test/latest/cw_mul
 
 The test should pass and we should have our first multitest. We will later expand it when we will have more functionality to test.
 Let's allow our contract to change it's state using `execute` message in next chapter.
+

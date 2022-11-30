@@ -5,7 +5,6 @@ the unit test. This approach is simple and doesn't require much knowledge beside
 `src/contract.rs` and add a test on bottom of the file:
 
 ```rust,noplayground
-#use crate::error::ContractError;
 #use crate::responses::AdminListResp;
 #use cosmwasm_std::{Addr, Deps, DepsMut, Empty, Env, MessageInfo, Order, Response, StdResult};
 #use cw_storage_plus::Map;
@@ -29,7 +28,7 @@ the unit test. This approach is simple and doesn't require much knowledge beside
 #        &self,
 #        ctx: (DepsMut, Env, MessageInfo),
 #        admins: Vec<String>,
-#    ) -> Result<Response, ContractError> {
+#    ) -> StdResult<Response> {
 #        let (deps, _, _) = ctx;
 #
 #        for admin in admins {
@@ -126,3 +125,4 @@ So now it is more a real-case scenario. I see just one problem. Nothing connects
 there is some global contract. But it seems that if we would like to have two contracts instantiated differently
 in a single test case, it would become a mess. If only there would be some tool to abstract this for us, wouldn't
 it be nice?
+
