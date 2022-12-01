@@ -555,5 +555,5 @@ After contract instantiation we will call `add_member` with `admin3` as a sender
 In the end we will query the contract for list of admins and `admin3` is not on the list.
 
 Great our contract works as expected but there are some more scenarios we could test. I encourage you to think of other edge cases and try to test them by yourself.
-Admins can now be added to the contract but some might want to leave this responsibility. Try to add new message `leave` which will check if sender is currently an admin and if yes it will remove the `sender` from the `admins` state. Otherwise it should return `ContractError::Unauthorized`. Don't forget to test new functionality. 
+Admins can now be added to the contract but some might want to leave this responsibility. Try to add new message `leave` and don't forget to test the new functionality. 
 
