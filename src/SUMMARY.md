@@ -23,8 +23,8 @@
     - [Introducing multitest](basics/multitest-intro.md)
     - [Execution messsages](basics/execute.md)
     - [Events attributes and data](basics/events.md)
+    - [Dealing with funds](basics/funds.md)
     - [Interfaces]()
-    - [Dealing with funds]()
     - [Good practices]()
     - [Floating point types]()
 
