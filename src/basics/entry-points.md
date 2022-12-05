@@ -8,29 +8,26 @@ function called "entry point" is called. Unlike native applications, which have 
 
 To start, we will go with three basic entry points:
 
-* `instantiate` which is called once per smart contract lifetime - you can think about it as
+- `instantiate` which is called once per smart contract lifetime - you can think about it as
   a constructor or initializer of a contract.
-* `execute` for handling messages which are able to modify contract state - they are used to
+- `execute` for handling messages which are able to modify contract state - they are used to
   perform some actual actions.
-* `query` for handling messages requesting some information from a contract; unlike `execute`,
+- `query` for handling messages requesting some information from a contract; unlike `execute`,
   they can never affect any contract state, and are used just like database queries.
 
 Go to your `src/lib.rs` file, and start with an `instantiate` entry point:
 
 ```rust,noplayground
-#[cfg(not(feature = "library"))]
-mod entry_points {
-    use cosmwasm_std::{entry_point, DepsMut, Empty, Env, MessageInfo, Response};
+use cosmwasm_std::{entry_point, DepsMut, Empty, Env, MessageInfo, Response};
 
-    #[entry_point]
-    pub fn instantiate(
-        _deps: DepsMut,
-        _env: Env,
-        _info: MessageInfo,
-        _msg: Empty,
-    ) -> StdResult<Response> {
-        Ok(Response::new())
-    }
+#[entry_point]
+pub fn instantiate(
+    _deps: DepsMut,
+    _env: Env,
+    _info: MessageInfo,
+    _msg: Empty,
+) -> StdResult<Response> {
+    Ok(Response::new())
 }
 ```
 
@@ -40,17 +37,17 @@ very useful in this form, but it is a start. Let's take a closer look at the ent
 First, we start with importing couple of types just for more consistent usage. Then we define our
 entry point. The `instantiate` takes four arguments:
 
-* [`deps: DepsMut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.DepsMut.html)
+- [`deps: DepsMut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.DepsMut.html)
   is a utility type for communicating with the outer world - it allows querying
   and updating the contract state, querying other contracts state, and gives access to an `Api`
   object with a couple of helper functions for dealing with CW addresses.
-* [`env: Env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Env.html)
+- [`env: Env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Env.html)
   is an object representing the blockchains state when executing the message - the
   chain height and id, current timestamp, and the called contract address.
-* [`info: MessageInfo`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.MessageInfo.html)
+- [`info: MessageInfo`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.MessageInfo.html)
   contains metainformation about the message which triggered an execution -
   an address that sends the message, and chain native tokens sent with the message.
-* [`msg: Empty`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Empty.html)
+- [`msg: Empty`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Empty.html)
   is the message triggering execution itself - for now, it is `Empty` type that
   represents `{}` JSON, but the type of this argument can be anything that is deserializable,
   and we will pass more complex types here in the future.

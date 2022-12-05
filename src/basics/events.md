@@ -1,12 +1,18 @@
 # Events attributes and data
 
-The only way our contract can communicate to the world, for now, is by queries. Smart contracts are passive - they cannot invoke any action by themselves. They can do it only as a reaction to a call. But if you tried playing with wasmd, you know that execution on the blockchain can return some metadata.
+The only way our contract can communicate to the world, for now, is by queries. Smart contracts are
+passive - they cannot invoke any action by themselves. They can do it only as a reaction to a call.
+But if you tried playing with wasmd, you know that execution on the blockchain can return some
+metadata.
 
-There are two things the contract can return to the caller: events and data. Events are something produced by almost every real-life smart contract. In contrast, data is rarely used, designed for contract-to-contract communication.
+There are two things the contract can return to the caller: events and data. Events are something
+produced by almost every real-life smart contract. In contrast, data is rarely used, designed for
+contract-to-contract communication.
 
 ## Returning events
 
-As an example we would add an event  admin_added emitted by our contract on the execution of add_member:
+As an example we would add an event  admin_added emitted by our contract on the execution of
+add_member:
 
 ```rust,noplayground
 use crate::error::ContractError;
@@ -161,21 +167,24 @@ impl AdminContract<'_> {
 I rearranged `add_member` method a bit feel free to update your version as such.
 
 An event is built from two things: an event type provided in the
-[`new`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.new) function and attributes.
-Attributes are added to an event with
+[`new`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.new) function and
+attributes. Attributes are added to an event with
 the [`add_attributes`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.add_attributes)
-or the  [`add_attribute`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.add_attribute)
+or the [`add_attribute`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.add_attribute)
 call. Attributes are key-value pairs. Because an event cannot contain any list, to achieve reporting
-multiple similar actions taking place, we need to emit multiple small events instead of a collective one.
+multiple similar actions taking place, we need to emit multiple small events instead of a collective
+one.
 
 Events are emitted by adding them to the response with
-[`add_event`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.add_event) or
-[`add_events`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.add_events) call.
-Additionally, there is a possibility to add attributes directly to the response. It is just sugar. By default,
-every execution emits a standard "wasm" event. Adding attributes to the result adds them to the default event.
+[`add_event`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.add_event)
+or [`add_events`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.add_events)
+call. Additionally, there is a possibility to add attributes directly to the response. It is just
+sugar. By default, every execution emits a standard "wasm" event. Adding attributes to the result
+adds them to the default event.
 
-We can check if events are properly emitted by contract. It is not always done, as it is much of boilerplate in
-test, but events are, generally, more like logs - not necessarily considered main contract logic.
+We can check if events are properly emitted by contract. It is not always done, as it is much of
+boilerplate in test, but events are, generally, more like logs - not necessarily considered main
+contract logic.
 
 Due to extra event attribute being added by contract let's add new method to the proxy:
 
@@ -244,8 +253,9 @@ impl AdminContractProxy {
 }
 ```
 
-This will return address of the contract on blockchain which is by default added to the events attribute and which we will need in our assertion.
-Now let's update our basic multitest checking if execution emits events:
+This will return address of the contract on blockchain which is by default added to the events
+attribute and which we will need in our assertion. Now let's update our basic multitest checking if
+execution emits events:
 
 ```rust,noplayground
 use cosmwasm_std::{Addr, Event};
@@ -365,8 +375,21 @@ fn basic() {
 If you have prepared an Ok scenario test after previous chapter then you can update it as above.
 I have added add_member call in the basic and capture response in `resp` variable.
 
-As you can see, testing events on a simple test made it clunky. First of all, every string is heavily string-based - a lack of type control makes writing such tests difficult. Also, even types are prefixed with "wasm-" - it may not be a huge problem, but it doesn't clarify verification. But the problem is, how layered events structure are, which makes verifying them tricky. Also, the "wasm" event is particularly tricky, as it contains an implied attribute - `_contract_addr` containing an address called a contract. My general rule is - do not test emitted events unless some logic depends on them.
+As you can see, testing events on a simple test made it clunky. First of all, every string is
+heavily string-based - a lack of type control makes writing such tests difficult. Also, even types
+are prefixed with "wasm-" - it may not be a huge problem, but it doesn't clarify verification. But
+the problem is, how layered events structure are, which makes verifying them tricky. Also, the
+"wasm" event is particularly tricky, as it contains an implied attribute - `_contract_addr`
+containing an address called a contract. My general rule is - do not test emitted events unless
+some logic depends on them.
 
 ## Data
 
-Besides events, any smart contract execution may produce a `data` object. In contrast to events, `data` can be structured. It makes it a way better choice to perform any communication logic relies on. On the other hand, it turns out it is very rarely helpful outside of contract-to-contract communication. Data is always only one single object on the response, which is set using the [`set_data`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.set_data) function. Because of its low usefulness in a single contract environment, we will not spend time on it right now - an example of it will be covered later when contract-to-contract communication will be discussed. Until then, it is just helpful to know such an entity exists.
+Besides events, any smart contract execution may produce a `data` object. In contrast to events,
+`data` can be structured. It makes it a way better choice to perform any communication logic relies
+on. On the other hand, it turns out it is very rarely helpful outside of contract-to-contract
+communication. Data is always only one single object on the response, which is set using the
+[`set_data`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.set_data)
+function. Because of its low usefulness in a single contract environment, we will not spend time on
+it right now - an example of it will be covered later when contract-to-contract communication will
+be discussed. Until then, it is just helpful to know such an entity exists.

@@ -188,10 +188,13 @@ impl AdminContract<'_> {
 #}
 ```
 
-We have added a new state `donation_denom` which is of type [`Item`](https://docs.rs/cw-storage-plus/latest/cw_storage_plus/struct.Item.html). User has to pass new value to instantiate the contract.
-I will let you fix tests which should at this point fail due to missing parameter.
+We have added a new state `donation_denom` which is of type
+[`Item`](https://docs.rs/cw-storage-plus/latest/cw_storage_plus/struct.Item.html). User has to pass
+new value to instantiate the contract. I will let you fix tests which should at this point fail due
+to missing parameter.
 
-Let's update our `Cargo.toml` with new dependency to [`cw-utils`](https://docs.rs/cw-utils/latest/cw_utils/).
+Let's update our `Cargo.toml` with new dependency to
+[`cw-utils`](https://docs.rs/cw-utils/latest/cw_utils/).
 
 ```rust,noplayground
 [package]
@@ -790,13 +793,18 @@ but it can be improved by enclosing this assertion into a separate function, pro
 
 The critical thing to talk about is how `app` creation changed. Because we need some initial tokens
 on an `owner` account, instead of using the default constructor, we have to provide it with an
-initializer function. Unfortunately, [`new`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.App.html#method.new) documentation is not easy to follow - even if a function
-is not very complicated. What it takes as an argument is a closure with three arguments - the
+initializer function. Unfortunately,
+[`new`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.App.html#method.new) documentation
+is not easy to follow - even if a function is not very complicated. What it takes as an argument is
+a closure with three arguments - the
 [`Router`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.Router.html)
 with all modules supported by multi-test, the API object, and the state. This function is called
 once during contract instantiation. The `router` object contains some generic fields
-\- we are interested in bank in particular. It has a type of [`BankKeeper`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.BankKeeper.html),
-where the [`init_balance`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.BankKeeper.html#method.init_balance) function sits.
+\- we are interested in bank in particular. It has a type of
+[`BankKeeper`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.BankKeeper.html),
+where the
+[`init_balance`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.BankKeeper.html#method.init_balance)
+function sits.
 
 ## Plot Twist!
 

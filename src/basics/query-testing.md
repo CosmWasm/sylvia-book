@@ -90,18 +90,20 @@ mod tests {
 ```
 
 We have a simple flow here:
-- we instantiate contract with admins ["admin1", "admin2"],
+
+- we instantiate contract with admins \["admin1", "admin2"\],
 - we query contract to see if both of them will be returned
 
-Our `instantiate` and `query` require deps and env as parameters. We will mock them with [`mock_dependencies`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/testing/fn.mock_dependencies.html)
+Our `instantiate` and `query` require deps and env as parameters. We will mock them with
+[`mock_dependencies`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/testing/fn.mock_dependencies.html)
 and [`mock_env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/testing/fn.mock_env.html) from `comswasm-std`.
 
 You may notice the dependencies mock is of a type
-[`OwnedDeps`](https://docs.rs/cosmwasm-std/1.0.0/cosmwasm_std/struct.OwnedDeps.html) instead
+[`OwnedDeps`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html) instead
 of `Deps`, which we need here - this is why the
-[`as_ref`](https://docs.rs/cosmwasm-std/1.0.0/cosmwasm_std/struct.OwnedDeps.html#method.as_ref)
+[`as_ref`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html#method.as_ref)
 function is called on it. If we looked for a `DepsMut` object, we would use
-[`as_mut`](https://docs.rs/cosmwasm-std/1.0.0/cosmwasm_std/struct.OwnedDeps.html#method.as_mut)
+[`as_mut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html#method.as_mut)
 instead.
 
 I extracted the `deps` and `env` variables to their variables
@@ -121,8 +123,8 @@ typically better, as they are way more verbose in case of failing tests.
 The second argument is funds sent with the message. For now, we leave it as an empty slice, as I don't want
 to talk about token transfers yet - we will cover it later.
 
-So now it is more a real-case scenario. I see just one problem. Nothing connects the `instantiate` call to the corresponding `query`. It seems that we assume
-there is some global contract. But it seems that if we would like to have two contracts instantiated differently
-in a single test case, it would become a mess. If only there would be some tool to abstract this for us, wouldn't
+So now it is more a real-case scenario. I see just one problem. Nothing connects the `instantiate`
+call to the corresponding `query`. It seems that we assume there is some global contract. But it
+seems that if we would like to have two contracts instantiated differently in a single test case, it
+would become a mess. If only there would be some tool to abstract this for us, wouldn't
 it be nice?
-
