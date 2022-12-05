@@ -74,9 +74,6 @@ impl AdminContract<'_> {
         }
         let admin = deps.api.addr_validate(&admin)?;
         let resp = Response::new().add_attribute("action", "add_member");
-        if self.admins.has(deps.storage, &admin) {
-            return Ok(resp);
-        }
         self.admins.save(deps.storage, &admin, &Empty {})?;
         let resp = resp.add_event(Event::new("admin_added").add_attribute("addr", admin));
         Ok(resp)
@@ -373,4 +370,3 @@ As you can see, testing events on a simple test made it clunky. First of all, ev
 ## Data
 
 Besides events, any smart contract execution may produce a `data` object. In contrast to events, `data` can be structured. It makes it a way better choice to perform any communication logic relies on. On the other hand, it turns out it is very rarely helpful outside of contract-to-contract communication. Data is always only one single object on the response, which is set using the [`set_data`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.set_data) function. Because of its low usefulness in a single contract environment, we will not spend time on it right now - an example of it will be covered later when contract-to-contract communication will be discussed. Until then, it is just helpful to know such an entity exists.
-

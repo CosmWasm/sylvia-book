@@ -5,7 +5,7 @@ We created instantiate and query messages. We have state on our contract and are
 ## Custom error
 
 Because we don't want non admins to add new admins to our contract we will have to take some steps to prevent it. In case of call from non admin we want to return an error that will inform the users that they are not authorized to perform this kind of operation on contract.
-We will achieve this goal by creating our own custom error type. It will have to be able to be constructed from `StdError`. Another variant of it will `Unathorized`. 
+We will achieve this goal by creating our own custom error type. It will have to be able to be constructed from `StdError`. Another variant of it will `Unathorized`.
 
 First let's update our `Cargo.toml` with new dependency to [`thiserror`](https://docs.rs/thiserror/latest/thiserror/).
 
@@ -38,6 +38,7 @@ cw-multi-test = "0.16"
 This error provides us with a derive macro which we will use to implement our `ContractError`.
 
 `src/error.rs`
+
 ```rust,noplayground
 use cosmwasm_std::{Addr, StdError};
 use thiserror::Error;
@@ -52,10 +53,11 @@ pub enum ContractError {
 ```
 
 Our custom error will derive
+
 - [`Error`](https://docs.rs/thiserror/latest/thiserror/derive.Error.html)
 - `Debug` - for testing purposes
 - `PartialEq` - for testing purposes
-Thanks to `#[error(_)]` we will generate Display implementation for our variants. In case of `StdError` we want only to forward the error message. In case of our custom `Unauthorized` variant user will receive information about who sent the message and why it failed.
+  Thanks to `#[error(_)]` we will generate Display implementation for our variants. In case of `StdError` we want only to forward the error message. In case of our custom `Unauthorized` variant user will receive information about who sent the message and why it failed.
 
 ## Impl execute message
 
@@ -125,10 +127,6 @@ impl AdminContract<'_> {
             });
         }
         let admin = deps.api.addr_validate(&admin)?;
-        if self.admins.has(deps.storage, &admin) {
-            return Ok(Response::new());
-        }
-
         self.admins.save(deps.storage, &admin, &Empty {})?;
 
         Ok(Response::new())
@@ -297,9 +295,6 @@ Now let's add simple unit test for execute message.
 #            });
 #        }
 #        let admin = deps.api.addr_validate(&admin)?;
-#        if self.admins.has(deps.storage, &admin) {
-#            return Ok(Response::new().add_attribute("action", "add_member"));
-#        }
 #
 #        self.admins.save(deps.storage, &admin, &Empty {})?;
 #
@@ -555,5 +550,4 @@ After contract instantiation we will call `add_member` with `admin3` as a sender
 In the end we will query the contract for list of admins and `admin3` is not on the list.
 
 Great our contract works as expected but there are some more scenarios we could test. I encourage you to think of other edge cases and try to test them by yourself.
-Admins can now be added to the contract but some might want to leave this responsibility. Try to add new message `leave` and don't forget to test the new functionality. 
-
+Admins can now be added to the contract but some might want to leave this responsibility. Try to add new message `leave` and don't forget to test the new functionality.

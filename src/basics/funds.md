@@ -90,9 +90,6 @@ impl AdminContract<'_> {
 #        }
 #        let admin = deps.api.addr_validate(&admin)?;
 #        let resp = Response::new().add_attribute("action", "add_member");
-#        if self.admins.has(deps.storage, &admin) {
-#            return Ok(resp);
-#        }
 #        self.admins.save(deps.storage, &admin, &Empty {})?;
 #        let resp = resp.add_event(Event::new("admin_added").add_attribute("addr", admin));
 #        Ok(resp)
@@ -190,6 +187,7 @@ impl AdminContract<'_> {
 #    }
 #}
 ```
+
 We have added a new state `donation_denom` which is of type [`Item`](https://docs.rs/cw-storage-plus/latest/cw_storage_plus/struct.Item.html). User has to pass new value to instantiate the contract.
 I will let you fix tests which should at this point fail due to missing parameter.
 
@@ -293,9 +291,6 @@ impl AdminContract<'_> {
 #        }
 #        let admin = deps.api.addr_validate(&admin)?;
 #        let resp = Response::new().add_attribute("action", "add_member");
-#        if self.admins.has(deps.storage, &admin) {
-#            return Ok(resp);
-#        }
 #        self.admins.save(deps.storage, &admin, &Empty {})?;
 #        let resp = resp.add_event(Event::new("admin_added").add_attribute("addr", admin));
 #        Ok(resp)
@@ -431,6 +426,7 @@ impl AdminContract<'_> {
 #}
 
 ```
+
 Sending the funds to another contract is performed by adding bank messages to the response.
 The blockchain would expect any message which is returned in contract response as a part of an
 execution. This design is related to an actor model implemented by CosmWasm. The whole actor model
@@ -468,6 +464,7 @@ a look at its [`implementation`](https://docs.rs/cw-utils/0.13.4/src/cw_utils/pa
 
 Now it's time to check if the funds are distributed correctly. The way for that is to write a test.
 First let's update `src/multitest/proxy.rs`
+
 ```rust,noplayground
 use cosmwasm_std::{Addr, Coin, StdResult};
 use cw_multi_test::{App, AppResponse, Executor};
@@ -557,6 +554,7 @@ impl AdminContractProxy {
     }
 }
 ```
+
 Now let' add donate test in `src/multitest/tests.rs`
 
 ```rust,noplayground
@@ -815,4 +813,3 @@ Even if the admin cannot add the same address to the list, he can always create 
 add them, but this is something unpreventable on the contract level, so do not prevent that.
 Handling this kind of case is done by properly designing whole applications, which is out of this
 chapter's scope.
-
