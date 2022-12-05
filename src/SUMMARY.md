@@ -25,5 +25,5 @@
   - [Events attributes and data](basics/events.md)
   - [Dealing with funds](basics/funds.md)
   - [Good practices](basics/good-practices.md)
+  - [Floating point types](fp-types.md)
   - [Interfaces](<>)
-  - [Floating point types](<>)
