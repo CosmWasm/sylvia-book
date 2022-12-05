@@ -27,8 +27,7 @@ cosmwasm-schema = "1.1.6"
 serde = { version = "1.0.147", features = ["derive"] }
 sylvia = "0.2.1"
 schemars = "0.8.11"
-thiserror = "1.0.37"
-cw-storage-plus = "0.16.0"
+cw-storage-plus = "1.0"
 ```
 
 Now add the state as a field in your contract and instantiate it in new method.
@@ -105,7 +104,7 @@ use sylvia::contract;
 #pub struct AdminContract<'a> {
 #    pub(crate) admins: Map<'static, &'a Addr, Empty>,
 #}
-#
+
 #[contract]
 impl AdminContract<'_> {
 #    pub const fn new() -> Self {
@@ -113,6 +112,7 @@ impl AdminContract<'_> {
 #            admins: Map::new("admins"),
 #        }
 #    }
+    ...
 
     #[msg(instantiate)]
     pub fn instantiate(
