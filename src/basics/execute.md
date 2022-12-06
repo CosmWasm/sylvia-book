@@ -9,8 +9,9 @@ will add `add_member` execute message.
 Because we don't want non admins to add new admins to our contract we will have to take some steps
 to prevent it. In case of call from non admin we want to return an error that will inform the users
 that they are not authorized to perform this kind of operation on contract.
-We will achieve this goal by creating our own custom error type. It will have to be able to be
-constructed from `StdError`. Another variant of it will `Unathorized`.
+We will achieve this goal by creating our own custom error type. It will have implement
+[`From`](https://doc.rust-lang.org/std/convert/trait.From.html)<StdError> trait to be compatible
+with most of error cases in our contract. It will also has `Unathorized` variant.
 
 First let's update our `Cargo.toml` with new dependency to
 [`thiserror`](https://docs.rs/thiserror/latest/thiserror/).
@@ -42,8 +43,41 @@ cw-multi-test = "0.16"
 ```
 
 This error provides us with a derive macro which we will use to implement our `ContractError`.
+Let's add new module to our `src/lib.rs`:
 
-`src/error.rs`
+```rust,noplayground
+pub mod contract;
+pub mod error;
+pub mod responses;
+
+#[cfg(test)]
+mod multitest;
+#
+#use contract::{ContractError, ContractQueryMsg};
+#use cosmwasm_std::{entry_point, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
+#
+#use crate::contract::{AdminContract, InstantiateMsg};
+#
+#const CONTRACT: AdminContract = AdminContract::new();
+#
+# #[entry_point]
+#pub fn instantiate(
+#    deps: DepsMut,
+#    env: Env,
+#    info: MessageInfo,
+#    msg: InstantiateMsg,
+#) -> StdResult<Response> {
+#    msg.dispatch(&CONTRACT, (deps, env, info))
+#}
+#
+# #[entry_point]
+#pub fn query(deps: Deps, env: Env, msg: ContractQueryMsg) -> Result<Binary, ContractError> {
+#    msg.dispatch(&CONTRACT, (deps, env))
+#}
+
+```
+
+And now let's create `src/error.rs`:
 
 ```rust,noplayground
 use cosmwasm_std::{Addr, StdError};
@@ -64,7 +98,7 @@ Our custom error will derive
 - `Debug` - for testing purposes
 - `PartialEq` - for testing purposes
 
-Thanks to `#[error(_)]` we will generate Display implementation for our variants. In case of
+`#[error(_)]` will generate Display implementation for our variants. In case of
 `StdError` we want only to forward the error message. In case of our custom `Unauthorized` variant
 user will receive information about who sent the message and why it failed.
 
@@ -92,22 +126,23 @@ impl AdminContract<'_> {
 #            admins: Map::new("admins"),
 #        }
 #    }
-#
-#    #[msg(instantiate)]
-#    pub fn instantiate(
-#        &self,
-#        ctx: (DepsMut, Env, MessageInfo),
-#        admins: Vec<String>,
-#    ) -> Result<Response, ContractError> {
-#        let (deps, _, _) = ctx;
-#
-#        for admin in admins {
-#            let admin = deps.api.addr_validate(&admin)?;
-#            self.admins.save(deps.storage, &admin, &Empty {})?;
-#        }
-#
-#        Ok(Response::new())
-#    }
+    ...
+
+    #[msg(instantiate)]
+    pub fn instantiate(
+        &self,
+        ctx: (DepsMut, Env, MessageInfo),
+        admins: Vec<String>,
+    ) -> Result<Response, ContractError> {
+        let (deps, _, _) = ctx;
+
+        for admin in admins {
+            let admin = deps.api.addr_validate(&admin)?;
+            self.admins.save(deps.storage, &admin, &Empty {})?;
+        }
+
+        Ok(Response::new())
+    }
 #
 #    #[msg(query)]
 #    pub fn admin_list(&self, ctx: (Deps, Env)) -> StdResult<AdminListResp> {
@@ -178,10 +213,10 @@ impl AdminContract<'_> {
 #}
 ```
 
-First let's add module `ContractError` to `src/contract.rs`. We will update `instantiate` to return
-it instead of `StdError`. In case of `query` it is mostly not neccessary as rarely we will check
-anything in it, but if you will have a reason you can also update it. It is a good approach to
-define your own error type and return it in all but `query` messages.
+First let's add module `ContractError` to `src/contract.rs` and delete the old alias. We will update
+`instantiate` to return it instead of `StdError`. In case of `query` it is mostly not neccessary as
+rarely we will check anything in it, but if you will have a reason you can also update it. It is a
+good approach to define your own error type and return it in all but `query` messages.
 
 To generate message as execute we will prefix it with `#[msg(exec)]`. Return type is the same as in
 case of `instantiate` which is `Result<Response, ContractError>`.
@@ -261,7 +296,7 @@ Now let's add simple unit test for execute message.
 #    pub(crate) admins: Map<'static, &'a Addr, Empty>,
 #}
 #
-##[contract]
+# #[contract]
 #impl AdminContract<'_> {
 #    pub const fn new() -> Self {
 #        Self {
@@ -319,8 +354,10 @@ Now let's add simple unit test for execute message.
 #    }
 #}
 #
-##[cfg(test)]
+#[cfg(test)]
 #mod tests {
+    ...
+    
 #    use crate::entry_points::{execute, instantiate, query};
 #    use cosmwasm_std::from_binary;
 #    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
@@ -479,7 +516,7 @@ use cw_multi_test::App;
 use crate::error::ContractError;
 use crate::{multitest::proxy::AdminContractCodeId, responses::AdminListResp};
 
-##[test]
+# #[test]
 #fn basic() {
 #    let mut app = App::default();
 #

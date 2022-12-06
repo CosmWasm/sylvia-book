@@ -65,6 +65,8 @@ impl AdminContract<'_> {
 #        Ok(AdminListResp { admins: admins? })
 #    }
 #
+    ...
+
     #[msg(exec)]
     pub fn add_member(
         &self,
@@ -79,14 +81,16 @@ impl AdminContract<'_> {
             });
         }
         let admin = deps.api.addr_validate(&admin)?;
-        let resp = Response::new().add_attribute("action", "add_member");
         self.admins.save(deps.storage, &admin, &Empty {})?;
-        let resp = resp.add_event(Event::new("admin_added").add_attribute("addr", admin));
+
+        let resp = Response::new()
+            .add_attribute("action", "add_member")
+            .add_event(Event::new("admin_added").add_attribute("addr", admin));
         Ok(resp)
     }
 }
 #
-##[cfg(test)]
+# #[cfg(test)]
 #mod tests {
 #    use crate::entry_points::{execute, instantiate, query};
 #    use cosmwasm_std::from_binary;
@@ -164,12 +168,10 @@ impl AdminContract<'_> {
 #}
 ```
 
-I rearranged `add_member` method a bit feel free to update your version as such.
-
 An event is built from two things: an event type provided in the
 [`new`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.new) function and
-attributes. Attributes are added to an event with
-the [`add_attributes`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.add_attributes)
+attributes. Attributes are added to an event with the
+[`add_attributes`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.add_attributes)
 or the [`add_attribute`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Event.html#method.add_attribute)
 call. Attributes are key-value pairs. Because an event cannot contain any list, to achieve reporting
 multiple similar actions taking place, we need to emit multiple small events instead of a collective
@@ -198,7 +200,7 @@ use crate::{
     responses::AdminListResp,
 };
 
-##[derive(Clone, Copy, Debug, PartialEq, Eq)]
+# #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #pub struct AdminContractCodeId(u64);
 #
 #impl AdminContractCodeId {
@@ -224,7 +226,7 @@ use crate::{
 #    }
 #}
 #
-##[derive(Debug)]
+# #[derive(Debug)]
 #pub struct AdminContractProxy(Addr);
 #
 impl AdminContractProxy {
@@ -325,7 +327,7 @@ fn basic() {
     );
 }
 #
-##[test]
+# #[test]
 #fn unathorized() {
 #    let mut app = App::default();
 #
@@ -376,7 +378,7 @@ If you have prepared an Ok scenario test after previous chapter then you can upd
 I have added add_member call in the basic and capture response in `resp` variable.
 
 As you can see, testing events on a simple test made it clunky. First of all, every string is
-heavily string-based - a lack of type control makes writing such tests difficult. Also, even types
+heavily string-based - a lack of type control makes writing such tests difficult. Also, event types
 are prefixed with "wasm-" - it may not be a huge problem, but it doesn't clarify verification. But
 the problem is, how layered events structure are, which makes verifying them tricky. Also, the
 "wasm" event is particularly tricky, as it contains an implied attribute - `_contract_addr`

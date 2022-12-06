@@ -15,7 +15,7 @@ the unit test. This approach is simple and doesn't require much knowledge beside
 #    pub(crate) admins: Map<'static, &'a Addr, Empty>,
 #}
 #
-##[contract]
+# #[contract]
 #impl AdminContract<'_> {
 #    pub const fn new() -> Self {
 #        Self {
@@ -102,12 +102,12 @@ You may notice the dependencies mock is of a type
 [`OwnedDeps`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html) instead
 of `Deps`, which we need here - this is why the
 [`as_ref`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html#method.as_ref)
-function is called on it. If we looked for a `DepsMut` object, we would use
+function is called on it. If we would need a `DepsMut` object, we would use
 [`as_mut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html#method.as_mut)
 instead.
 
-I extracted the `deps` and `env` variables to their variables
-and passed them to calls. The idea is that those variables represent some blockchain persistent state,
+I extracted the `deps` and `env` to variables
+and passed them to calls. The idea is that those represent some blockchain persistent state,
 and we don't want to create them for every call. We want any changes to the contract state occurring
 in `instantiate` to be visible in the `query`. Also, we want to control how the environment differs
 on the query and instantiation.

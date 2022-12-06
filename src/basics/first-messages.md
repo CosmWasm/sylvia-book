@@ -68,7 +68,7 @@ use sylvia::contract;
 
 pub struct AdminContract {}
 
-type ContractError = cosmwasm_std::StdError;
+pub type ContractError = cosmwasm_std::StdError;
 
 #[contract]
 impl AdminContract {
@@ -84,6 +84,7 @@ learn about states and its fields will be used to store them.
 We introduce alias `ContractError` which is required by `sylvia`. Later we will create our custom
 `ContractError`, but for now it is enough to just alias the
 [`cosmwasm_std::StdError`](https://docs.rs/cosmwasm-std/latest/cosmwasm_std/enum.StdError.html).
+Notice it is marked as `pub` as we want to it to be accessible in other modules.
 Next we create `impl` block for `Admin` and invoke `contract `attribute macro from `sylvia`. It will
 generate a lot of boilerplate for us regarding messages generation and their dispatch. It will also
 make sure that none of the messages overlap and will catch it on compile time.
@@ -148,7 +149,7 @@ use sylvia::contract;
 
 pub struct AdminContract {}
 
-type ContractError = cosmwasm_std::StdError;
+pub type ContractError = cosmwasm_std::StdError;
 
 #[contract]
 impl AdminContract {

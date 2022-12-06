@@ -120,16 +120,16 @@ leave it to sylvia to generate the messages and dispatch.
 
 Note that our enum has no type assigned to the only `AdminList` variant. Typically
 in Rust, we create such variants without additional `{}` after the variant name. Here the
-curly braces have a purpose - without them. The variant would serialize to just a string
+curly braces have a purpose. Without them the variant would serialize to just a string
 type - so instead of `{ "admin_list": {} }`, the JSON representation of this variant would be
 `"admin_list"`.
 
 Instead of returning the `Response` type on the success
-case, we return an arbitrary serializable object. This is because queries are not using a typical
+case, we return an arbitrary serializable object. This because queries are not using a typical
 actor model message flow - they cannot trigger any actions nor communicate with other contracts in
 ways different than querying them (which is handled by the `deps` argument). The query always
 returns plain data, which should be presented directly to the querier.
-Sylvia does that returning encoded response to the
+Sylvia does that by returning encoded response as
 [`Binary`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Binary.html) by calling
 [`to_binary`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/fn.to_binary.html) function in dispatch.
 
@@ -151,11 +151,25 @@ Now that QueryMsg is created let's allow users to actually call it by defining e
 query in `src/lib.rs`.
 
 ```rust,noplayground
-use cosmwasm_std::{entry_point, Deps, DepsMut, Env, MessageInfo, Response, Binary};
+pub mod contract;
+pub mod responses;
 
-use crate::contract::{AdminContract, ContractQueryMsg, InstantiateMsg};
+use contract::{ContractError, ContractQueryMsg};
+use cosmwasm_std::{entry_point, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
 
-...
+use crate::contract::{AdminContract, InstantiateMsg};
+
+const CONTRACT: AdminContract = AdminContract::new();
+
+#[entry_point]
+pub fn instantiate(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    msg: InstantiateMsg,
+) -> StdResult<Response> {
+    msg.dispatch(&CONTRACT, (deps, env, info))
+}
 
 #[entry_point]
 pub fn query(deps: Deps, env: Env, msg: ContractQueryMsg) -> Result<Binary, ContractError> {
@@ -167,7 +181,7 @@ There is one more new thing here. We were still talking about `QueryMsg`, but no
 `ContractQueryMsg` out of nowhere. Let me explain. Sylvia framework allows us to define
 [`interfaces`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html). Users can create
 interfaces with specific functionalities and then implement them on contract. `ContractQueryMsg` is
-wrapper over `QueryMsg` from contract and it's interfaces which dispatches message to appropriate
-enum. `Interfaces` will be handled further in the book.
+wrapper over `QueryMsg`s from contract and it's interfaces which `dispatch` will call proper
+implementation. We will learn about `Interfaces` further in the book.
 
 Now, when we have the contract ready to do something, let's go and test it.

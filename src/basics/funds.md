@@ -443,7 +443,8 @@ accounts. Any leftover would be left on our contract account forever. There are 
 dealing with this issue - figuring out one of them would be a great exercise.
 
 The last missing part is updating the ContractError - the must_pay call returns a
-cw_utils::PaymentError which we can't convert to our error type yet:
+[`PaymentError`](https://docs.rs/cw-utils/latest/cw_utils/enum.PaymentError.html)
+which we can't convert to our error type yet:
 
 ```rust,noplayground
 use cosmwasm_std::{Addr, StdError};
