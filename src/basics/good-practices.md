@@ -23,6 +23,19 @@ pub struct AdminListResp {
 }
 ```
 
+Looking at our `AdminListResp` you might argue that all these derives look too clunky and I agree.
+Luckily the [`cosmwasm-schema`](https://docs.rs/cosmwasm-schema/latest/cosmwasm_schema/index.html)
+create delivers `cw_serde` macro, which we can use to reduce a boilerplate:
+
+```rust,noplayground
+use cosmwasm_schema::cw_serde;
+
+#[cw_serde]
+pub struct AdminListResp {
+    pub admins: Vec<String>,
+}
+```
+
 ## JSON schema
 
 Talking about JSON API it is worth mentioning JSON Schema. It is a way of defining a shape of
@@ -64,19 +77,6 @@ cw-multi-test = "0.16"
 I added `rlib`. `cdylib` crates cannot be used as typical Rust dependencies. As a consequence, it is
 impossible to create examples for such crates.
 
-Looking at our `AdminListResp` you might argue that all these derives look too clunky and I agree.
-Luckily the [`cosmwasm-schema`](https://docs.rs/cosmwasm-schema/latest/cosmwasm_schema/index.html)
-create delivers `cw_serde` macro, which we can use to reduce a boilerplate:
-
-```rust,noplayground
-use cosmwasm_schema::cw_serde;
-
-#[cw_serde]
-pub struct AdminListResp {
-    pub admins: Vec<String>,
-}
-```
-
 The next step is to create a tool generating actual schemas. We will do it by creating an binary in
 our crate. Create a new `bin/schema.rs` file:
 
@@ -109,10 +109,52 @@ The problem is that unfortunately creating this binary makes our project fail to
 target - which is in the end the most important one. Hopefully we don't need to build the schema
 binary for the Wasm target - let's allign the `.cargo/config` file:
 
+```rust,noplayground
+[alias]
+wasm = "build --target wasm32-unknown-unknown --release --lib"
+wasm-debug = "build --target wasm32-unknown-unknown --lib"
+schema = "run schema"
+```
+
+The --lib flag added to wasm cargo aliases tells the toolchain to build only the library target - it
+would skip building any binaries. Additionally, I added the convenience schema alias so that one can
+generate schema calling simply cargo schema.
+
+If you are using `cw-utils` in version `1.0` `cargo wasm` command will still fail because of the
+dependency to [`getrandom`](https://docs.rs/getrandom/latest/getrandom/#) crate. To fix the
+`wasm` compilation we have to add yet another dependency to our `Cargo.toml`:
+
+```rust,noplayground
+[package]
+name = "contract"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cosmwasm-std = { version = "1.1", features = ["staking"] }
+cosmwasm-schema = "1.1.6"
+serde = { version = "1.0.147", features = ["derive"] }
+sylvia = "0.2.1"
+schemars = "0.8.11"
+cw-storage-plus = "1.0"
+thiserror = "1.0.37"
+cw-utils = "1.0"
+getrandom = { version = "0.2", features = ["js"] }
+
+[dev-dependencies]
+anyhow = "1"
+cw-multi-test = "0.16"
+```
+
+With this last tweak `cargo wasm` should compile correctly.
+
 ## Disabling entry points for libraries
 
 Since we added the `rlib` target for the contract, it is, as mentioned before, usable as a
-dependency. The problem is that the contract depended on ours would have Wasm entry points
+dependency. The problem is that the contract depending on ours would have Wasm entry points
 generated twice - once in the dependency and once in the final contract. We can work this around
 by disabling generating Wasm entry points for the contract if the crate is used as a dependency.
 We would use [`feature flags`](https://doc.rust-lang.org/cargo/reference/features.html) for that.
@@ -140,6 +182,7 @@ schemars = "0.8.11"
 thiserror = "1.0.37"
 cw-storage-plus = "0.16.0"
 cw-utils = "0.16"
+getrandom = { version = "0.2", features = ["js"] }
 
 [dev-dependencies]
 anyhow = "1"
@@ -196,8 +239,8 @@ mod entry_points {
 The [`cfg_attr`](https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute)
 attribute is a conditional compilation attribute, similar to the `cfg` we used before for
 the test. It expands to the given attribute if the condition expands to true. In our case - it would
-expand to nothing if the feature "library" is enabled, or it would expand just to `#[entry_point]` in
-another case.
+expand to nothing if the feature "library" is enabled, or it would expand just to `#[entry_point]`
+in another case.
 
 Since now to add this contract as a dependency, don't forget to enable the feature like this:
 
