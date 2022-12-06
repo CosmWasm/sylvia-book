@@ -1,6 +1,6 @@
 # The Sylvia Book
 
-The book about writing Smart Contracts for CosmWasm using Rust with Sylvia framework.
+The book is about writing Smart Contracts for CosmWasm using Rust with Sylvia framework.
 
 ## About
 
@@ -8,9 +8,9 @@ This repo contains source code for [The CosmWasm Book](https://cosmwasm.github.i
 
 ## Building
 
-The book is build using [mdbook](https://github.com/rust-lang/mdBook).
+The book is built using [mdbook](https://github.com/rust-lang/mdBook).
 
-To build it, you need to install [Rust](https://www.rust-lang.org/tools/install) first.
+To build it, you must first install [Rust](https://www.rust-lang.org/tools/install).
 
 Then install `mdbook` using cargo:
 

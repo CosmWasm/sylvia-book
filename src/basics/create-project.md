@@ -23,12 +23,14 @@ cosmwasm-std = { version = "1.1", features = ["staking"] }
 
 ```
 
-As you can see, I added a `crate-type` field for the library section. Generating the [`cdylib`](https://doc.rust-lang.org/reference/linkage.html) is
+As you can see, I added a `crate-type` field for the library section. Generating the
+[`cdylib`](https://doc.rust-lang.org/reference/linkage.html) is
 required to create a proper web assembly binary. The downside of this is that such a library cannot
 be used as a dependency for other Rust crates - for now, it is not needed, but later we will show
 how to approach reusing contracts as dependencies.
 
-Additionally, there is one core dependency for smart contracts: the [`cosmwasm-std`](https://docs.rs/cosmwasm-std/latest/cosmwasm_std/). This crate is a
+Additionally, we added one core dependency for smart contracts: the
+[`cosmwasm-std`](https://docs.rs/cosmwasm-std/latest/cosmwasm_std/). This crate is a
 standard library for smart contracts. It provides essential utilities for communication with the
-outside world and a couple of helper functions and types. Every smart contract we will build will
+outside world, helper functions, and types. Every smart contract we will build will
 use this dependency.

@@ -8,9 +8,9 @@ function called "entry point" is called. Unlike native applications, which have 
 
 To start, we will go with three basic entry points:
 
-- `instantiate` which is called once per smart contract lifetime - you can think about it as
+- `instantiate` is called once per smart contract lifetime - you can think about it as
   a constructor or initializer of a contract.
-- `execute` for handling messages which are able to modify contract state - they are used to
+- `execute` for handling messages which can modify contract state - they are used to
   perform some actual actions.
 - `query` for handling messages requesting some information from a contract; unlike `execute`,
   they can never affect any contract state, and are used just like database queries.
@@ -34,12 +34,12 @@ pub fn instantiate(
 In fact, `instantiate` is the only entry point required for a smart contract to be valid. It is not
 very useful in this form, but it is a start. Let's take a closer look at the entry point structure.
 
-First, we start with importing couple of types just for more consistent usage. Then we define our
+First, we import a couple of types for more consistent usage. Then we define our
 entry point. The `instantiate` takes four arguments:
 
 - [`deps: DepsMut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.DepsMut.html)
-  is a utility type for communicating with the outer world - it allows querying
-  and updating the contract state, querying other contracts state, and gives access to an `Api`
+  is an utility type for communicating with the outer world - it allows querying,
+  updating the contract state, querying other contracts state, and giving access to an `Api`
   object with a couple of helper functions for dealing with CW addresses.
 - [`env: Env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Env.html)
   is an object representing the blockchains state when executing the message - the
@@ -53,7 +53,7 @@ entry point. The `instantiate` takes four arguments:
   and we will pass more complex types here in the future.
 
 If you are new to the blockchain, those arguments may not have much sense to you, but while
-progressing through this guide I will explain their usage one by one.
+progressing through this book I will explain their usage one by one.
 
 Notice an essential attribute decorating our entry point
 [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/attr.entry_point.html). Its purpose is to
