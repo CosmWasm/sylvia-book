@@ -56,21 +56,22 @@ If you are new to the blockchain, those arguments may not have much sense to you
 progressing through this book I will explain their usage one by one.
 
 Notice an essential attribute decorating our entry point
-[`#[entry_point]`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/attr.entry_point.html). Its purpose is to
-wrap the whole entry point to the form Wasm runtime understands. The proper Wasm entry points
-can use only basic types supported natively by Wasm specification, and Rust structures and enums
-are not in this set. Working with such entry points would be rather overcomplicated, so CosmWasm
-creators delivered the `entry_point` macro. It creates the raw Wasm entry point, calling the
-decorated function internally and doing all the magic required to build our high-level Rust arguments
-from arguments passed by Wasm runtime.
+[`#[entry_point]`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/attr.entry_point.html). Its
+purpose is to wrap the whole entry point to the form Wasm runtime understands. The proper Wasm entry
+points can use only basic types supported natively by Wasm specification, and Rust structures and
+enums are not in this set. Working with such entry points would be rather overcomplicated, so
+CosmWasm creators delivered the `entry_point` macro. It creates the raw Wasm entry point, calling
+the decorated function internally and doing all the magic required to build our high-level Rust
+arguments from arguments passed by Wasm runtime.
 
 The next thing to look at is the return type. I used
-[`StdResult<Response>`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/type.StdResult.html) for this simple example,
-which is an alias for `Result<Response, StdError>`. The return entry point type would always be a
-[`Result`](https://doc.rust-lang.org/std/result/enum.Result.html) type, with some error type implementing
-[`ToString`](https://doc.rust-lang.org/std/string/trait.ToString.html) trait and a well-defined type for success
-case. For most entry points, an "Ok" case would be the
-[`Response`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html) type that allows fitting the contract
-into our actor model, which we will discuss very soon.
+[`StdResult<Response>`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/type.StdResult.html) for
+this simple example, which is an alias for `Result<Response, StdError>`. The return entry point
+type would always be a [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html) type, with
+some error type implementing [`ToString`](https://doc.rust-lang.org/std/string/trait.ToString.html)
+trait and a well-defined type for success case. For most entry points, an "Ok" case would be the
+[`Response`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html) type that allows
+fitting the contract into our actor model, which we will discuss very soon.
 
-The body of the entry point is as simple as it could be - it always succeeds with a trivial empty response.
+The body of the entry point is as simple as it could be - it always succeeds with a trivial empty
+response.
