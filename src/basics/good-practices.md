@@ -4,13 +4,13 @@ All the relevant basics are covered. Now let's talk about some good practices.
 
 ## JSON renaming
 
-Due to Rust style, all our message variants are spelled in a camel-case. It is standard practice,
-but it has a drawback - all messages are serialized and deserialized by serde using those variants
-names. The problem is that it is more common to use snake cases for field names in the JSON world.
-Luckilly there is an effortless way to tell serde, to change the names casing for serialization
-purposes. I mentioned it earlier when talking about query messages -
+Due to Rust style, all our message variants are spelled in a camel case. It is standard practice,
+but it has a drawback - all messages are serialized and deserialized by the serde using those
+variants names. The problem is that it is more common to use snake cases for field names in the
+JSON world. Luckily there is an effortless way to tell the serde, to change the names casing for
+serialization purposes. I mentioned it earlier when talking about query messages -
 `#[serde(rename_all = "snake_case")]`. Sylvia will automatically generate it for you in case of
-messages. Unfortunately in case of responses to your messages you will have to do it by yourself.
+messages. Unfortunately, in case of responses to your messages, you will have to do it by yourself.
 Let's update our response with this attribute:
 
 ```rust,noplayground
@@ -23,7 +23,7 @@ pub struct AdminListResp {
 }
 ```
 
-Looking at our `AdminListResp` you might argue that all these derives look too clunky and I agree.
+Looking at our `AdminListResp`, you might argue that all these derive look too clunky, and I agree.
 Luckily the [`cosmwasm-schema`](https://docs.rs/cosmwasm-schema/latest/cosmwasm_schema/index.html)
 create delivers `cw_serde` macro, which we can use to reduce a boilerplate:
 
@@ -38,14 +38,14 @@ pub struct AdminListResp {
 
 ## JSON schema
 
-Talking about JSON API it is worth mentioning JSON Schema. It is a way of defining a shape of
+Talking about JSON API, it is worth mentioning JSON Schema. It is a way of defining the shape of
 JSON messages. It is a good practice to provide a way to generate schemas for contract API.
 The problem is that writing JSON schemas by hand is a pain. The good news is that there is a crate
-that would help us with that. We have already used it before and it is called
-[`schemars`](https://docs.rs/schemars/latest/schemars/). Sylvia will enforce you to add this
+that would help us with that. We have already used it before, and it is called
+[`schemars`](https://docs.rs/schemars/latest/schemars/). Sylvia will force you to add this
 `derive` to your responses and will generate messages with it.
 
-The only thing missing is new `crate-type` in our `Cargo.toml`:
+The only thing missing is new a `crate-type` in our `Cargo.toml`:
 
 ```rust,noplayground
 [package]
@@ -77,7 +77,7 @@ cw-multi-test = "0.16"
 I added `rlib`. `cdylib` crates cannot be used as typical Rust dependencies. As a consequence, it is
 impossible to create examples for such crates.
 
-The next step is to create a tool generating actual schemas. We will do it by creating an binary in
+The next step is to create a tool generating actual schemas. We will do it by creating a binary in
 our crate. Create a new `bin/schema.rs` file:
 
 ```rust,noplayground
@@ -93,7 +93,7 @@ fn main() {
 }
 ```
 
-Cargo is smart enough to recognize files in `src/bin` directory as utility binaries for the crate.
+Cargo is smart enough to recognize files in the `src/bin` directory as utility binaries for the crate.
 Now we can generate our schemas:
 
 ```bash
@@ -106,8 +106,8 @@ Exported the full API as /home/janw/workspace/confio/sylvia-book-contract/schema
 I encourage you to go to generated file to see what the schema looks like.
 
 The problem is that unfortunately creating this binary makes our project fail to compile on the Wasm
-target - which is in the end the most important one. Hopefully we don't need to build the schema
-binary for the Wasm target - let's allign the `.cargo/config` file:
+target - which is the most important in the end. Hopefully, we don't need to build the schema
+binary for the Wasm target - let's align the `.cargo/config` file:
 
 ```rust,noplayground
 [alias]
@@ -117,12 +117,12 @@ schema = "run schema"
 ```
 
 The --lib flag added to wasm cargo aliases tells the toolchain to build only the library target - it
-would skip building any binaries. Additionally, I added the convenience schema alias so that one can
+would skip building any binaries. Additionally, I added the convenience schema alias to
 generate schema calling simply cargo schema.
 
 If you are using `cw-utils` in version `1.0` `cargo wasm` command will still fail because of the
 dependency to [`getrandom`](https://docs.rs/getrandom/latest/getrandom/#) crate. To fix the
-`wasm` compilation we have to add yet another dependency to our `Cargo.toml`:
+`wasm` compilation, you have to add yet another dependency to our `Cargo.toml`:
 
 ```rust,noplayground
 [package]
@@ -149,12 +149,12 @@ anyhow = "1"
 cw-multi-test = "0.16"
 ```
 
-With this last tweak `cargo wasm` should compile correctly.
+With this last tweak, `cargo wasm` should compile correctly.
 
 ## Disabling entry points for libraries
 
 Since we added the `rlib` target for the contract, it is, as mentioned before, usable as a
-dependency. The problem is that the contract depending on ours would have Wasm entry points
+dependency. The problem is that the contract depending on ours, would have Wasm entry points
 generated twice - once in the dependency and once in the final contract. We can work this around
 by disabling generating Wasm entry points for the contract if the crate is used as a dependency.
 We would use [`feature flags`](https://doc.rust-lang.org/cargo/reference/features.html) for that.
@@ -189,8 +189,9 @@ anyhow = "1"
 cw-multi-test = "0.16"
 ```
 
-This way we created a new feature for our crate. Now we want to disable the `entry_point` attribute
-if our contract would be used as a dependency. We will do it by a slight update of `src/lib.rs`:
+This way, we created a new feature flag for our crate. Now we want to disable the `entry_point`
+attribute if our contract would be used as a dependency. We will do it by a slight update of
+`src/lib.rs`:
 
 ```rust,noplayground
 pub mod contract;
@@ -237,7 +238,7 @@ mod entry_points {
 ```
 
 The [`cfg_attr`](https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute)
-attribute is a conditional compilation attribute, similar to the `cfg` we used before for
+is a conditional compilation attribute, similar to the `cfg` we used before for
 the test. It expands to the given attribute if the condition expands to true. In our case - it would
 expand to nothing if the feature "library" is enabled, or it would expand just to `#[entry_point]`
 in another case.
