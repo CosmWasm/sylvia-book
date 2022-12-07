@@ -11,7 +11,7 @@ contract-to-contract communication.
 
 ## Returning events
 
-As an example we would add an event  admin_added emitted by our contract on the execution of
+As an example, we would add an event  admin_added emitted by our contract on the execution of
 add_member:
 
 ```rust,noplayground
@@ -185,10 +185,10 @@ sugar. By default, every execution emits a standard "wasm" event. Adding attribu
 adds them to the default event.
 
 We can check if events are properly emitted by contract. It is not always done, as it is much of
-boilerplate in test, but events are, generally, more like logs - not necessarily considered main
+boilerplate in test, but events are, generally, more like logs - not necessarily considered the main
 contract logic.
 
-Due to extra event attribute being added by contract let's add new method to the proxy:
+Due to the extra event attribute being added by contract, let's add a new method to the proxy:
 
 ```rust,noplayground
 use cosmwasm_std::{Addr, StdResult};
@@ -255,11 +255,11 @@ impl AdminContractProxy {
 }
 ```
 
-This will return address of the contract on blockchain which is by default added to the events
-attribute and which we will need in our assertion. Now let's update our basic multitest checking if
-execution emits events:
+This will return the address of the contract on a blockchain which is, by default, added to the
+events attribute and which we will need in our assertion. Now let's update our basic multitest
+checking if execution emits events:
 
-```rust,noplayground
+```rust,noplayground/If
 use cosmwasm_std::{Addr, Event};
 use cw_multi_test::App;
 
@@ -374,13 +374,14 @@ fn basic() {
 #}
 ```
 
-If you have prepared an Ok scenario test after previous chapter then you can update it as above.
-I have added add_member call in the basic and capture response in `resp` variable.
+If you have prepared an Ok scenario test after the previous chapter, then you can update it as
+above. I have added the `add_member` call in the `basic` test and captured the response in the
+`resp` variable.
 
 As you can see, testing events on a simple test made it clunky. First of all, every string is
 heavily string-based - a lack of type control makes writing such tests difficult. Also, event types
 are prefixed with "wasm-" - it may not be a huge problem, but it doesn't clarify verification. But
-the problem is, how layered events structure are, which makes verifying them tricky. Also, the
+the problem is, how layered event structures are, which makes verifying them tricky. Also, the
 "wasm" event is particularly tricky, as it contains an implied attribute - `_contract_addr`
 containing an address called a contract. My general rule is - do not test emitted events unless
 some logic depends on them.
@@ -388,8 +389,8 @@ some logic depends on them.
 ## Data
 
 Besides events, any smart contract execution may produce a `data` object. In contrast to events,
-`data` can be structured. It makes it a way better choice to perform any communication logic relies
-on. On the other hand, it turns out it is very rarely helpful outside of contract-to-contract
+`data` can be structured. It makes it a way better choice to perform any communication logic to
+rely on it. On the other hand, it turns out it is very rarely helpful outside of contract-to-contract
 communication. Data is always only one single object on the response, which is set using the
 [`set_data`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html#method.set_data)
 function. Because of its low usefulness in a single contract environment, we will not spend time on
