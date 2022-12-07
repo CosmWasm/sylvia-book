@@ -1,6 +1,6 @@
 # Dealing with funds
 
-When you hear smart contracts, you think blockchain. When you hear blockchain, you often think of
+When you hear smart contracts, you think of blockchain. When you hear blockchain, you often think of
 cryptocurrencies. It is not the same, but crypto assets, or as we often call them: tokens, are very
 closely connected to the blockchain. CosmWasm has a notion of a native token. Native tokens are
 assets managed by the blockchain core instead of smart contracts. Often such assets have some
@@ -10,9 +10,9 @@ just arbitrary assets.
 Native tokens are assigned to their owners but can be transferred by their nature. Everything had an
 address in the blockchain is eligible to have its native tokens. As a consequence - tokens can be
 assigned to smart contracts! Every message sent to the smart contract can have some funds sent
-with it. In this chapter, we will take advantage of that and create a way to reward hard work
-performed by admins. We will create a new message - Donate, which will be used by anyone to
-donate some funds to admins, divided equally.
+with it. In this chapter, we will take advantage of that and create a way to reward the hard work
+performed by admins. We will create a new message - Donate, which anyone can use to donate some
+funds to admins, divided equally.
 
 ## Preparing messages
 
@@ -188,12 +188,12 @@ impl AdminContract<'_> {
 #}
 ```
 
-We have added a new state `donation_denom` which is of type
-[`Item`](https://docs.rs/cw-storage-plus/latest/cw_storage_plus/struct.Item.html). User has to pass
-new value to instantiate the contract. I will let you fix tests which should at this point fail due
-to missing parameter.
+We have added a new state `donation_denom`, which is of type
+[`Item`](https://docs.rs/cw-storage-plus/latest/cw_storage_plus/struct.Item.html). A user has to
+pass a new value to instantiate the contract. I will let you fix tests, which should at this point
+fail due to missing parameter.
 
-Let's update our `Cargo.toml` with new dependency to
+Let's update our `Cargo.toml` with a new dependency to
 [`cw-utils`](https://docs.rs/cw-utils/latest/cw_utils/).
 
 ```rust,noplayground
@@ -223,7 +223,7 @@ anyhow = "1"
 cw-multi-test = "0.16"
 ```
 
-Now let's implement new donate message.
+Now let's implement the new `donate` message.
 
 ```rust,noplayground
 use crate::error::ContractError;
@@ -801,7 +801,7 @@ a closure with three arguments - the
 [`Router`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.Router.html)
 with all modules supported by multi-test, the API object, and the state. This function is called
 once during contract instantiation. The `router` object contains some generic fields
-\- we are interested in bank in particular. It has a type of
+\- we are interested in the bank in particular. It has a type of
 [`BankKeeper`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.BankKeeper.html),
 where the
 [`init_balance`](https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.BankKeeper.html#method.init_balance)
@@ -816,7 +816,7 @@ The contract we built has an exploitable bug. All donations are distributed equa
 However, every admin is eligible to add another admin. And nothing is preventing the admin from
 adding himself to the list and receiving twice as many rewards as others!
 
-Try to write a test that detects such a bug, then fix it and ensure the bug nevermore occurs.
+Try to write a test that detects such a bug, then fix it and ensure the bug never more occurs.
 
 Even if the admin cannot add the same address to the list, he can always create new accounts and
 add them, but this is something unpreventable on the contract level, so do not prevent that.
