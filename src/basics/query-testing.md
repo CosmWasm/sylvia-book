@@ -1,8 +1,8 @@
 # Testing a query
 
-Last time we created a new query, now it is time to test it out. We will start with the basics -
+Last time we created a new query. Now it is time to test it out. We will start with the basics -
 the unit test. This approach is simple and doesn't require much knowledge besides Rust. Go to the
-`src/contract.rs` and add a test on bottom of the file:
+`src/contract.rs` and add a test at the bottom of the file:
 
 ```rust,noplayground
 #use crate::responses::AdminListResp;
@@ -92,17 +92,18 @@ mod tests {
 We have a simple flow here:
 
 - we instantiate contract with admins \["admin1", "admin2"\],
-- we query contract to see if both of them will be returned
+- we query the contract to see if both of them will be returned
 
-Our `instantiate` and `query` require deps and env as parameters. We will mock them with
+Our `instantiate`, and `query` require deps and env as parameters. We will mock them with
 [`mock_dependencies`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/testing/fn.mock_dependencies.html)
-and [`mock_env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/testing/fn.mock_env.html) from `comswasm-std`.
+and [`mock_env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/testing/fn.mock_env.html) from
+`comswasm-std`.
 
-You may notice the dependencies mock is of a type
+You may notice the dependencies mock if of a type
 [`OwnedDeps`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html) instead
 of `Deps`, which we need here - this is why the
 [`as_ref`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html#method.as_ref)
-function is called on it. If we would need a `DepsMut` object, we would use
+function is called on it. If we needed a `DepsMut` object, we would use
 [`as_mut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.OwnedDeps.html#method.as_mut)
 instead.
 
@@ -110,21 +111,20 @@ I extracted the `deps` and `env` to variables
 and passed them to calls. The idea is that those represent some blockchain persistent state,
 and we don't want to create them for every call. We want any changes to the contract state occurring
 in `instantiate` to be visible in the `query`. Also, we want to control how the environment differs
-on the query and instantiation.
+in the query and instantiation.
 
-The `info` argument is another story. The message info is unique for each message sent. To create the
-`info` mock, we must pass two arguments to the
+The `info` argument is another story. The message info is unique for each message sent. To create
+the `info` mock, we must pass two arguments to the
 [`mock_info`](https://docs.rs/cosmwasm-std/1.0.0/cosmwasm_std/testing/fn.mock_info.html) function.
 
-First is the address performing a call. It may look strange to pass `sender` as an address instead of some
-mysterious `wasm` followed by hash, but it is a valid address. For testing purposes, such addresses are
-typically better, as they are way more verbose in case of failing tests.
+First is the address performing a call. It may look strange to pass `sender` as an address instead
+of some mysterious `wasm` followed by hash, but it is a valid address. For testing purposes, such
+addresses are typically better, as they are way more verbose in case of failing tests.
 
-The second argument is funds sent with the message. For now, we leave it as an empty slice, as I don't want
-to talk about token transfers yet - we will cover it later.
+The second argument is the `funds` that are sent with the message. For now, we leave it as an empty
+slice, as I don't want to talk about token transfers yet - we will cover it later.
 
-So now it is more a real-case scenario. I see just one problem. Nothing connects the `instantiate`
-call to the corresponding `query`. It seems that we assume there is some global contract. But it
-seems that if we would like to have two contracts instantiated differently in a single test case, it
-would become a mess. If only there would be some tool to abstract this for us, wouldn't
-it be nice?
+So now it is more like a real-case scenario. I see just one problem. Nothing connects the `instantiate`
+call to the corresponding `query`. It seems that we assume there is some global contract. But if we
+would like to have two contracts instantiated differently in a single test case, it
+would become a mess. If only some tool could abstract this for us, wouldn't it be nice?

@@ -1,12 +1,12 @@
 # Creating a query
 
-We can now initialize our contract and store some data in it. Let's write `query` to read it's content.
-We have already created a simple contract reacting to an empty instantiate message. Unfortunately, it
-is not very useful. Let's make it a bit reactive.
+We can now initialize our contract and store some data in it. Let's write `query` to read it's
+content. We have already created a simple contract reacting to an empty instantiate message.
+Unfortunately, it is not very useful. Let's make it more reactive.
 
 ## Declaring query response
 
-Let's create a new file `src/responses.rs` which will contain responses to all the queries in our contract.
+Let's create a new file, `src/responses.rs`, containing responses to all the queries in our contract.
 
 ```rust,noplayground
 use serde::{Deserialize, Serialize};
@@ -17,11 +17,11 @@ pub struct AdminListResp {
 }
 ```
 
-We have here similiar derives like in case of `InstantiateMsg`.
+We have here similar derives like in the case of `InstantiateMsg`.
 The most important ones are `Serialize` and `Deserialize` as we always want to return something
-which is serializable.
+serializable.
 
-`src/responses.rs` is not part of our project so let's change it. Go to `src/lib.rs` and add this module:
+`src/responses.rs` is not part of our project, so let's change it. Go to `src/lib.rs` and add this module:
 
 ```rust,noplayground
 pub mod contract;
@@ -44,7 +44,7 @@ pub fn instantiate(
 }
 ```
 
-Now that we have response created go to your `src/contract.rs` file and declare new `query`.
+Now that we have a response created, go to your `src/contract.rs` file and declare a new `query`.
 
 ```rust,noplayground
 use crate::responses::AdminListResp;
@@ -77,7 +77,7 @@ impl AdminContract<'_> {
 
 ```
 
-With this done we can expand our `contract` macro and see that QueryMsg is generated.
+With this done, we can expand our `contract` macro and see that QueryMsg is generated.
 
 ```rust,noplayground
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -114,18 +114,18 @@ impl QueryMsg {
 We will ignore `#[returns(_)]` and `cosmwasm_schema::QueryResponses` as they will be described later
 when we will talk about generating schema.
 
-`QueryMsg` is an enum which will contain every `query` declared in your expanded impl. Thanks to
-that you can focus solely on defining behavior of the contract on receiving a message and you can
-leave it to sylvia to generate the messages and dispatch.
+`QueryMsg` is an enum that will contain every `query` declared in your expanded impl. Thanks to
+that you can focus solely on defining the behavior of the contract on receiving a message, and you
+can leave it to `sylvia` to generate the messages and the `dispatch`.
 
 Note that our enum has no type assigned to the only `AdminList` variant. Typically
 in Rust, we create such variants without additional `{}` after the variant name. Here the
-curly braces have a purpose. Without them the variant would serialize to just a string
+curly braces have a purpose. Without, them the variant would serialize to just a string
 type - so instead of `{ "admin_list": {} }`, the JSON representation of this variant would be
 `"admin_list"`.
 
 Instead of returning the `Response` type on the success
-case, we return an arbitrary serializable object. This because queries are not using a typical
+case, we return an arbitrary serializable object. It's because queries are not using a typical
 actor model message flow - they cannot trigger any actions nor communicate with other contracts in
 ways different than querying them (which is handled by the `deps` argument). The query always
 returns plain data, which should be presented directly to the querier.
@@ -133,21 +133,21 @@ Sylvia does that by returning encoded response as
 [`Binary`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Binary.html) by calling
 [`to_binary`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/fn.to_binary.html) function in dispatch.
 
-In case of `query` `ctx` is tuple of [`Deps`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Deps.html)
-and `Env`.
-We use `Deps` instead of `DepsMut` as it was done in case of instantiate is because the query can
-never alter the smart contract's internal state. It can only read the state. It comes with some
+In the case of `query` `ctx` is tuple of
+[`Deps`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Deps.html) and `Env`.
+We use `Deps` instead of `DepsMut` as we did in the case of `instantiate` because the query can
+never alter internal state of the smart contracts . It can only read the state. It comes with some
 consequences - for example, it is impossible to implement caching for future queries (as it would
 require some data cache to write to).
 
 The other difference is the lack of the `info` argument. The reason here is that the entry point which
 performs actions (like instantiation or execution) can differ in how an action is performed based on the
 message metadata - for example, they can limit who can perform an action (and do so by checking the
-message `sender`). It is not a case for queries. Queries are supposed just purely to return some
-transformed contract state. It can be calculated based on some chain metadata (so the state can
-"automatically" change after some time), but not on message info.
+message `sender`). It is not a case for queries. Queries are purely to return some
+transformed contract state. It can be calculated based on chain metadata (so the state can
+"automatically" change after some time) but not on message info.
 
-Now that QueryMsg is created let's allow users to actually call it by defining entry point for
+Now that QueryMsg is created, let's allow users to call it by defining the entry point for
 query in `src/lib.rs`.
 
 ```rust,noplayground
@@ -178,10 +178,10 @@ pub fn query(deps: Deps, env: Env, msg: ContractQueryMsg) -> Result<Binary, Cont
 ```
 
 There is one more new thing here. We were still talking about `QueryMsg`, but now we use
-`ContractQueryMsg` out of nowhere. Let me explain. Sylvia framework allows us to define
+`ContractQueryMsg` out of nowhere. Let me explain. `Sylvia` framework allows us to define
 [`interfaces`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html). Users can create
 interfaces with specific functionalities and then implement them on contract. `ContractQueryMsg` is
-wrapper over `QueryMsg`s from contract and it's interfaces which `dispatch` will call proper
+wrapper over `QueryMsg`s from a contract and it's interfaces which `dispatch` will call proper
 implementation. We will learn about `Interfaces` further in the book.
 
 Now, when we have the contract ready to do something, let's go and test it.
