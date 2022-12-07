@@ -12,7 +12,7 @@ with an error message claiming there is a floating-point operation in the contra
 verifies if the contract is valid (it does not contain any fp operations but also has all needed
 entry points and so on) is called [`cosmwasm-check`](https://crates.io/crates/cosmwasm-check).
 
-This limitation has two implications. First, you always have to use decimal of fixed-point
+This limitation has two implications. First, you always have to use decimals of fixed-point
 arithmetic in your contracts. It is not a problem, considering that `cosmwasm-std` provides you with
 the [`Decimal`](https://docs.rs/cosmwasm-std/latest/cosmwasm_std/struct.Decimal.html) and
 [`Decimal256`](https://docs.rs/cosmwasm-std/latest/cosmwasm_std/struct.Decimal256.html) types.
