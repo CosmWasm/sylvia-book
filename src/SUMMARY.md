@@ -26,4 +26,4 @@
   - [Dealing with funds](basics/funds.md)
   - [Good practices](basics/good-practices.md)
   - [Floating point types](basics/fp-types.md)
-  - [Interfaces](<>)
+  - [Reusability](basics/reusability.md)
