@@ -195,8 +195,8 @@ use sylvia::contract;
 use crate::{donation, error::ContractError, responses::AdminListResp};
 
 #pub struct AdminContract<'a> {
-#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
-#    pub(crate) donation_denom: Item<'static, String>,
+#    pub(crate) admins: Map<'a, &'a Addr, Empty>,
+#    pub(crate) donation_denom: Item<'a, String>,
 #}
 #
 #[contract]

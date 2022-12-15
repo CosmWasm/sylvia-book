@@ -32,8 +32,8 @@ use schemars;
 use sylvia::contract;
 
 pub struct AdminContract<'a> {
-    pub(crate) admins: Map<'static, &'a Addr, Empty>,
-    pub(crate) donation_denom: Item<'static, String>,
+    pub(crate) admins: Map<'a, &'a Addr, Empty>,
+    pub(crate) donation_denom: Item<'a, String>,
 }
 
 #[contract]
@@ -236,8 +236,8 @@ use schemars;
 use sylvia::contract;
 
 pub struct AdminContract<'a> {
-    pub(crate) admins: Map<'static, &'a Addr, Empty>,
-    pub(crate) donation_denom: Item<'static, String>,
+    pub(crate) admins: Map<'a, &'a Addr, Empty>,
+    pub(crate) donation_denom: Item<'a, String>,
 }
 
 #[contract]

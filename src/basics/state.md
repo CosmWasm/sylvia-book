@@ -39,7 +39,7 @@ use schemars;
 use sylvia::contract;
 
 pub struct AdminContract<'a> {
-    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+    pub(crate) admins: Map<'a, &'a Addr, Empty>,
 }
 
 #[contract]
@@ -70,7 +70,7 @@ New types:
 - [`Empty`](https://docs.rs/cosmwasm-std/0.16.0/cosmwasm_std/struct.Empty.html) - an empty struct
   that serves as a placeholder.
 
-We declared state `admins` as immutable `Map<'static, &'a Addr, Empty>`.
+We declared state `admins` as immutable `Map<'a, &'a Addr, Empty>`.
 It might seem weird that we created `Map` with an `Empty` value containing no information. Still,
 our alternative would be to store it as `Vec<Addr>`, forcing us to load whole the `Vec` to
 alternate it or read a single element which would be a costly operation.
@@ -91,6 +91,9 @@ intelligently. The key to the `Map` doesn't matter to us - it would be figured o
 based on a unique string passed to the
 [`new`](https://docs.rs/cw-storage-plus/0.13.4/cw_storage_plus/struct.Item.html#method.new) method.
 
+Last new thing. We crated the `new` method for the `AdminContract` to hide the instantiation of
+the fields.
+
 ## Initializing the state
 
 Now that the state field has been added we can improve our instantiate. We will make it possible for
@@ -103,7 +106,7 @@ use schemars;
 use sylvia::contract;
 #
 #pub struct AdminContract<'a> {
-#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+#    pub(crate) admins: Map<'a, &'a Addr, Empty>,
 #}
 
 #[contract]
@@ -185,6 +188,31 @@ function to write it into the contract state. Note that the first argument of `s
 actual blockchain storage. As emphasized, the `Map` object stores nothing and is an accessor.
 It determines how to store the data in the storage given to it. The second argument is the
 serializable data to be stored, and the last one is the value which in our case is `Empty`.
+
+With the state added to our contract, let's also update the entry_point. Go to `src/lib.rs`:
+
+```rust,noplayground
+pub mod contract;
+
+use cosmwasm_std::{entry_point, DepsMut, Empty, Env, MessageInfo, Response, StdResult};
+
+use crate::contract::{InstantiateMsg, AdminContract};
+
+const CONTRACT: AdminContract = AdminContract::new();
+
+#[entry_point]
+pub fn instantiate(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    msg: InstantiateMsg,
+) -> StdResult<Response> {
+    msg.dispatch(&CONTRACT, (deps, env, info))
+}
+```
+
+Instead of passing the `&AdminContract` to the `dispatch` method, we first create the inner value
+`CONTRACT` by calling `AdminContract::new()`.
 
 Nice, we now have the state initialized on our contract, but we can't validate if the data is
 stored correctly. Let's change it in the next chapter, in which we will introduce `query`.

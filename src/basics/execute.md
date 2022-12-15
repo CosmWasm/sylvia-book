@@ -116,7 +116,7 @@ use schemars;
 use sylvia::contract;
 
 #pub struct AdminContract<'a> {
-#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+#    pub(crate) admins: Map<'a, &'a Addr, Empty>,
 #}
 
 #[contract]
@@ -290,7 +290,7 @@ Now let's add a simple unit test for `execute` message.
 #use sylvia::contract;
 #
 #pub struct AdminContract<'a> {
-#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+#    pub(crate) admins: Map<'a, &'a Addr, Empty>,
 #}
 #
 # #[contract]

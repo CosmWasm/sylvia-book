@@ -12,7 +12,7 @@ the unit test. This approach is simple and doesn't require much knowledge beside
 #use sylvia::contract;
 #
 #pub struct AdminContract<'a> {
-#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+#    pub(crate) admins: Map<'a, &'a Addr, Empty>,
 #}
 #
 # #[contract]
