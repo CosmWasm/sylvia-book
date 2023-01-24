@@ -3,7 +3,7 @@
 As smart contracts are Rust library crates, we will start with creating one:
 
 ```
-$ cargo new --lib ./contract
+cargo new --lib ./contract
 ```
 
 You created a simple Rust library, but it is not yet ready to be a smart contract. The first thing

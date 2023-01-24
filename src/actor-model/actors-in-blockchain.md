@@ -64,14 +64,14 @@ contract binary. The `cw4-group` contract from
 now, so we will start with compiling it. Start with cloning the repository:
 
 ```bash
-$ git clone git@github.com:CosmWasm/cw-plus.git
+git clone git@github.com:CosmWasm/cw-plus.git
 ```
 
 Then go to `cw4-group` contract and build it:
 
 ```bash
-$ cd cw-plus/contracts/cw4-group
-$ docker run --rm -v "$(pwd)":/code \
+cd cw-plus/contracts/cw4-group
+docker run --rm -v "$(pwd)":/code \
   --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
   --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
   cosmwasm/workspace-optimizer:0.12.6
@@ -86,7 +86,7 @@ When the contract binary is built, the first interaction with CosmWasm is upload
 it to the blockchain (assuming you have your wasm binary in the working directory):
 
 ```bash
-$ wasmd tx wasm store ./cw4-group.wasm --from wallet $TXFLAG -y -b block
+wasmd tx wasm store ./cw4-group.wasm --from wallet $TXFLAG -y -b block
 ```
 
 As a result of such an operation you would get json output like this:
@@ -109,7 +109,7 @@ stored contract - in my case the contract code was stored in blockchain under
 the id of `1069`. I can now look at the code by querying for it:
 
 ```bash
-$ wasmd query wasm code 1069 code.wasm
+wasmd query wasm code 1069 code.wasm
 ```
 
 And now the important thing - the contract code is not an actor. So, what is a
@@ -127,15 +127,15 @@ instantiation is calling a constructor. To do that, I would send an
 instantiate message to my contract:
 
 ```bash
-$ wasmd tx wasm instantiate 1069 '{"members": []}' --from wallet --label "Group 1" --no-admin $TXFLAG -y
+wasmd tx wasm instantiate 1069 '{"members": []}' --from wallet --label "Group 1" --no-admin $TXFLAG -y
 ```
 
 What I do here is create a new contract and immediately call the `Instantiate`
 message on it. The structure of such a message is different for every contract
 code. In particular, the `cw4-group` Instantiate message contains two fields:
 
-* `members` field which is the list of initial group members optional `admin`
-* field which defines an address of who can add or remove
+- `members` field which is the list of initial group members optional `admin`
+- field which defines an address of who can add or remove
   a group member
 
 In this case, I created an empty group with no admin - so which could never
@@ -184,7 +184,7 @@ got one when you added the key to `wasmd`:
 
 ```bash
 # add wallets for testing
-$ wasmd keys add wallet3
+wasmd keys add wallet3
 - name: wallet3
   type: local
   address: wasm1dk6sq0786m6ayg9kd0ylgugykxe0n6h0ts7d8t
@@ -195,7 +195,7 @@ $ wasmd keys add wallet3
 You can always check your address:
 
 ```bash
-$ wasmd keys show wallet
+wasmd keys show wallet
 - name: wallet
   type: local
   address: wasm1um59mldkdj8ayl5gknp9pnrdlw33v40sh5l4nx
@@ -214,7 +214,7 @@ So, we have our contract, let's try to do something with it - query would be the
 easiest thing to do. Let's do it:
 
 ```bash
-$ wasmd query wasm contract-state smart wasm1u0grxl65reu6spujnf20ngcpz3jvjfsp5rs7lkavud3rhppnyhmqqnkcx6 '{ "list_members": {} }'
+wasmd query wasm contract-state smart wasm1u0grxl65reu6spujnf20ngcpz3jvjfsp5rs7lkavud3rhppnyhmqqnkcx6 '{ "list_members": {} }'
 data:
   members: []
 ```
@@ -247,13 +247,13 @@ So, let's make a new group contract, but this time we would
 make ourselves an admin. First, check our wallet address:
 
 ```bash
-$ wasmd keys show wallet
+wasmd keys show wallet
 ```
 
 And instantiate a new group contract - this time with proper admin:
 
 ```bash
-$ wasmd tx wasm instantiate 1069 '{"members": [], "admin": "wasm1um59mldkdj8ayl5gknp9pnrdlw33v40sh5l4nx"}' --from wallet --label "Group 1" --no-admin $TXFLAG -y
+wasmd tx wasm instantiate 1069 '{"members": [], "admin": "wasm1um59mldkdj8ayl5gknp9pnrdlw33v40sh5l4nx"}' --from wallet --label "Group 1" --no-admin $TXFLAG -y
 ..
 logs:
 - events:
@@ -278,7 +278,7 @@ the contract.
 Now let's query our new contract for the member's list:
 
 ```bash
-$ wasmd query wasm contract-state smart wasm1n5x8hmstlzdzy5jxd70273tuptr4zsclrwx0nsqv7qns5gm4vraqeam24u '{ "list_members": {} }'
+wasmd query wasm contract-state smart wasm1n5x8hmstlzdzy5jxd70273tuptr4zsclrwx0nsqv7qns5gm4vraqeam24u '{ "list_members": {} }'
 data:
   members: []
 ```
@@ -286,7 +286,7 @@ data:
 Just like before - no members initially. Now check an admin:
 
 ```
-$ wasmd query wasm contract-state smart wasm1n5x8hmstlzdzy5jxd70273tuptr4zsclrwx0nsqv7qns5gm4vraqeam24u '{ "admin": {} }'
+wasmd query wasm contract-state smart wasm1n5x8hmstlzdzy5jxd70273tuptr4zsclrwx0nsqv7qns5gm4vraqeam24u '{ "admin": {} }'
 data:
   admin: wasm1um59mldkdj8ayl5gknp9pnrdlw33v40sh5l4nx
 ```
@@ -309,7 +309,7 @@ us, it would always be 1.
 Let's query the contract again to check if our message changed anything:
 
 ```bash
-$ wasmd query wasm contract-state smart wasm1n5x8hmstlzdzy5jxd70273tuptr4zsclrwx0nsqv7qns5gm4vraqeam24u '{ "list_members": {} }'
+wasmd query wasm contract-state smart wasm1n5x8hmstlzdzy5jxd70273tuptr4zsclrwx0nsqv7qns5gm4vraqeam24u '{ "list_members": {} }'
 data:
   members:
   - addr: wasm1um59mldkdj8ayl5gknp9pnrdlw33v40sh5l4nx

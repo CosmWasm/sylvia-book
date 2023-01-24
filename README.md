@@ -15,7 +15,7 @@ To build it, you must first install [Rust](https://www.rust-lang.org/tools/insta
 Then install `mdbook` using cargo:
 
 ```bash
-$ cargo install mdbook
+cargo install mdbook
 ```
 
 and build the book from this directory:
