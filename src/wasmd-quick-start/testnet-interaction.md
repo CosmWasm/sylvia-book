@@ -7,13 +7,13 @@ use an example `cw4-group` from the `cw-plus` repository. Start with cloning
 it:
 
 ```
-$ git clone git@github.com:CosmWasm/cw-plus.git
+git clone git@github.com:CosmWasm/cw-plus.git
 ```
 
 Now go to cloned repo and run Rust optimizer on it:
 
 ```
-$ docker run --rm -v "$(pwd)":/code \
+docker run --rm -v "$(pwd)":/code \
   --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
   --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
   cosmwasm/workspace-optimizer:0.12.6
@@ -25,7 +25,7 @@ have an `artifact` directory in your repo, and there should be a
 note that `wallet` is name of the key you created in the previous chapter:
 
 ```
-$ wasmd tx wasm store ./artifacts/cw4_group.wasm --from wallet $TXFLAG -y -b block
+wasmd tx wasm store ./artifacts/cw4_group.wasm --from wallet $TXFLAG -y -b block
 
 ...
 logs:
@@ -55,7 +55,7 @@ Now, when we have our code uploaded, we can go forward and instantiate a
 contract to create its new instance:
 
 ```
-$ wasmd tx wasm instantiate 12 \
+wasmd tx wasm instantiate 12 \
   '{ "admin": "wasm1wukxp2kldxae36rgjz28umqtq792twtxdfe6ux", "members": [] }' \
   --from wallet --label "Group" --no-admin $TXFLAG -y
 
@@ -111,7 +111,7 @@ example.
 Now let's go forward with querying our contract:
 
 ```
-$ wasmd query wasm contract-state smart \
+wasmd query wasm contract-state smart \
   wasm18yn206ypuxay79gjqv6msvd9t2y49w4fz8q7fyenx5aggj0ua37q3h7kwz \
   '{ "list_members": {} }'
 
@@ -127,7 +127,7 @@ single field - empty members list. That was easy, now let's try the last thing:
 the execution:
 
 ```
-$ wasmd tx wasm execute \
+wasmd tx wasm execute \
   wasm18yn206ypuxay79gjqv6msvd9t2y49w4fz8q7fyenx5aggj0ua37q3h7kwz \
   '{ "update_members": { "add": [{ "addr": "wasm1wukxp2kldxae36rgjz28umqtq792twtxdfe6ux", "weight": 1 }], "remove": [] } }' \
   --from wallet $TXFLAG
@@ -142,7 +142,7 @@ happened. But to ensure that there is an effect on blockchain, the best way
 would be to query it once again:
 
 ```
-$ wasmd query wasm contract-state smart \
+wasmd query wasm contract-state smart \
   wasm18yn206ypuxay79gjqv6msvd9t2y49w4fz8q7fyenx5aggj0ua37q3h7kwz \
   '{ "list_members": {} }'
 

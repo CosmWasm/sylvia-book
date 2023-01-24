@@ -53,6 +53,7 @@ set -x TXFLAG --node $RPC --chain-id $CHAIN_ID --gas-prices 0.05umlg --gas-adjus
 ```
 
 Now source the file to our environment (for fish use `malaga.fish` in place of `malaga.env`):
+
 ```sh
-$ source ./malaga.env
+source ./malaga.env
 ```

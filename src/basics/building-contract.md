@@ -9,7 +9,7 @@ However, we need to create a wasm binary to upload the contract to blockchain.
 We can do it by passing an additional argument to the build command:
 
 ```
-$ cargo build --target wasm32-unknown-unknown --release --lib
+cargo build --target wasm32-unknown-unknown --release --lib
 ```
 
 The `--target` argument tells cargo to perform cross-compilation for a given target instead of
@@ -51,9 +51,9 @@ When the contract is built, the last step is to ensure it is a valid CosmWasm co
 `cosmwasm-check` on it:
 
 ```
-$ cargo wasm
+cargo wasm
 ...
-$ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
 Available capabilities: {"cosmwasm_1_1", "iterator", "staking", "stargate"}
 
 target/wasm32-unknown-unknown/release/contract.wasm: pass

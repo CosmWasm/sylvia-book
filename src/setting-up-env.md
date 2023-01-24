@@ -23,9 +23,9 @@ To install `wasmd`, first install the [golang](https://github.com/golang/go/wiki
 clone the `wasmd` and install it:
 
 ```
-$ git clone git@github.com:CosmWasm/wasmd.git
-$ cd ./wasmd
-$ make install
+git clone git@github.com:CosmWasm/wasmd.git
+cd ./wasmd
+make install
 ```
 
 Also, to be able to upload Rust Wasm Contracts into the blockchain, you will need
@@ -40,13 +40,13 @@ utility. It allows you to check if the wasm binary is a proper smart contract
 ready to upload into the blockchain. You can install it using cargo:
 
 ```
-$ cargo install cosmwasm-check
+cargo install cosmwasm-check
 ```
 
 If the installation succeeds, you should be able to execute the utility from your command line.
 
 ```
-$ cosmwasm-check --version
+cosmwasm-check --version
 Contract checking 1.1.6
 ```
 
@@ -57,12 +57,12 @@ Checkout the [sylvia](https://github.com/CosmWasm/sylvia) repository and run the
 its folder:
 
 ```
-$ git clone git@github.com:CosmWasm/sylvia.git
-$ cd ./sylvia
+git clone git@github.com:CosmWasm/sylvia.git
+cd ./sylvia
 sylvia $ cargo test
 ```
 
-You should see that everything in the repository gets compiled, and all tests pass. 
+You should see that everything in the repository gets compiled, and all tests pass.
 
 `sylvia` framework contains some examples of contracts. To find them go to `contracts` directory.
 These contracts are maintained by CosmWasm creators, so contracts in there should follow good practices.
