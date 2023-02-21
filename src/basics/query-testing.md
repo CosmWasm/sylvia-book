@@ -55,7 +55,7 @@ the unit test. This approach is simple and doesn't require much knowledge beside
 
 #[cfg(test)]
 mod tests {
-    use crate::entry_points::{instantiate, query};
+    use crate::{instantiate, query};
     use cosmwasm_std::from_binary;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
 

@@ -266,7 +266,7 @@ impl AdminContract<'_> {
 #
 # #[cfg(test)]
 #mod tests {
-#    use crate::entry_points::{execute, instantiate, query};
+#    use crate::{execute, instantiate, query};
 #    use cosmwasm_std::from_binary;
 #    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
 #
