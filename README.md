@@ -1,10 +1,12 @@
 # The Sylvia Book
 
-The book is about writing Smart Contracts for CosmWasm using Rust with Sylvia framework.
+This book is about writing Smart Contracts using [Sylvia](https://github.com/CosmWasm/sylvia) framework.
+
+To learn about CosmWasm on which Sylvia rely check [The Cosmwasm Book](https://book.cosmwasm.com/index.html)
 
 ## About
 
-This repo contains source code for [The CosmWasm Book](https://cosmwasm.github.io/sylvia-book/).
+This repo contains source code for [The Sylvia Book](https://cosmwasm.github.io/sylvia-book/).
 
 ## Building
 
