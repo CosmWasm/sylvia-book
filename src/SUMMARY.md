@@ -19,10 +19,7 @@
   - [Creating a query](basics/query.md)
   - [Introducing multitest](basics/multitest-intro.md)
   - [Execution messsages](basics/execute.md)
-  - [Events attributes and data](basics/events.md)
-  - [Dealing with funds](basics/funds.md)
   - [Good practices](basics/good-practices.md)
-  - [Floating point types](basics/fp-types.md)
   - [Reusability](basics/reusability.md)
 
 - [The Actor Model](actor-model.md)
