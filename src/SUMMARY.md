@@ -17,7 +17,6 @@
   - [Entry points](basics/entry-points.md)
   - [Contract state](basics/state.md)
   - [Creating a query](basics/query.md)
-  - [Testing a query](basics/query-testing.md)
   - [Introducing multitest](basics/multitest-intro.md)
   - [Execution messsages](basics/execute.md)
   - [Events attributes and data](basics/events.md)
