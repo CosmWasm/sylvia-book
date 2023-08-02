@@ -59,7 +59,7 @@ I recommend to expand the macro now and see what `sylvia` generates for us. It m
 as there will be a lot of things generated that seems not relevant to our code so for bare minimum
 check the `InstantiateMsg` and it's impl block.
 
-## Next steps
+## Next step
 If we will build the our contract with `cargo build --release --target wasm32-unknown-unknown --lib`
 and run the `cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm` it will fail with
 

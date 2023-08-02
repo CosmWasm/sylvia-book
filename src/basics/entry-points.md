@@ -15,63 +15,62 @@ To start, we will go with three basic entry points:
 - `query` for handling messages requesting some information from a contract; unlike `execute`,
   they can never affect any contract state, and are used just like database queries.
 
-Go to your `src/lib.rs` file, and start with an `instantiate` entry point:
+## Generate entry points
 
-```rust,noplayground
-use cosmwasm_std::{entry_point, DepsMut, Empty, Env, MessageInfo, Response, StdResult};
+`Sylvia` provides us with [`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html)
+attribute macro. In most cases your entry point will just dispatch received message to the handler
+so it's not necessary to manually create them and we can rely on macro to do that for us.
 
-#[entry_point]
-pub fn instantiate(
-    _deps: DepsMut,
-    _env: Env,
-    _info: MessageInfo,
-    _msg: Empty,
-) -> StdResult<Response> {
-    Ok(Response::new())
+Let's add the attribute macro to our contract:
+
+```
+use cosmwasm_std::{Response, StdResult};
+use sylvia::types::InstantiateCtx;
+use sylvia::{contract, entry_points};
+
+pub struct CounterContract;
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -> Self {
+        Self
+    }
+
+    #[msg(instantiate)]
+    pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
+        Ok(Response::default())
+    }
 }
 ```
 
-In fact, `instantiate` is the only entry point required for a smart contract to be valid. It is not
-very useful in this form, but it is a start. Let's take a closer look at the entry point structure.
+Note that `#[entry_points]` is added above the `#[contract]`. This is because `contract` removes
+the attributes such as `#[msg(...)]` on which both those macros rely. Remember to always place 
+`#[entry_points]` first.
 
-First, we import a couple of types for more consistent usage. Then we define our
-entry point. The `instantiate` takes four arguments:
+`Sylvia` generates the entry_points with [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html)
+attribute macro. Its purpose is to wrap the whole entry point to the form Wasm runtime understands. 
+The proper Wasm entry points can use only basic types supported natively by Wasm specification, and 
+Rust structures and enums are not in this set. Working with such entry points would be rather 
+overcomplicated, so CosmWasm creators delivered the `entry_point` macro. It creates the raw Wasm 
+entry point, calling the decorated function internally and doing all the magic required to build our 
+high-level Rust arguments from arguments passed by Wasm runtime.
 
-- [`deps: DepsMut`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.DepsMut.html)
-  is an utility type for communicating with the outer world - it allows querying,
-  updating the contract state, querying other contracts state, and giving access to an `Api`
-  object with a couple of helper functions for dealing with CW addresses.
-- [`env: Env`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Env.html)
-  is an object representing the blockchains state when executing the message - the
-  chain height and id, current timestamp, and the called contract address.
-- [`info: MessageInfo`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.MessageInfo.html)
-  contains metainformation about the message which triggered an execution -
-  an address that sends the message, and chain native tokens sent with the message.
-- [`msg: Empty`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Empty.html)
-  is the message triggering execution itself - for now, it is `Empty` type that
-  represents `{}` JSON, but the type of this argument can be anything that is deserializable,
-  and we will pass more complex types here in the future.
+Now that our contract has proper entry point let's build it and check if it's properly defined.
 
-If you are new to the blockchain, those arguments may not have much sense to you, but while
-progressing through this book I will explain their usage one by one.
+```
+contract $ cargo build --release --target wasm32-unknown-unknown --lib
+    Finished release [optimized] target(s) in 0.03s
 
-Notice an essential attribute decorating our entry point
-[`#[entry_point]`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/attr.entry_point.html). Its
-purpose is to wrap the whole entry point to the form Wasm runtime understands. The proper Wasm entry
-points can use only basic types supported natively by Wasm specification, and Rust structures and
-enums are not in this set. Working with such entry points would be rather overcomplicated, so
-CosmWasm creators delivered the `entry_point` macro. It creates the raw Wasm entry point, calling
-the decorated function internally and doing all the magic required to build our high-level Rust
-arguments from arguments passed by Wasm runtime.
+contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+Available capabilities: {"stargate", "cosmwasm_1_3", "cosmwasm_1_1", "cosmwasm_1_2", "staking", "iterator"}
 
-The next thing to look at is the return type. I used
-[`StdResult<Response>`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/type.StdResult.html) for
-this simple example, which is an alias for `Result<Response, StdError>`. The return entry point
-type would always be a [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html) type, with
-some error type implementing [`ToString`](https://doc.rust-lang.org/std/string/trait.ToString.html)
-trait and a well-defined type for success case. For most entry points, an "Ok" case would be the
-[`Response`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/struct.Response.html) type that allows
-fitting the contract into our actor model, which we will discuss very soon.
+target/wasm32-unknown-unknown/release/contract.wasm: pass
 
-The body of the entry point is as simple as it could be - it always succeeds with a trivial empty
-response.
+All contracts (1) passed checks!
+```
+
+## Next step
+
+Nice! We have a proper `CosmWasm` contract. Now let's add some state to it so it will actually be 
+able to do something.
