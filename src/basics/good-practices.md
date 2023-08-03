@@ -47,7 +47,7 @@ that would help us with that. We have already used it before, and it is called
 
 The only thing missing is new a `crate-type` in our `Cargo.toml`:
 
-```rust,noplayground
+```toml,noplayground
 [package]
 name = "contract"
 version = "0.1.0"
@@ -109,7 +109,7 @@ The problem is that unfortunately creating this binary makes our project fail to
 target - which is the most important in the end. Hopefully, we don't need to build the schema
 binary for the Wasm target - let's align the `.cargo/config` file:
 
-```rust,noplayground
+```toml,noplayground
 [alias]
 wasm = "build --target wasm32-unknown-unknown --release --lib"
 wasm-debug = "build --target wasm32-unknown-unknown --lib"
@@ -124,7 +124,7 @@ If you are using `cw-utils` in version `1.0` `cargo wasm` command will still fai
 dependency to [`getrandom`](https://docs.rs/getrandom/latest/getrandom/#) crate. To fix the
 `wasm` compilation, you have to add yet another dependency to our `Cargo.toml`:
 
-```rust,noplayground
+```toml,noplayground
 [package]
 name = "contract"
 version = "0.1.0"
@@ -161,7 +161,7 @@ We would use [`feature flags`](https://doc.rust-lang.org/cargo/reference/feature
 
 Start with updating `Cargo.toml`:
 
-```rust,noplayground
+```toml,noplayground
 [package]
 name = "contract"
 version = "0.1.0"

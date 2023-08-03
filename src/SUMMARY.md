@@ -19,6 +19,7 @@
   - [Creating a query](basics/query.md)
   - [Introducing multitest](basics/multitest-intro.md)
   - [Execution messsages](basics/execute.md)
+  - [Error handling](basics/error_handling.md)
   - [Good practices](basics/good-practices.md)
   - [Reusability](basics/reusability.md)
 

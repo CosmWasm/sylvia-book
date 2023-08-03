@@ -12,7 +12,7 @@ well, but it is also an excellent tool for testing single-contract scenarios.
 
 First we need to add `sylvia` with `mt` feature enabled to our [`dev-dependencies`](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#development-dependencies).
 
-```
+```toml
 [package]
 name = "contract"
 version = "0.1.0"

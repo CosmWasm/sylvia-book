@@ -110,7 +110,7 @@ It determines how to store the data in the storage given to it.
 
 Now let's expand the `contract` macro and see what changed.
 
-```
+```rust,noplayground
 pub struct InstantiateMsg {
     pub count: u32,
 }
