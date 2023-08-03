@@ -321,7 +321,7 @@ fn manage_admins() {
         .unwrap();
 
     let admins = contract.whitelist_proxy().admins().unwrap().admins;
-    assert_eq!(admins, &[admin]);
+    assert_eq!(admins, &[Addr::unchecked(admin)]);
 
     // Admin can be removed
     contract
