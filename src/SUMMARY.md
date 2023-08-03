@@ -5,7 +5,6 @@
 # Getting started
 
 - [Setting up the environment](setting-up-env.md)
-
 - [Building the contract](basics/building-contract.md)
 
 # Smart contracts
@@ -20,13 +19,12 @@
   - [Introducing multitest](basics/multitest-intro.md)
   - [Execution messsages](basics/execute.md)
   - [Error handling](basics/error_handling.md)
-  - [Good practices](basics/good-practices.md)
   - [Reusability](basics/reusability.md)
+  - [Remote type](basics/remote.md)
+  - [Good practices](basics/good-practices.md)
 
-- [The Actor Model](actor-model.md)
-
-  - [The idea](actor-model/idea.md)
-  - [Actors in the blockchain](actor-model/actors-in-blockchain.md)
-  - [Contract as an actor](actor-model/contract-as-actor.md)
+- [Ibc](ibc.md)
+  - [Custom queries and messages]()
+  - [Sudo]()
 
 [Legal Information](impressum.md)

@@ -1,19 +1,21 @@
 # Reusability
 
-We have covered almost everything needed to write CosmWasm smart contracts with `sylvia`.
+We have covered almost all the basics of writing smart contracts with `sylvia`.
 In this last chapter of the `basics` section, I will tell you about the ability to define
-[`interfaces`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html) in `sylvia`.
+[`interface`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html) in `sylvia`.
 
 ## Problem
 
-Let's say that after creating this contract we start working on another. While planning its
+Let's say that after creating this contract we start working on another one. While planning its
 implementation, we notice that its functionality is just a superset of our `AdminContract`.
 We could copy all the code to our new contract, but it's creating unnecessary redundancy and would
-force us to maintain multiple implementations of the same functionality.
+force us to maintain multiple implementations of the same functionality. It would also mean that 
+a bunch of functionality would be crammed together. Better solution would be to divide the code
+into semantically compatible parts.
 
 ## Solution
 
-`Sylvia` has a feature to reuse already implemented messages and apply them in new contracts.
+`Sylvia` has a feature to reuse already defined messages and apply them in new contracts.
 Clone and open [`sylvia`](https://github.com/CosmWasm/sylvia) repository. Go to
 `contracts/cw1-subkeys/src/contract.rs`. You can notice that the `impl` block for
 the `Cw1SubkeysContract` is preceded with `#[messages(...)]` attribute.
@@ -65,9 +67,9 @@ impl ContractQueryMsg {
 We can finally see why we need these `ContractQueryMsg` and `ContractExecMsg` next to our
 regular message enums. `Sylvia` generated three tuple variants:
 
-- `Cw1` - which contains query msg defined in `whitelist`;
+- `Cw1` - which contains query msg defined in `cw1`;
 
-- `Whitelist`- which contains query msg defined in `cw1`;
+- `Whitelist`- which contains query msg defined in `whitelist`;
 
 - `Cw1SubkeysContract` - which contains query msg defined in our contract.
 
@@ -103,250 +105,243 @@ For interface declaration itself, take a look at `contracts/cw1/src/lib.rs`.
 ## Practice
 
 We now have enough background to create an `interface` ourselves. Let's say we started
-working on some other contract and found out that the `donate` functionality would fit in it very
-well. Open our `AdminContract` project. We will first create `src/donation.rs`:
+working on some other contract and found out that we would like to restrict access to modify 
+state of the contract. We will create new `Whitelist` interface which only responsibility will be 
+managing a list of admins.
+Normally I would suggest to switch from single crate to workspace repository, but to simplify this
+example I will keep working on a single crate repository.
+
+We would like to be able to access the list of `admins` via query. Let's create new response type 
+in `src/responses.rs`:
 
 ```rust,noplayground
-use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, StdError};
-use sylvia::interface;
+use cosmwasm_schema::cw_serde;
+use cosmwasm_std::Addr;
 
-#[interface]
-pub trait Donation {
-    type Error: From<StdError>;
+#[cw_serde]
+pub struct CountResponse {
+    pub count: u32,
+}
 
-    #[msg(exec)]
-    fn donate(&self, ctx: (DepsMut, Env, MessageInfo)) -> Result<Response, Self::Error>;
+#[cw_serde]
+pub struct AdminsResponse {
+    pub admins: Vec<Addr>,
 }
 ```
 
-We add the `interface` attribute macro to the newly created `trait Donation`. If we stopped here, we
-will get an error. `interface` forces us to alias Error for the trait. We will declare it as
-`From<StdError>` as it is the error from cosmwasm_std, and we will always want our errors to
-implement `From` on it. We then declare `donate` returning `Result` with
-`Self::Error`, allowing users to define their error types.
+We are going to keep the admins as [`Addr`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Addr.html)
+which is a representation of a real address on blockchain.
 
-Now that the declaration is ready, let's move the `donate` implementation to this file:
+Now we create new module `src/whitelist.rs` (remember to add it to `src/lib.rs` as public).
 
 ```rust,noplayground
-use cosmwasm_std::{coins, BankMsg, DepsMut, Env, MessageInfo, Order, Response, StdError};
+use cosmwasm_std::{Response, StdError};
 use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
 
-use crate::{contract::AdminContract, error::ContractError};
+use crate::responses::AdminsResponse;
 
 #[interface]
-pub trait Donation {
+pub trait Whitelist {
     type Error: From<StdError>;
 
     #[msg(exec)]
-    fn donate(&self, ctx: (DepsMut, Env, MessageInfo)) -> Result<Response, Self::Error>;
-}
+    fn add_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
 
-impl Donation for AdminContract<'_> {
+    #[msg(exec)]
+    fn remove_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
+
+    #[msg(query)]
+    fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error>;
+}
+```
+
+We annotate interfaces with [`interface`](https://docs.rs/sylvia/0.7.0/sylvia/attr.interface.html)
+attribute macro. It expects us to declare associated type `Error`. This will help us later as 
+otherwise we would have to either expect `StdError` or our custom error in return type,
+but we don't know what contracts are going to use this interface.
+
+Our trait defines three methods. Let's implement them on our contract.
+`Sylvia` still grows and there can be some type duplications in future. I recommend to keep all three:
+contract implementation, interface definition and interface implementation on contract in separate
+modules.
+
+Let's then create new file. It will be called `src/whitelist_impl.rs`.
+
+```rust,noplayground
+use cosmwasm_std::{Addr, Empty, Response};
+use sylvia::contract;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::contract::CounterContract;
+use crate::error::ContractError;
+use crate::responses::AdminsResponse;
+use crate::whitelist::Whitelist;
+
+#[contract(module=crate::contract)]
+#[messages(crate::whitelist as Whitelist)]
+impl Whitelist for CounterContract<'_> {
     type Error = ContractError;
 
-    fn donate(&self, ctx: (DepsMut, Env, MessageInfo)) -> Result<Response, ContractError> {
-        let (deps, _, info) = ctx;
+    #[msg(exec)]
+    fn add_admin(&self, ctx: ExecCtx, admin: String) -> Result<Response, Self::Error> {
+        let deps = ctx.deps;
+        let admin = deps.api.addr_validate(&admin)?;
+        self.admins.save(deps.storage, &admin, &Empty {})?;
 
-        let denom = self.donation_denom.load(deps.storage)?;
-        let admins_len = self
+        Ok(Response::default())
+    }
+
+    #[msg(exec)]
+    fn remove_admin(&self, ctx: ExecCtx, admin: String) -> Result<Response, Self::Error> {
+        let deps = ctx.deps;
+        let admin = deps.api.addr_validate(&admin)?;
+        self.admins.remove(deps.storage, &admin);
+
+        Ok(Response::default())
+    }
+
+    #[msg(query)]
+    fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error> {
+        let admins: Vec<Addr> = self
             .admins
-            .keys(deps.storage, None, None, Order::Ascending)
-            .filter_map(|admin| admin.ok())
-            .count();
+            .keys(ctx.deps.storage, None, None, cosmwasm_std::Order::Ascending)
+            .collect::<Result<_, _>>()?;
 
-        let donation = cw_utils::must_pay(&info, &denom)
-            .map_err(|err| StdError::generic_err(err.to_string()))?
-            .u128();
-
-        let donation_per_admin = donation / (admins_len as u128);
-
-        let admins = self
-            .admins
-            .keys(deps.storage, None, None, Order::Ascending)
-            .filter_map(|admin| admin.ok());
-
-        let messages = admins.into_iter().map(|admin| BankMsg::Send {
-            to_address: admin.to_string(),
-            amount: coins(donation_per_admin, &denom),
-        });
-
-        let resp = Response::new()
-            .add_messages(messages)
-            .add_attribute("action", "donate")
-            .add_attribute("amount", donation.to_string())
-            .add_attribute("per_admin", donation_per_admin.to_string());
-
-        Ok(resp)
+        Ok(AdminsResponse { admins })
     }
 }
 ```
 
-We alias `Error` as `ContractError` and move the whole method from `src/contract.rs`.
-Now we only need to add the `Donation` interface to our contract:
+We have something new here. First, `contract` has an attribute `module`. It's purpose is to tell
+the macro where our contract is defined. It's required for pathing. You can expand the macro 
+and check where it is used.
+
+Next there is attribute mentioned before - `messages`. It's purpose is similiar to the `module` 
+with difference that it provides `sylvia` with path to the interface. We have to also provide name
+of the interface although in future it should be optional.
+
+We need to do one more thing which is to add `messages` attribute to contract definition.
 
 ```rust,noplayground
-use cosmwasm_std::{
-    Addr, Deps, DepsMut, Empty, Env, Event, MessageInfo, Order, Response, StdResult,
-};
-use cw_storage_plus::{Item, Map};
-use schemars;
-use sylvia::contract;
-
-use crate::{donation, error::ContractError, responses::AdminListResp};
-
-#pub struct AdminContract<'a> {
-#    pub(crate) admins: Map<'a, &'a Addr, Empty>,
-#    pub(crate) donation_denom: Item<'a, String>,
-#}
+#use cosmwasm_std::{Addr, DepsMut, Empty, Response, StdResult};
+#use cw_storage_plus::{Item, Map};
+#use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+#use sylvia::{contract, entry_points};
 #
+#use crate::error::ContractError;
+#use crate::responses::CountResponse;
+#
+#pub struct CounterContract<'a> {
+#    pub(crate) count: Item<'static, u32>,
+#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+#}
+
+#[entry_points]
 #[contract]
-#[messages(donation as Donation)]
-impl AdminContract<'_> {
-    ...
-#    pub const fn new() -> Self {
-#        AdminContract {
+#[error(ContractError)]
+#[messages(crate::whitelist as Whitelist)]
+impl CounterContract<'_> {
+#   pub const fn new() -> Self {
+#        Self {
+#            count: Item::new("count"),
 #            admins: Map::new("admins"),
-#            donation_denom: Item::new("donation_denom"),
 #        }
 #    }
 #
 #    #[msg(instantiate)]
-#    pub fn instantiate(
-#        &self,
-#        ctx: (DepsMut, Env, MessageInfo),
-#        admins: Vec<String>,
-#        donation_denom: String,
-#    ) -> Result<Response, ContractError> {
-#        let (deps, _, _) = ctx;
-#
-#        for admin in admins {
-#            let admin = deps.api.addr_validate(&admin)?;
-#            self.admins.save(deps.storage, &admin, &Empty {})?;
-#        }
-#        self.donation_denom.save(deps.storage, &donation_denom)?;
-#
-#        Ok(Response::new())
+#    pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
+#        self.count.save(ctx.deps.storage, &count)?;
+#        self.admins
+#            .save(ctx.deps.storage, &ctx.info.sender, &Empty {})?;
+#        Ok(Response::default())
 #    }
 #
 #    #[msg(query)]
-#    pub fn admin_list(&self, ctx: (Deps, Env)) -> StdResult<AdminListResp> {
-#        let (deps, _) = ctx;
-#
-#        let admins: Result<_, _> = self
-#            .admins
-#            .keys(deps.storage, None, None, Order::Ascending)
-#            .map(|addr| addr.map(String::from))
-#            .collect();
-#
-#        Ok(AdminListResp { admins: admins? })
+#    pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
+#        let count = self.count.load(ctx.deps.storage)?;
+#        Ok(CountResponse { count })
 #    }
 #
 #    #[msg(exec)]
-#    pub fn add_member(
-#        &self,
-#        ctx: (DepsMut, Env, MessageInfo),
-#        admin: String,
-#    ) -> Result<Response, ContractError> {
-#        let (deps, _, info) = ctx;
-#
-#        if !self.admins.has(deps.storage, &info.sender) {
-#            return Err(ContractError::Unauthorized {
-#                sender: info.sender,
-#            });
+#    pub fn increment_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
+#        if !self.is_admin(&ctx.deps, &ctx.info.sender) {
+#            return Err(ContractError::Unathorized(ctx.info.sender));
 #        }
-#        let admin = deps.api.addr_validate(&admin)?;
-#        self.admins.save(deps.storage, &admin, &Empty {})?;
-#
-#        let resp = Response::new()
-#            .add_attribute("action", "add_member")
-#            .add_event(Event::new("admin_added").add_attribute("addr", admin));
-#        Ok(resp)
-#    }
-#}
-#
-# #[cfg(test)]
-#mod tests {
-#    use crate::entry_points::{execute, instantiate, query};
-#    use cosmwasm_std::from_binary;
-#    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-#
-#    use super::*;
-#
-#    #[test]
-#    fn admin_list_query() {
-#        let mut deps = mock_dependencies();
-#        let env = mock_env();
-#
-#        instantiate(
-#            deps.as_mut(),
-#            env.clone(),
-#            mock_info("sender", &[]),
-#            InstantiateMsg {
-#                admins: vec!["admin1".to_owned(), "admin2".to_owned()],
-#                donation_denom: "atom".to_owned(),
-#            },
-#        )
-#        .unwrap();
-#
-#        let msg = QueryMsg::AdminList {};
-#        let resp = query(deps.as_ref(), env, ContractQueryMsg::AdminContract(msg)).unwrap();
-#        let resp: AdminListResp = from_binary(&resp).unwrap();
-#        assert_eq!(
-#            resp,
-#            AdminListResp {
-#                admins: vec!["admin1".to_owned(), "admin2".to_owned()],
-#            }
-#        );
+#        self.count
+#            .update(ctx.deps.storage, |count| -> StdResult<u32> {
+#                Ok(count + 1)
+#            })?;
+#        Ok(Response::default())
 #    }
 #
-#    #[test]
-#    fn add_member() {
-#        let mut deps = mock_dependencies();
-#        let env = mock_env();
+#    #[msg(exec)]
+#    pub fn decrement_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
+#        if !self.is_admin(&ctx.deps, &ctx.info.sender) {
+#            return Err(ContractError::Unathorized(ctx.info.sender));
+#        }
+#        let count = self.count.load(ctx.deps.storage)?;
+#        if count == 0 {
+#            return Err(ContractError::CannotDecrementCount);
+#        }
+#        self.count.save(ctx.deps.storage, &(count - 1))?;
+#        Ok(Response::default())
+#    }
 #
-#        instantiate(
-#            deps.as_mut(),
-#            env.clone(),
-#            mock_info("sender", &[]),
-#            InstantiateMsg {
-#                admins: vec!["admin1".to_owned(), "admin2".to_owned()],
-#                donation_denom: "atom".to_owned(),
-#            },
-#        )
-#        .unwrap();
-#
-#        let info = mock_info("admin1", &[]);
-#        let msg = ExecMsg::AddMember {
-#            admin: "admin3".to_owned(),
-#        };
-#        execute(
-#            deps.as_mut(),
-#            env.clone(),
-#            info,
-#            ContractExecMsg::AdminContract(msg),
-#        )
-#        .unwrap();
-#
-#        let msg = QueryMsg::AdminList {};
-#        let resp = query(deps.as_ref(), env, ContractQueryMsg::AdminContract(msg)).unwrap();
-#        let resp: AdminListResp = from_binary(&resp).unwrap();
-#        assert_eq!(
-#            resp,
-#            AdminListResp {
-#                admins: vec![
-#                    "admin1".to_owned(),
-#                    "admin2".to_owned(),
-#                    "admin3".to_owned()
-#                ],
-#            }
-#        );
+#    fn is_admin(&self, deps: &DepsMut, addr: &Addr) -> bool {
+#        self.admins.has(deps.storage, addr)
 #    }
 }
 ```
 
-Now you should have a compilation error while running tests. `src/multitest/proxy.rs` used
-`ExecMsg::Donate {}`, but it is not a part of `ExecMsg` defined in `src/contract.rs`.
-You can fix it f.e. by changing it to `let msg = crate::donation::ExecMsg::Donate {};` or you
-can alias it in the `use` statement and use it as `DonateExecMsg::Donate {}`.
+Time to test if new functionality works and is part of our contract.
+Here I would also suggest to split the tests semantically but in this example we will add those tests
+to the same test file.
 
-Now all tests should pass. You can run `cargo schema` to check what changed in your contract API.
+```rust,noplayground
+#[test]
+fn manage_admins() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&app);
+
+    let owner = "owner";
+    let admin = "admin";
+
+    let contract = code_id.instantiate(1).call(owner).unwrap();
+
+    // Admins list is empty
+    let admins = contract.whitelist_proxy().admins().unwrap().admins;
+    assert!(admins.is_empty());
+
+    // Admin can be added
+    contract
+        .whitelist_proxy()
+        .add_admin(admin.to_owned())
+        .call(owner)
+        .unwrap();
+
+    let admins = contract.whitelist_proxy().admins().unwrap().admins;
+    assert_eq!(admins, &[admin]);
+
+    // Admin can be removed
+    contract
+        .whitelist_proxy()
+        .remove_admin(admin.to_owned())
+        .call(owner)
+        .unwrap();
+
+    let admins = contract.whitelist_proxy().admins().unwrap().admins;
+    assert!(admins.is_empty());
+}
+```
+
+We can add and remove admins. Now you can add the logic preventing users from incrementing and 
+decrementing the count. You can extract sender address by calling 
+[`ctx.info.sender`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.MessageInfo.html).
+It would be also nice if the owner was an admin by default and if adding admins required status of 
+one.
+
+# Next step
+
+We have learned about almost all of the `sylvia` features. Next chapter will be about talking with
+remotes.
