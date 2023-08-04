@@ -47,7 +47,7 @@ that would help us with that. We have already used it before, and it is called
 
 The only thing missing is new a `crate-type` in our `Cargo.toml`:
 
-```rust,noplayground
+```toml,noplayground
 [package]
 name = "contract"
 version = "0.1.0"
@@ -93,6 +93,9 @@ fn main() {
 }
 ```
 
+Notice that I used here `ContractExecMsg` and `ContractQueryMsg` instead of `ExecMsg` and `QueryMsg`.
+It is important as the latter will not expose the `interface` messages.
+
 Cargo is smart enough to recognize files in the `src/bin` directory as utility binaries for the crate.
 Now we can generate our schemas:
 
@@ -109,7 +112,7 @@ The problem is that unfortunately creating this binary makes our project fail to
 target - which is the most important in the end. Hopefully, we don't need to build the schema
 binary for the Wasm target - let's align the `.cargo/config` file:
 
-```rust,noplayground
+```toml,noplayground
 [alias]
 wasm = "build --target wasm32-unknown-unknown --release --lib"
 wasm-debug = "build --target wasm32-unknown-unknown --lib"
@@ -124,7 +127,7 @@ If you are using `cw-utils` in version `1.0` `cargo wasm` command will still fai
 dependency to [`getrandom`](https://docs.rs/getrandom/latest/getrandom/#) crate. To fix the
 `wasm` compilation, you have to add yet another dependency to our `Cargo.toml`:
 
-```rust,noplayground
+```toml,noplayground
 [package]
 name = "contract"
 version = "0.1.0"
@@ -161,7 +164,7 @@ We would use [`feature flags`](https://doc.rust-lang.org/cargo/reference/feature
 
 Start with updating `Cargo.toml`:
 
-```rust,noplayground
+```toml,noplayground
 [package]
 name = "contract"
 version = "0.1.0"
@@ -170,70 +173,27 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-library = []
-
 [dependencies]
-cosmwasm-std = { version = "1.1", features = ["staking"] }
-cosmwasm-schema = "1.1.6"
-serde = { version = "1.0.147", features = ["derive"] }
-sylvia = "0.2.1"
-schemars = "0.8.11"
-thiserror = "1.0.37"
-cw-storage-plus = "0.16.0"
-cw-utils = "0.16"
-getrandom = { version = "0.2", features = ["js"] }
+cosmwasm-std = { version = "1.3.1", features = ["staking"] }
+sylvia = { path = "../../confio/sylvia/sylvia" }
+schemars = "0.8.12"
+cosmwasm-schema = "1.3.1"
+serde = "1.0.180"
+cw-storage-plus = "1.1.0"
+thiserror = "1.0.44"
 
 [dev-dependencies]
-anyhow = "1"
-cw-multi-test = "0.16"
+sylvia = { path = "../../confio/sylvia/sylvia", features = ["mt"] }
 ```
 
-This way, we created a new feature flag for our crate. Now we want to disable the `entry_point`
-attribute if our contract would be used as a dependency. We will do it by a slight update of
-`src/lib.rs`:
+This way, we created a new feature flag for our crate. Now we want to disable the `entry_points`
+attribute if our contract would be used as a dependency. We will do it by a slight update of our
+`src/contract.rs`:
 
 ```rust,noplayground
-pub mod contract;
-pub mod error;
-pub mod responses;
-
-#[cfg(test)]
-mod multitest;
-
-#[cfg(not(feature = "library"))]
-mod entry_points {
-    use cosmwasm_std::{entry_point, Binary, Deps, DepsMut, Env, MessageInfo, Response};
-
-    use crate::contract::{AdminContract, ContractExecMsg, ContractQueryMsg, InstantiateMsg};
-    use crate::error::ContractError;
-
-    const CONTRACT: AdminContract = AdminContract::new();
-
-    #[entry_point]
-    pub fn instantiate(
-        deps: DepsMut,
-        env: Env,
-        info: MessageInfo,
-        msg: InstantiateMsg,
-    ) -> Result<Response, ContractError> {
-        msg.dispatch(&CONTRACT, (deps, env, info))
-    }
-
-    #[entry_point]
-    pub fn query(deps: Deps, env: Env, msg: ContractQueryMsg) -> Result<Binary, ContractError> {
-        msg.dispatch(&CONTRACT, (deps, env))
-    }
-
-    #[entry_point]
-    pub fn execute(
-        deps: DepsMut,
-        env: Env,
-        info: MessageInfo,
-        msg: ContractExecMsg,
-    ) -> Result<Response, ContractError> {
-        msg.dispatch(&CONTRACT, (deps, env, info))
-    }
+#[cfg_attr(not(feature = "library"), entry_points)]
+#[contract]
+impl CounterContract {
 }
 ```
 
@@ -245,7 +205,13 @@ in another case.
 
 Since now to add this contract as a dependency, don't forget to enable the feature like this:
 
-```rust,noplayground
+```toml,noplayground
 [dependencies]
 my_contract = { version = "0.1", features = ["library"] }
 ```
+
+## Single file/single macro call 
+
+I talked about it in some previous chapters. I cannot guarantee that future `sylvia` changes won't
+cause code generation to overlap. To avoid future problems, I recommend restricting yourself
+to single macro call per file.

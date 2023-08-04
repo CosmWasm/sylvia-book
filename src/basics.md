@@ -1,4 +1,4 @@
 # Basics
 
-This chapter will go through creating basic smart contracts step by step.
-I will explain the core ideas behind CosmWasm and the typical contract structure.
+This chapter will go through creating basic smart contract step by step.
+I will explain the core features of `sylvia` and some good practices.
