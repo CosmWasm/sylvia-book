@@ -71,13 +71,15 @@ fn instantiate() {
 
 `Sylvia` generates a lot of helpers for us to make testing as easy as possible.
 To simulate blockchain, we create `sylvia::multitest::App`. Then we will use it to store the code id
-of our contract on the blockchain using `sylvia` generated `CodeId`. Code id identifies our contract on 
-the blockchain and allows us to instantiate the contract on it. We do that using `CodeId::instantiate`
-method. It returns the `InstantiateProxy` type, allowing us to set some contract parameters on 
-a blockchain. You can inspect methods like `with_label(..)`, `with_funds(..)` or `with_admins(..)`.
-Once all parameters are set you use `call` passing caller to it as an only argument. This will return
-`Result<ContractProxy, ..>`. Let's `unwrap` it as it is a testing environment and we expect it to 
-work correctly.
+of our contract on the blockchain using `sylvia` generated `CodeId`.
+
+Code id identifies our contract on the blockchain and allows us to instantiate the contract on it.
+We do that using `CodeId::instantiate` method. It returns the `InstantiateProxy` type, allowing us
+to set some contract parameters on a blockchain. You can inspect methods like `with_label(..)`,
+`with_funds(..)` or `with_admins(..)`. Once all parameters are set you use `call` passing caller to
+it as an only argument. This will return `Result<ContractProxy, ..>`. Let's `unwrap` it as it is a 
+testing environment and we expect it to work correctly.
+
 Now that we have the proxy type we can call our `count` method on it. It will generate appropriate
 `QueryMsg` variant underneath and send to blockchain so that we don't have to do it ourselves and
 have business logic transparently shown in the test. We `unwrap` and extract the only field out of 

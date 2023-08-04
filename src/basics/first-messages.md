@@ -1,6 +1,6 @@
 # Generating first messages
 
-We have setup our dependencies. Now let's use them to create simple messages.
+We have set up our dependencies. Now let's use them to create simple messages.
 
 ## Creating an instantiation message
 

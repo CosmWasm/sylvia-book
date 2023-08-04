@@ -3,7 +3,7 @@
 `StdError` provides useful variants related to the `CosmWasm` smart contract development. What if 
 you would like to emit errors related to your business logic?
 
-## Custom error
+## Define custom error
 
 We start by adding a new dependency [`thiserror`](https://docs.rs/thiserror/1.0.44/thiserror/) to
 our `Cargo.toml`.
