@@ -10,6 +10,8 @@ for using `sylvia`.
 This book is not meant to teach you about the `CosmWasm`. To learn about that, I recommend reading
 [the cosmwasm-book](https://book.cosmwasm.com/).
 
+This book covers `sylvia` in version 0.7.0.
+
 ## Prerequirements
 
 This book explores CosmWasm smart contracts. It is not a Rust tutorial, and it

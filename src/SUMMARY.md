@@ -19,7 +19,8 @@
   - [Introducing multitest](basics/multitest-intro.md)
   - [Execution messsages](basics/execute.md)
   - [Error handling](basics/error_handling.md)
-  - [Reusability](basics/reusability.md)
+  - [Override entry point](basics/entry_points_overriding.md)
+  - [Interfaces](basics/reusability.md)
   - [Remote type](basics/remote.md)
   - [Good practices](basics/good-practices.md)
 

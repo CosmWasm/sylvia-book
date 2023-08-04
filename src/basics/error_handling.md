@@ -195,3 +195,7 @@ fn decrement_below_zero() {
 We instantiate our contract with `count` equal to 1. First `decrement_count` should pass as it is
 above 0. Then on the second `decrement_count` call, we will `unwrap_err` and check if it matches our 
 newly defined error variant.
+
+# Next step
+
+In the next chapter we will talk about entry points overriding.
