@@ -7,7 +7,7 @@ Rust website](https://www.rust-lang.org/tools/install).
 I assume you are working with a stable Rust channel in this book.
 
 Additionally, you will need the Wasm rust compiler backend installed to build
-Wasm binaries. To install it, run:
+Wasm binaries. To install it, run the following:
 
 ```
 rustup target add wasm32-unknown-unknown
@@ -23,16 +23,16 @@ ready to upload into the blockchain. You can install it using cargo:
 $ cargo install cosmwasm-check
 ```
 
-If the installation succeeds, you should be able to execute the utility from your command line.
+If the installation succeeds, you can execute the utility from your command line.
 
 ```
 $ cosmwasm-check --version
-Contract checking 1.2.1
+Contract checking 1.3.1
 ```
 
 ## Verifying the installation
 
-To guarantee you are ready to build your smart contracts, you need to make sure you can build examples.
+To guarantee you are ready to build your smart contracts, you must ensure you can build examples.
 Checkout the [sylvia](https://github.com/CosmWasm/sylvia) repository and run the testing command in
 its folder:
 
@@ -42,13 +42,14 @@ $ cd ./sylvia
 sylvia $ cargo test
 ```
 
-You should see that everything in the repository gets compiled, and all tests pass. 
+You should see that everything in the repository gets compiled and all tests pass. 
 
-`sylvia` framework contains some examples of contracts. To find them go to `examples/contracts` directory.
-These contracts are maintained by CosmWasm creators, so contracts in there should follow good practices.
+`sylvia` framework contains some examples of contracts. To find them go to `examples/contracts`
+directory. These contracts are maintained by CosmWasm creators, so contracts in there should follow 
+good practices.
 
-To verify the `cosmwasm-check` utility, first, you need to build a smart contract. Go to some contract
-directory, for example, `examples/contracts/cw1-whitelist`, and call `cargo wasm`:
+To verify the `cosmwasm-check` utility, first, you need to build a smart contract. Go to some 
+contract directory, for example, `examples/contracts/cw1-whitelist`, and call `cargo wasm`:
 
 ```
 sylvia $ cd examples/contracts/cw1-whitelist
@@ -72,8 +73,9 @@ All contracts (1) passed checks!
 
 ## Macro expansion
 
-Sylvia generates a lot of code for us which is not visible in code. To see what code is generated
-with it go to `examples/contracts/cw1-whitelist/src/contract.rs`. In VSCode you can click on
+Sylvia generates a lot of code for us, which is not visible in the code. To see what code is generated
+with it, go to `examples/contracts/cw1-whitelist/src/contract.rs`. In VSCode you can click on
 `#[contract]`, do `shift+p` and then type: `rust analyzer: Expand macro recursively`. This will open
-a window with fully expanded macro which you can browse. This is also possible f.e. in VIM depending
-on your configuration. You can also use `cargo expand` tool from CLI for this.
+a window with a fully expanded macro, which you can browse. In Vim you can consider installing 
+the [`rust-tools`](https://github.com/simrat39/rust-tools.nvim) plugin. You can also use
+`cargo expand` tool from CLI for this.

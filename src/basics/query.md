@@ -15,7 +15,7 @@ pub mod contract;
 pub mod responses;
 ```
 
-Now in `src/responses.rs` we will create response struct.
+Now in `src/responses.rs`, we will create a response struct.
 
 ```rust,noplayground
 use cosmwasm_schema::cw_serde;
@@ -27,10 +27,9 @@ pub struct CountResponse {
 ```
 
 We used the [`cw_serde`](https://docs.rs/cosmwasm-schema/1.3.1/cosmwasm_schema/attr.cw_serde.html)
-attribute macro here. It expands to multiple derives your types need to be proper used in the
-blockchain context like serialization or schema generation.
+attribute macro here. It expands into multiple derives required by your types in the blockchain environment.
 
-Now that we have a response created, go to your `src/contract.rs` file and declare a new `query`.
+After creating a response, go to your `src/contract.rs` file and declare a new `query`.
 
 ```rust,noplayground
 use cosmwasm_std::{Response, StdResult};
@@ -110,13 +109,13 @@ impl QueryMsg {
 We will ignore `#[returns(_)]` and `cosmwasm_schema::QueryResponses` as they will be described later
 when we will talk about generating schema.
 
-`QueryMsg` is an enum that will contain every `query` declared in your expanded impl. Thanks to
+`QueryMsg` is an enum that will contain every `query` declared in your expanded `impl`. Thanks to
 that you can focus solely on defining the behavior of the contract on receiving a message, and you
 can leave it to `sylvia` to generate the messages and the `dispatch`.
 
 Note that our enum has no type assigned to the only `Count` variant. Typically
-in Rust, we create such variants without additional `{}` after the variant name. Here the
-curly braces have a purpose. Without, them the variant would serialize to just a string
+in Rust, we create variants without additional `{}` after the variant name. Here the
+curly braces have a purpose. Without them, the variant would serialize to just a string
 type - so instead of `{ "admin_list": {} }`, the JSON representation of this variant would be
 `"admin_list"`.
 
@@ -128,8 +127,8 @@ directly to the querier. `Sylvia` does that by returning encoded response as
 [`Binary`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Binary.html) by calling
 [`to_binary`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/fn.to_binary.html) function in dispatch.
 
-Query can never alter internal state of the smart contracts. Because of that `QueryCtx` has `Deps`
-as a field instead of `DepsMut` as it was in case of `InstantiateCtx`. It comes with some
+`Queries` can never alter the internal state of the smart contracts. Because of that, `QueryCtx` has
+`Deps` as a field instead of `DepsMut` as it was in case of `InstantiateCtx`. It comes with some
 consequences - for example, it is impossible to implement caching for future queries (as it would
 require some data cache to write to).
 
@@ -140,7 +139,7 @@ checking the message `sender`). It is not a case for queries. Queries are purely
 transformed contract state. It can be calculated based on chain metadata (so the state can
 "automatically" change after some time) but not on message info.
 
-`#[entry_points]` generates query entry point as in case of instantiate so we don't have to do 
+`#[entry_points]` generates `query` entry point as in case of `instantiate` so we don't have to do 
 anything more here.
 
 # Next step

@@ -4,9 +4,9 @@ We created `instantiate` and `query` messages. We have the state in our contract
 Now let's expand our contract by adding the possibility of updating the state. In this chapter, we
 will add the `increase_count` execute message.
 
-## Add message
+## Add a message
 
-Adding new variant of `ExecMsg` is as simple as adding one to the `QueryMsg`.
+Adding a new variant of `ExecMsg` is as simple as adding one to the `QueryMsg`.
 
 ```rust,noplayground
 use cosmwasm_std::{Response, StdResult};
@@ -53,10 +53,10 @@ impl CounterContract {
 ```
 
 We will add the `#[msg(exec)]` attribute and make it accept [`ExecCtx`](https://docs.rs/sylvia/latest/sylvia/types/struct.ExecCtx.html)
-parameter. It will return `StdResult<Response>` similiar to the instantiate method.
+parameter. It will return `StdResult<Response>`, similiar to the instantiate method.
 Inside we call [`update`](https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html#method.update)
 to increment the `count` state.
-Like that new variant for the `ExecMsg` is created, `execute` entry point properly dispatches message
+Like that new variant for the `ExecMsg` is created, `execute` entry point properly dispatches a message
 to this method and our multitest helpers are updated and ready to use.
 
 Again I encourage you to expand the macro and inspect all three things mentioned above.
@@ -89,11 +89,11 @@ fn instantiate() {
 }
 ```
 
-As in case of query we can call `increment_count` directly on our proxy contract. Same as in case
-of instantiate we have to pass the caller here. We could also send funds here using `with_funds` 
+As in the case of query we can call `increment_count` directly on our proxy contract. Same as in 
+the case of instantiate we have to pass the caller here. We could also send funds here using `with_funds` 
 method.
 
 ## Next step
 
-I encourage you to add new `ExecMsg` variant by yourself. It could be called `set_count`. Test it 
+I encourage you to add a new `ExecMsg` variant by yourself. It could be called `set_count`. Test it 
 and see how easy it is to add new message variants even without the guide.

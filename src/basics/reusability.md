@@ -10,7 +10,7 @@ Let's say that after creating this contract we start working on another one. Whi
 implementation, we notice that its functionality is just a superset of our `AdminContract`.
 We could copy all the code to our new contract, but it's creating unnecessary redundancy and would
 force us to maintain multiple implementations of the same functionality. It would also mean that 
-a bunch of functionality would be crammed together. Better solution would be to divide the code
+a bunch of functionality would be crammed together. A better solution would be to divide the code
 into semantically compatible parts.
 
 ## Solution
@@ -18,7 +18,7 @@ into semantically compatible parts.
 `Sylvia` has a feature to reuse already defined messages and apply them in new contracts.
 Clone and open [`sylvia`](https://github.com/CosmWasm/sylvia) repository. Go to
 `contracts/cw1-subkeys/src/contract.rs`. You can notice that the `impl` block for
-the `Cw1SubkeysContract` is preceded with `#[messages(...)]` attribute.
+the `Cw1SubkeysContract` is preceded by `#[messages(...)]` attribute.
 
 ```rust,noplayground
 #[contract]
@@ -97,7 +97,7 @@ It currently supports only `execute` and `query` messages. In this case, it is r
 implemented on the `Cw1Whitelist` contract, and this implementation is being reused in
 `contract/cw1-subkeys/src/whitelist.rs`.
 
-You might also want to separate the functionalities of your contract in some sets. It is the case
+You should also separate the functionalities of your contract in some sets. It is the case
 of `Cw1`. It is created as a separate crate and reused in both `Cw1WhitelistContract` and
 `Cw1SubkeysContract`. You can check the implementation in `contracts/cw1-subkeys/src/cw1.rs`.
 For interface declaration itself, take a look at `contracts/cw1/src/lib.rs`.
@@ -106,12 +106,12 @@ For interface declaration itself, take a look at `contracts/cw1/src/lib.rs`.
 
 We now have enough background to create an `interface` ourselves. Let's say we started
 working on some other contract and found out that we would like to restrict access to modify 
-state of the contract. We will create new `Whitelist` interface which only responsibility will be 
+the state of the contract. We will create a new `Whitelist` interface which only responsibility will be 
 managing a list of admins.
-Normally I would suggest to switch from single crate to workspace repository, but to simplify this
-example I will keep working on a single crate repository.
+Usually I would suggest switching from a single crate to a workspace repository, but to simplify this
+example, I will keep working on a single crate repository.
 
-We would like to be able to access the list of `admins` via query. Let's create new response type 
+We want to be able to access the list of `admins` via query. Let's create a new response type 
 in `src/responses.rs`:
 
 ```rust,noplayground
@@ -130,9 +130,9 @@ pub struct AdminsResponse {
 ```
 
 We are going to keep the admins as [`Addr`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Addr.html)
-which is a representation of a real address on blockchain.
+which is a representation of a real address on the blockchain.
 
-Now we create new module `src/whitelist.rs` (remember to add it to `src/lib.rs` as public).
+Now we create a new module, `src/whitelist.rs` (remember to add it to `src/lib.rs` as public).
 
 ```rust,noplayground
 use cosmwasm_std::{Response, StdError};
@@ -157,16 +157,16 @@ pub trait Whitelist {
 ```
 
 We annotate interfaces with [`interface`](https://docs.rs/sylvia/0.7.0/sylvia/attr.interface.html)
-attribute macro. It expects us to declare associated type `Error`. This will help us later as 
-otherwise we would have to either expect `StdError` or our custom error in return type,
-but we don't know what contracts are going to use this interface.
+attribute macro. It expects us to declare the associated type `Error`. This will help us later as 
+otherwise we would have to either expect `StdError` or our custom error in the return type,
+but we don't know what contracts will use this interface.
 
 Our trait defines three methods. Let's implement them on our contract.
-`Sylvia` still grows and there can be some type duplications in future. I recommend to keep all three:
-contract implementation, interface definition and interface implementation on contract in separate
-modules.
+`Sylvia` still grows and there can be some type duplications in the future. I recommend keeping all
+three: contract implementation, interface definition and interface implementation on contract in 
+separate modules.
 
-Let's then create new file. It will be called `src/whitelist_impl.rs`.
+Let's then create a new file. It will be called `src/whitelist_impl.rs`.
 
 ```rust,noplayground
 use cosmwasm_std::{Addr, Empty, Response};
@@ -213,15 +213,14 @@ impl Whitelist for CounterContract<'_> {
 }
 ```
 
-We have something new here. First, `contract` has an attribute `module`. It's purpose is to tell
+We have something new here. First, `contract` has an attribute `module`. Its purpose is to tell
 the macro where our contract is defined. It's required for pathing. You can expand the macro 
 and check where it is used.
 
-Next there is attribute mentioned before - `messages`. It's purpose is similiar to the `module` 
-with difference that it provides `sylvia` with path to the interface. We have to also provide name
-of the interface although in future it should be optional.
-
-We need to do one more thing which is to add `messages` attribute to contract definition.
+Next, there is the attribute mentioned before - `messages`. Its purpose is similar to the `module` 
+with the difference that it provides `sylvia` with path to the interface. We also have to provide 
+the interface's name, although it should be optional in the future.
+We need to do one more thing, which is to add the `messages` attribute to the contract definition.
 
 ```rust,noplayground
 #use cosmwasm_std::{Addr, DepsMut, Empty, Response, StdResult};
@@ -294,8 +293,8 @@ impl CounterContract<'_> {
 }
 ```
 
-Time to test if new functionality works and is part of our contract.
-Here I would also suggest to split the tests semantically but in this example we will add those tests
+Time to test if the new functionality works and is part of our contract.
+Here suggest splitting the tests semantically, but in this example, we will add those tests
 to the same test file.
 
 ```rust,noplayground
@@ -336,12 +335,12 @@ fn manage_admins() {
 ```
 
 We can add and remove admins. Now you can add the logic preventing users from incrementing and 
-decrementing the count. You can extract sender address by calling 
+decrementing the count. You can extract the sender address by calling 
 [`ctx.info.sender`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.MessageInfo.html).
-It would be also nice if the owner was an admin by default and if adding admins required status of 
-one.
+It would also be nice if the owner was an admin by default and if adding admins required the status 
+of one.
 
 # Next step
 
-We have learned about almost all of the `sylvia` features. Next chapter will be about talking with
-remotes.
+We have learned about almost all of the `sylvia` features. The next chapter will be about talking 
+with remotes.

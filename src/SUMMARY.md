@@ -5,7 +5,6 @@
 # Getting started
 
 - [Setting up the environment](setting-up-env.md)
-- [Building the contract](basics/building-contract.md)
 
 # Smart contracts
 
@@ -14,6 +13,7 @@
   - [Create a Rust project](basics/create-project.md)
   - [Generating first messages](basics/first-messages.md)
   - [Entry points](basics/entry-points.md)
+  - [Building the contract](basics/building-contract.md)
   - [Contract state](basics/state.md)
   - [Creating a query](basics/query.md)
   - [Introducing multitest](basics/multitest-intro.md)

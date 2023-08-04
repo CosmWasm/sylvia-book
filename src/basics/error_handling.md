@@ -1,10 +1,11 @@
 # Error handling
 
-`StdError` provides us with some useful variants related to the `CosmWasm` smart contract development. What if you would like to emit errors related to your bussiness logic?
+`StdError` provides useful variants related to the `CosmWasm` smart contract development. What if 
+you would like to emit errors related to your business logic?
 
 ## Custom error
 
-We start with adding new dependency [`thiserror`](https://docs.rs/thiserror/1.0.44/thiserror/) to
+We start by adding a new dependency [`thiserror`](https://docs.rs/thiserror/1.0.44/thiserror/) to
 our `Cargo.toml`.
 
 ```toml
@@ -29,7 +30,7 @@ thiserror = "1.0.44"
 sylvia = { version = "0.7.0", features = ["mt"] }
 ```
 
-It provides easy to use derive macro to setup our errors.
+It provides an easy-to-use derive macro to set up our errors.
 
 Let's create new file `src/error.rs`.
 
@@ -50,7 +51,7 @@ pub enum ContractError {
 We annotate the `ContractError` enum with [`Error`](https://docs.rs/thiserror/1.0.44/thiserror/derive.Error.html)
 macro as well as `Debug` and `PartialEq`. Variants need to be prefixed with `#[error(..)]` attribute.
 First one will be called `Std` and will implement [`From`](https://doc.rust-lang.org/std/convert/trait.From.html) trait on our error. This way we can both
-return standard `CosmWasm` errors and our own defined ones. For our bussiness logic we will provide 
+return standard `CosmWasm` errors and our own defined ones. For our business logic we will provide 
 the `CannotDecrementCount` variant. String inside of `error(..)` attribute will provide 
 [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html) value for readability.
 
@@ -66,7 +67,7 @@ pub mod responses;
 
 ## Use custom error
 
-Our error is defined. Now let's add new `ExecMsg` variant.
+Our error is defined. Now let's add a new `ExecMsg` variant.
 
 ```rust,noplayground
 use cosmwasm_std::{Response, StdResult};
@@ -123,12 +124,12 @@ impl CounterContract {
 }
 ```
 
-Not much to explain here. We load the count, check if it's equal to zero. If yes then we return
-our newly defined error variant. If not then we decrement it's value.
-However this won't work. If you would try to build this you will receive:
+A little to explain here. We load the count, and check if it's equal to zero. If yes, then we return
+our newly defined error variant. If not, then we decrement its value.
+However, this won't work. If you would try to build this you will receive:
 `error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied`.
-This is because `sylvia` by default generates `dispatch` returning `Result<_, StdError>`. To 
-inform `sylvia` that it should be using new type we add `#[error(ContractError)]` attribute to 
+It is because `sylvia` by default generates `dispatch` returning `Result<_, StdError>`. To 
+inform `sylvia` that it should be using a new type we add `#[error(ContractError)]` attribute to 
 the `contract` macro call.
 
 ```rust,noplayground
@@ -140,11 +141,11 @@ impl CounterContract {
 }
 ```
 
-Now our contract should compile and we are ready to test it.
+Now our contract should compile, and we are ready to test it.
 
 ## Testing
 
-Let's create new test expecting proper error to be returned. In `src/multitest.rs`:
+Let's create a new test expecting the proper error to be returned. In `src/multitest.rs`:
 
 ```rust,noplayground
 use sylvia::multitest::App;
@@ -191,6 +192,6 @@ fn decrement_below_zero() {
 }
 ```
 
-We instantiate our contract with `count` equals to 1. First `decrement_count` should pass as it is
-above 0. Then on second `decrement_count` call we will `unwrap_err` and check if it matches our 
+We instantiate our contract with `count` equal to 1. First `decrement_count` should pass as it is
+above 0. Then on the second `decrement_count` call, we will `unwrap_err` and check if it matches our 
 newly defined error variant.

@@ -18,8 +18,8 @@ To start, we will go with three basic entry points:
 ## Generate entry points
 
 `Sylvia` provides us with [`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html)
-attribute macro. In most cases your entry point will just dispatch received message to the handler
-so it's not necessary to manually create them and we can rely on macro to do that for us.
+attribute macro. In most cases, your entry point will just dispatch received messages to the handler,
+so it's not necessary to manually create them, and we can rely on a macro to do that for us.
 
 Let's add the attribute macro to our contract:
 
@@ -51,12 +51,12 @@ the attributes such as `#[msg(...)]` on which both those macros rely. Remember t
 `Sylvia` generates the entry_points with [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html)
 attribute macro. Its purpose is to wrap the whole entry point to the form Wasm runtime understands. 
 The proper Wasm entry points can use only basic types supported natively by Wasm specification, and 
-Rust structures and enums are not in this set. Working with such entry points would be rather 
+Rust structures and enums are not in this set. Working with such entry points would be 
 overcomplicated, so CosmWasm creators delivered the `entry_point` macro. It creates the raw Wasm 
 entry point, calling the decorated function internally and doing all the magic required to build our 
 high-level Rust arguments from arguments passed by Wasm runtime.
 
-Now that our contract has proper entry point let's build it and check if it's properly defined.
+Now that our contract has a proper `entry point` let's build it and check if it's properly defined.
 
 ```
 contract $ cargo build --release --target wasm32-unknown-unknown --lib
