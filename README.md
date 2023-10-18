@@ -2,7 +2,7 @@
 
 This book is about writing Smart Contracts using [Sylvia](https://github.com/CosmWasm/sylvia) framework.
 
-To learn about CosmWasm, on which Sylvia relies, please check [The CosmWasm Book](https://book.cosmwasm.com/index.html)
+To learn about CosmWasm, on which Sylvia relies, please check [The CosmWasm Book](https://book.cosmwasm.com/index.html).
 
 ## About
 
