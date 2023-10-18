@@ -70,13 +70,13 @@ If we build our contract with command:
 $ cargo build --release --target wasm32-unknown-unknown --lib
 ```
 
-and the run:
+and then run:
 
 ```shell
 $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
 ```
 
-it will **fail**:
+**IT WILL FAIL** with message:
 
 ```shell
 Available capabilities: {"cosmwasm_1_2", "iterator", "staking", "stargate", "cosmwasm_1_1", "cosmwasm_1_3"}
@@ -87,5 +87,5 @@ Error during static Wasm validation: Wasm contract doesn't have required export:
 Passes: 0, failures: 1
 ```
 
-This is because our contract is **not yet complete**. We defined the message that could be sent to it but
+This is because our contract **IS NOT YET COMPLETE**. We defined the message that could be sent to it but
 didn't provide any `entry_point`. In the next chapter, we will finally make it a proper contract.
