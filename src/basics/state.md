@@ -1,17 +1,17 @@
 # Contract state 
 
 We can instantiate our contract, but it doesn't do anything afterward.
-Let's make it more complex. In this chapter, we will introduce the contracts state.
+Let's make it more usable. In this chapter, we will introduce the contract's state.
 
 ## Adding contract state
 
 The name of our contract is a little spoiler. We will add the `counter` state. It's not a real world 
-usage of smart contracts, but it allows us to see the usage of `sylvia` without getting into 
-business logic.
+usage of smart contracts, but it helps to see the usage of [Sylvia](https://github.com/CosmWasm/sylvia)
+without getting into business logic.
 
-The first thing to do is to update `Cargo.toml` with yet another dependency - the
+The first thing to do, is to update `Cargo.toml` with yet another dependency - the
 [`storage-plus`](https://crates.io/crates/cw-storage-plus) crate with high-level bindings for
-CosmWasm smart contracts state management:
+[CosmWasm](https://github.com/CosmWasm) smart contracts state management:
 
 ```toml
 [package]
@@ -31,7 +31,7 @@ serde = "1.0.180"
 cw-storage-plus = "1.1.0"
 ```
 
-Now add the state as a field in your contract and instantiate it in the `new` method.
+Now add state as a field in your contract and instantiate it in the `new` function (constructor):
 
 ```rust,noplayground
 use cosmwasm_std::{Response, StdResult};
@@ -62,17 +62,18 @@ impl CounterContract {
 New type:
 
 - [`Item<_>`](https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html) - this is 
-just an accessor allowing us to read a state stored on the blockchain via the key "count" in our 
-case. It doesn't store the state by itself.
+just an **accessor** that allows to read a state stored on the blockchain via the key **"count"**
+in our case. It doesn't hold any state by itself.
 
-In CosmWasm, the blockchain state is just massive key-value storage. The keys are prefixed with
-metainformation pointing to the contract which owns them (so no other contract can alter them),
-but even after removing the prefixes, the single contract state is a smaller key-value pair.
+In [CosmWasm](https://github.com/CosmWasm), the blockchain state is just a massive key-value storage.
+The keys are prefixed with metainformation, pointing to the contract which owns them
+(so no other contract can alter them), but even after removing the prefixes,
+the single contract state is a smaller key-value pair.
 
 ## Initializing the state
 
-Now that the state field has been added, we can improve our instantiate. We will make it possible for
-a user to add new admins at contract instantiation.
+Now that the state field has been added, we can improve the instantiation of our contract.
+We make it possible for a user to add an initial counter value at contract instantiation.
 
 ```rust,noplayground
 use cosmwasm_std::{Response, StdResult};
@@ -105,8 +106,9 @@ Having data to store, we use the
 [`save`](https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html#method.save)
 function to write it into the contract state. Note that the first argument of `save` is
 [`&mut Storage`](https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/trait.Storage.html), which is
-actual blockchain storage. As emphasized, the `Item` object stores nothing and is an accessor.
-It determines how to store the data in the storage given to it.
+actual blockchain storage. As emphasized, the `Item` object holds no state by itself,
+and is just an accessor to blockchain's storage. `Item` only determines how to store
+the data in the storage given to it.
 
 Now let's expand the `contract` macro and see what changed.
 
@@ -136,11 +138,12 @@ impl InstantiateMsg {
 ```
 
 First, adding parameter to the `instantiate` method added it as a field to the `InstantiateMsg`.
-It also caused `dispatch` to pass this field to the `instantiate` method. Thanks to sylvia we don't
-have to tweak every function, entry point or message and are actions are limited only to modifying
-the method.
+It also caused `dispatch` to pass this field to the `instantiate` method.
+Thanks to [Sylvia](https://github.com/CosmWasm/sylvia) we don't have to tweak every function,
+entry point or message, and all we need to do, is just to modify the `instantiate` function.
 
 ## Next step
 
-Nice, we now have the state initialized on our contract, but we can't validate if the data is
-stored correctly. Let's change it in the next chapter, in which we will introduce `query`.
+Well, now we have the state initialized for our contract, but we still can't validate,
+if the data we passed during instantiation is stored correctly.
+Let's add it in the next chapter, in which we introduce **`query`**.
