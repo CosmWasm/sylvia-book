@@ -49,5 +49,4 @@ self.cw20
 
 # Next step
 
-In front of us is the last chapter of `sylvia` basics. Let's learn about some good practices before
-we will get to writing our own contracts.
+Next we will learn about defining `CustomMsg` and `CustomQuery` in our contracts.

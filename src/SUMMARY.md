@@ -22,10 +22,9 @@
   - [Override entry point](basics/entry_points_overriding.md)
   - [Interfaces](basics/reusability.md)
   - [Remote type](basics/remote.md)
+  - [Custom messages](basics/custom.md)
   - [Good practices](basics/good-practices.md)
 
 - [Ibc](ibc.md)
-  - [Custom queries and messages]()
-  - [Sudo]()
 
 [Legal Information](impressum.md)

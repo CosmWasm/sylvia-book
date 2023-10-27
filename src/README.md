@@ -10,7 +10,7 @@ for using `Sylvia`.
 This book is not meant to teach you about the `CosmWasm`.
 To learn about that, read [The CosmWasm Book](https://book.cosmwasm.com).
 
-This book covers `Sylvia` in version 0.7.0.
+This book covers `Sylvia` in version 0.8.0.
 
 ## Prerequisites
 
