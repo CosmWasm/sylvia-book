@@ -6,12 +6,11 @@ Let's make it more usable. In this chapter, we will introduce the contract's sta
 ## Adding contract state
 
 The name of our contract is a little spoiler. We will add the `counter` state. It's not a real world 
-usage of smart contracts, but it helps to see the usage of [Sylvia](https://github.com/CosmWasm/sylvia)
-without getting into business logic.
+usage of smart contracts, but it helps to see the usage of `Sylvia` without getting into business logic.
 
 The first thing to do, is to update `Cargo.toml` with yet another dependency - the
 [`storage-plus`](https://crates.io/crates/cw-storage-plus) crate with high-level bindings for
-[CosmWasm](https://github.com/CosmWasm) smart contracts state management:
+CosmWasm smart contracts state management:
 
 ```toml
 [package]
@@ -65,10 +64,9 @@ New type:
 just an **accessor** that allows to read a state stored on the blockchain via the key **"count"**
 in our case. It doesn't hold any state by itself.
 
-In [CosmWasm](https://github.com/CosmWasm), the blockchain state is just a massive key-value storage.
-The keys are prefixed with metainformation, pointing to the contract which owns them
-(so no other contract can alter them), but even after removing the prefixes,
-the single contract state is a smaller key-value pair.
+In CosmWasm, the blockchain state is just a massive key-value storage. The keys are prefixed with
+metainformation, pointing to the contract which owns them (so no other contract can alter them),
+but even after removing the prefixes, the single contract state is a smaller key-value pair.
 
 ## Initializing the state
 
@@ -138,9 +136,9 @@ impl InstantiateMsg {
 ```
 
 First, adding parameter to the `instantiate` method added it as a field to the `InstantiateMsg`.
-It also caused `dispatch` to pass this field to the `instantiate` method.
-Thanks to [Sylvia](https://github.com/CosmWasm/sylvia) we don't have to tweak every function,
-entry point or message, and all we need to do, is just to modify the `instantiate` function.
+It also caused `dispatch` to pass this field to the `instantiate` method. Thanks to Sylvia we don't
+have to tweak every function, entry point or message, and all we need to do, is just to modify
+the `instantiate` function.
 
 ## Next step
 

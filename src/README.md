@@ -1,21 +1,20 @@
 # Introduction
 
-This book is a guide for creating [CosmWasm](https://github.com/CosmWasm) **smart contracts**
-using [Sylvia](https://github.com/CosmWasm/sylvia) framework.
-It will guide you step by step, explaining relevant topics from the easiest to the trickiest ones.
+This book is a guide for creating CosmWasm smart contracts with the Sylvia framework.
+It will lead you step by step and explain relevant topics from easiest to trickiest.
 
 The idea of the book is not only to tell you about smart contract development but also
 to show you how to do it clean and maintainable. I will show you some good practices
-for using [Sylvia](https://github.com/CosmWasm/sylvia).
+for using `Sylvia`.
 
-This book is not meant to teach you about the [CosmWasm](https://github.com/CosmWasm).
+This book is not meant to teach you about the `CosmWasm`.
 To learn about that, read [The CosmWasm Book](https://book.cosmwasm.com).
 
-This book covers [Sylvia](https://github.com/CosmWasm/sylvia) in version 0.7.0.
+This book covers `Sylvia` in version 0.7.0.
 
 ## Prerequisites
 
-This book explores [CosmWasm](https://github.com/CosmWasm) **smart contracts**.
+This book explores CosmWasm smart contracts.
 It is not intended to be a Rust tutorial, and it assumes a basic Rust knowledge.
 As you will probably learn it alongside this book, I recommend first grasping the language.
 You can find great resources to start with Rust on [Learn Rust](https://www.rust-lang.org/learn) page.

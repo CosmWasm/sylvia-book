@@ -39,22 +39,21 @@ its folder:
 ```shell
 $ git clone https://github.com/CosmWasm/sylvia.git
 $ cd sylvia
-[sylvia]$ cargo test
+sylvia $ cargo test
 ```
 
 You should see that everything in the repository gets compiled and all tests pass. 
 
-[Sylvia](https://github.com/CosmWasm/sylvia) framework contains some examples of contracts.
-To find them go to `examples/contracts` directory.
-These contracts are maintained by CosmWasm creators, so contracts in there should follow 
+`Sylvia` framework contains some examples of contracts. To find them go to `examples/contracts`
+directory. These contracts are maintained by CosmWasm creators, so contracts in there should follow 
 good practices.
 
 To verify contract using the `cosmwasm-check` utility, first you need to build a smart contract.
 Go to some contract directory, for example, `examples/contracts/cw1-whitelist`, and run the following commands:
 
 ```shell
-[sylvia]$ cd examples/contracts/cw1-whitelist
-[sylvia/examples/contracts/cw1-whitelist]$ cargo wasm
+sylvia $ cd examples/contracts/cw1-whitelist
+sylvia/examples/contracts/cw1-whitelist $ cargo wasm
 ```
 
 `wasm` is a cargo alias for `build --release --target wasm32-unknown-unknown --lib`.
@@ -63,7 +62,7 @@ of the root repo directory, not in the contract directory itself!
 Now you can check if contract validation passes:
 
 ```shell
-[sylvia]$ cosmwasm-check examples/target/wasm32-unknown-unknown/release/cw1_whitelist.wasm
+sylvia $ cosmwasm-check examples/target/wasm32-unknown-unknown/release/cw1_whitelist.wasm
 
 Available capabilities: {"cosmwasm_1_2", "cosmwasm_1_3", "staking", "iterator", "stargate", "cosmwasm_1_1"}
 
@@ -82,5 +81,5 @@ the [rust-tools](https://github.com/simrat39/rust-tools.nvim) plugin.
 You can also use `cargo expand` tool from CLI, like this:
 
 ```shell
-[sylvia/examples/contracts/cw1-whitelist]$ cargo expand --lib
+sylvia/examples/contracts/cw1-whitelist $ cargo expand --lib
 ```

@@ -17,8 +17,7 @@ To start, we will go with three basic entry points:
 
 ## Generate entry points
 
-[Sylvia](https://github.com/CosmWasm/sylvia) provides an attribute macro named
-**[`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html)**.
+`Sylvia` provides an attribute macro named [`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html).
 In most cases, your entry point will just dispatch received messages to the handler,
 so it's not necessary to manually create them, and we can rely on a macro to do that for us.
 
@@ -50,7 +49,7 @@ It is because **`#[contract]`** removes attributes like **`#[msg(...)]`** on whi
 
 Always remember to place **`#[entry_points]`** first.
 
-[Sylvia](https://github.com/CosmWasm/sylvia) generates entry points with [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html)
+`Sylvia` generates entry points with [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html)
 attribute macro. Its purpose is to wrap the whole entry point to the form the Wasm runtime understands. 
 The proper Wasm entry points can use only basic types supported natively by Wasm specification, and 
 Rust structures and enums are not in this set. Working with such entry points would be 
@@ -61,10 +60,10 @@ high-level Rust arguments from arguments passed by Wasm runtime.
 Now, when our contract has a proper entry point, let's build it and check if it's correctly defined:
 
 ```shell
-[contract]$ cargo build --release --target wasm32-unknown-unknown --lib
+contract $ cargo build --release --target wasm32-unknown-unknown --lib
     Finished release [optimized] target(s) in 0.03s
 
-[contract]$ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
 Available capabilities: {"stargate", "cosmwasm_1_3", "cosmwasm_1_1", "cosmwasm_1_2", "staking", "iterator"}
 
 target/wasm32-unknown-unknown/release/contract.wasm: pass
@@ -74,5 +73,5 @@ All contracts (1) passed checks!
 
 ## Next step
 
-Well done! We have now a proper [CosmWasm](https://github.com/CosmWasm) contract.
+Well done! We have now a proper `CosmWasm` contract.
 Let's add some state to it, so it will actually be able to do something.

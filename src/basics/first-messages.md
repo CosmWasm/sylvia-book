@@ -38,17 +38,15 @@ impl CounterContract {
 }
 ```
 
-So what is going on here?
-
-First, we define the CounterContract struct. It is empty right now but 
+So what is going on here? First, we define the CounterContract struct. It is empty right now but 
 later when we learn about states, we will use its fields to store them.
 We mark the `impl` block with [`contract`](https://docs.rs/sylvia/0.7.0/sylvia/attr.contract.html)
 attribute macro. It will parse every method inside the `impl` block marked with the `[msg(...)]` 
 attribute and create proper messages and utilities like `multitest helpers` for them.
 More on them later.
 
-[CosmWasm](https://github.com/CosmWasm) contract requires only the `instantiate` entry point,
-and it is mandatory to specify it for the `contract` macro. We have to provide it with the proper context type 
+`CosmWasm` contract requires only the `instantiate` entry point, and it is mandatory to specify
+it for the `contract` macro. We have to provide it with the proper context type 
 [`InstantiateCtx`](https://docs.rs/sylvia/0.7.0/sylvia/types/struct.InstantiateCtx.html).
 
 Context gives us access to the blockchain state, information about our contract, and the sender of the 
@@ -58,7 +56,7 @@ which uses standard `CosmWasm` error
 It's generic over [`Response`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Response.html).
 For now, we will return the `default` value of it.
 
-I recommend expanding the macro now and seeing what [Sylvia](https://github.com/CosmWasm/sylvia) generates.
+I recommend expanding the macro now and seeing what `Sylvia` generates.
 It might be overwhelming, as there will be a lot of things generated that seem not relevant to our code,
 so for the bare minimum check the `InstantiateMsg` and its `impl` block.
 
@@ -67,13 +65,13 @@ so for the bare minimum check the `InstantiateMsg` and its `impl` block.
 If we build our contract with command:
 
 ```shell
-$ cargo build --release --target wasm32-unknown-unknown --lib
+contract $ cargo build --release --target wasm32-unknown-unknown --lib
 ```
 
 and then run:
 
 ```shell
-$ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
 ```
 
 **IT WILL FAIL** with message:
