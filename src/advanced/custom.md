@@ -506,5 +506,5 @@ fn test_custom() {
 
 # Next step
 
-Phew.. that was a journey. We learned most of the `sylvia` features and should be ready to create our first contracts.
-In the last chapter, we will learn about some of the best practices that will make our code more readable and maintainable.
+We now know how to trigger chain-specific functionality. In the next chapter, we will expand a little on that by
+exploring support for generics.

@@ -33,4 +33,4 @@ provide the type of your custom msg, as multitest helpers need to deserialize an
 
 # Next step
 
-In the next chapter, I will cover the `interface` macro.
+In the next chapter, we will learn about custom messages.

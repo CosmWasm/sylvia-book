@@ -49,4 +49,5 @@ self.cw20
 
 # Next step
 
-Next we will learn about defining `CustomMsg` and `CustomQuery` in our contracts.
+Phew.. that was a journey. We learned most of the `sylvia` features and should be ready to create our first contracts.
+In the last chapter, we will learn about some of the best practices that will make our code more readable and maintainable.
