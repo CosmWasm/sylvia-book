@@ -26,7 +26,8 @@
 - [Advanced](advanced.md)
   - [Override entry point](advanced/entry_points_overriding.md)
   - [Custom messages](advanced/custom.md)
+  - [Generics](advanced/generics.md)
 
-- [Ibc](ibc.md)
+- [Ibc]()
 
 [Legal Information](impressum.md)
