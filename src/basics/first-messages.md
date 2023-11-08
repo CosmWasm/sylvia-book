@@ -45,9 +45,10 @@ attribute macro. It will parse every method inside the `impl` block marked with 
 attribute and create proper messages and utilities like `multitest helpers` for them.
 More on them later.
 
-`CosmWasm` contract requires only the `instantiate` `entry_point`, and it is mandatory to specify
+`CosmWasm` contract requires only the `instantiate` entry point, and it is mandatory to specify
 it for the `contract` macro. We have to provide it with the proper context type 
 [`InstantiateCtx`](https://docs.rs/sylvia/0.7.0/sylvia/types/struct.InstantiateCtx.html).
+
 Context gives us access to the blockchain state, information about our contract, and the sender of the 
 message. We return the [`StdResult`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/type.StdResult.html)
 which uses standard `CosmWasm` error 
@@ -55,16 +56,27 @@ which uses standard `CosmWasm` error
 It's generic over [`Response`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Response.html).
 For now, we will return the `default` value of it.
 
-I recommend expanding the macro now and seeing what `sylvia` generates. It might be overwhelming 
-as there will be a lot of things generated that seem not relevant to our code, so for the bare 
-minimum check the `InstantiateMsg` and its impl block.
+I recommend expanding the macro now and seeing what `Sylvia` generates.
+It might be overwhelming, as there will be a lot of things generated that seem not relevant to our code,
+so for the bare minimum check the `InstantiateMsg` and its `impl` block.
 
 ## Next step
-If we will build our contract with `cargo build --release --target wasm32-unknown-unknown --lib`
-and run the `cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm`, it will fail with
 
+If we build our contract with command:
+
+```shell
+contract $ cargo build --release --target wasm32-unknown-unknown --lib
 ```
-contract & cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+
+and then run:
+
+```shell
+contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+```
+
+**IT WILL FAIL** with message:
+
+```shell
 Available capabilities: {"cosmwasm_1_2", "iterator", "staking", "stargate", "cosmwasm_1_1", "cosmwasm_1_3"}
 
 target/wasm32-unknown-unknown/release/contract.wasm: failure
@@ -73,5 +85,5 @@ Error during static Wasm validation: Wasm contract doesn't have required export:
 Passes: 0, failures: 1
 ```
 
-This is because our contract is not yet complete. We defined the message that could be sent to it but
-didn't provide any `entry_point`. In the next chapter, we will finally make it the proper contract.
+This is because our contract **IS NOT YET COMPLETE**. We defined the message that could be sent to it but
+didn't provide any `entry_point`. In the next chapter, we will finally make it a proper contract.
