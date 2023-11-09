@@ -6,7 +6,7 @@ Let's make it more usable. In this chapter, we will introduce the contract's sta
 ## Adding contract state
 
 The name of our contract is a little spoiler. We will add the `counter` state. It's not a real world 
-usage of smart contracts, but it helps to see the usage of `Sylvia` without getting into business logic.
+usage of smart contracts, but it helps to see the usage of ^Sylvia without getting into business logic.
 
 The first thing to do, is to update `Cargo.toml` with yet another dependency - the
 [`storage-plus`](https://crates.io/crates/cw-storage-plus) crate with high-level bindings for

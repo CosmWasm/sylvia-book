@@ -10,7 +10,7 @@ well, but it is also an excellent tool for testing single-contract scenarios.
 
 ## Update dependencies
 
-First, we need to add `sylvia` with `mt` feature enabled to our
+First, we need to add ^sylvia with `mt` feature enabled to our
 [`dev-dependencies`](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#development-dependencies).
 
 ```toml
@@ -69,9 +69,9 @@ fn instantiate() {
 }
 ```
 
-`Sylvia` generates a lot of helpers for us to make testing as easy as possible.
+^Sylvia generates a lot of helpers for us to make testing as easy as possible.
 To simulate blockchain, we create `sylvia::multitest::App`. Then we will use it to store the code id
-of our contract on the blockchain using `sylvia` generated `CodeId`.
+of our contract on the blockchain using ^sylvia generated `CodeId`.
 
 Code id identifies our contract on the blockchain and allows us to instantiate the contract on it.
 We do that using `CodeId::instantiate` method. It returns the `InstantiateProxy` type, allowing us

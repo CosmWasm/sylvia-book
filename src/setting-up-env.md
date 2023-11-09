@@ -44,7 +44,7 @@ sylvia $ cargo test
 
 You should see that everything in the repository gets compiled and all tests pass. 
 
-`Sylvia` framework contains some examples of contracts. To find them go to `examples/contracts`
+^Sylvia framework contains some examples of contracts. To find them go to `examples/contracts`
 directory. These contracts are maintained by CosmWasm creators, so contracts in there should follow 
 good practices.
 

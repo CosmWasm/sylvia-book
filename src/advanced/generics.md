@@ -2,7 +2,7 @@
 
 When implementing a contract, users might want to define some generic data it should store.
 One might even want the message to have some generic parameters or return type.
-`Sylvia` supports generics in the contracts and interfaces.
+^Sylvia supports generics in the contracts and interfaces.
 
 ## Prepare project
 
@@ -61,7 +61,7 @@ where
 Simple and expected behavior.
 What if we want to extend the `custom` functionality with generics?
 In such a case, we would have to add `#[sv::custom(..)]` attribute to the trait with the name of our generics.
-It is a standard approach when using `CustomMsg` and `CustomQuery` in `sylvia` so there is nothing new here.
+It is a standard approach when using `CustomMsg` and `CustomQuery` in ^sylvia so there is nothing new here.
 
 `src/generic.rs`
 ```rust
@@ -174,7 +174,7 @@ impl Generic<MyMsg, MyMsg, MyQuery, MyMsg> for NonGenericContract {
 ```
 
 To implement a generic interface, we have to specify the types. Here we use `MyMsg` and `MyQuery`
-we defined earlier. No additional attributes have to be passed as `sylvia` will read them
+we defined earlier. No additional attributes have to be passed as ^sylvia will read them
 from the interface type.
 Because we defined the interface as `custom` we have to pass these types into `sv::custom(..)` attribute
 same as in the interface definition.
@@ -215,7 +215,7 @@ We also had to add `#[sv::custom(..)]` attribute to the contract definition and 
 
 ## Generic contract
 
-Using generic interfaces in `sylvia` is simple. Let's see how it works with generic contracts.
+Using generic interfaces in ^sylvia is simple. Let's see how it works with generic contracts.
 
 Let us define a new module in which we will define a generic contract.
 
@@ -260,7 +260,7 @@ This example showcases two usages of generics in contract:
 - Generic field 
 - Generic message parameter
 
-`Sylvia` works in both cases, and you can expand your generics to every message type, return type, or `custom_queries` as shown in the case of the `interface`. For the readability of this example, we will
+^Sylvia works in both cases, and you can expand your generics to every message type, return type, or `custom_queries` as shown in the case of the `interface`. For the readability of this example, we will
 keep just these two generic types.
 
 `InstantiateParam` is passed as a field to the `InstantiateMsg`. This enforces some bounds
@@ -443,7 +443,7 @@ Our contract is ready to use. We can test it in the last step of this chapter.
 
 ## Test generic contract
 
-`Sylvia` enforces the user to specify a solid type while implementing a generic interface on the contract.
+^Sylvia enforces the user to specify a solid type while implementing a generic interface on the contract.
 Due to this, we test `NonGenericContract` as a regular contract.
 
 In case of the generic contract, we have to pass the types while constructing `CodeId`.

@@ -1,8 +1,8 @@
 # Reusability
 
-We have covered almost all the basics of writing smart contracts with `sylvia`.
+We have covered almost all the basics of writing smart contracts with ^sylvia.
 In this last chapter of the `basics` section, I will tell you about the ability to define
-[`interface`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html) in `sylvia`.
+[`interface`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html) in ^sylvia.
 
 ## Problem
 
@@ -15,8 +15,8 @@ into semantically compatible parts.
 
 ## Solution
 
-`Sylvia` has a feature to reuse already defined messages and apply them in new contracts.
-Clone and open [`sylvia`](https://github.com/CosmWasm/sylvia) repository. Go to
+^Sylvia has a feature to reuse already defined messages and apply them in new contracts.
+Clone and open [^sylvia](https://github.com/CosmWasm/sylvia) repository. Go to
 `contracts/cw1-subkeys/src/contract.rs`. You can notice that the `impl` block for
 the `Cw1SubkeysContract` is preceded by `#[messages(...)]` attribute.
 
@@ -65,7 +65,7 @@ impl ContractQueryMsg {
 ```
 
 We can finally see why we need these `ContractQueryMsg` and `ContractExecMsg` next to our
-regular message enums. `Sylvia` generated three tuple variants:
+regular message enums. ^Sylvia generated three tuple variants:
 
 - `Cw1` - which contains query msg defined in `cw1`;
 
@@ -74,7 +74,7 @@ regular message enums. `Sylvia` generated three tuple variants:
 - `Cw1SubkeysContract` - which contains query msg defined in our contract.
 
 We use this wrapper to match with the proper variant and then call `dispatch` on this message.
-`Sylvia` also ensure that no message overlaps between interfaces and contract so that
+^Sylvia also ensure that no message overlaps between interfaces and contract so that
 contracts API won't break.
 
 ## Declaring interface
@@ -162,7 +162,7 @@ otherwise we would have to either expect `StdError` or our custom error in the r
 but we don't know what contracts will use this interface.
 
 Our trait defines three methods. Let's implement them on our contract.
-`Sylvia` still grows and there can be some type duplications in the future. I recommend keeping all
+^Sylvia still grows and there can be some type duplications in the future. I recommend keeping all
 three: contract implementation, interface definition and interface implementation on contract in 
 separate modules.
 
@@ -218,7 +218,7 @@ the macro where our contract is defined. It's required for pathing. You can expa
 and check where it is used.
 
 Next, there is the attribute mentioned before - `messages`. Its purpose is similar to the `module` 
-with the difference that it provides `sylvia` with path to the interface. We also have to provide 
+with the difference that it provides ^sylvia with path to the interface. We also have to provide 
 the interface's name, although it should be optional in the future.
 We need to do one more thing, which is to add the `messages` attribute to the contract definition.
 
@@ -342,5 +342,5 @@ of one.
 
 # Next step
 
-We have learned about almost all of the `sylvia` features. The next chapter will be about talking 
+We have learned about almost all of the ^sylvia features. The next chapter will be about talking 
 with remotes.

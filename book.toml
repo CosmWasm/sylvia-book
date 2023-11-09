@@ -3,8 +3,10 @@ authors = ["Jan Woźniak", "Bartłomiej Kuras"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Sylvia book"
+title = "The Sylvia Book"
 description = "Guide to building CosmWasm smart contracts"
 
 [rust]
 edition = "2021"
+
+[preprocessor.yapp]

@@ -111,7 +111,7 @@ when we will talk about generating schema.
 
 `QueryMsg` is an enum that will contain every `query` declared in your expanded `impl`. Thanks to
 that you can focus solely on defining the behavior of the contract on receiving a message, and you
-can leave it to `sylvia` to generate the messages and the `dispatch`.
+can leave it to ^sylvia to generate the messages and the `dispatch`.
 
 Note that our enum has no type assigned to the only `Count` variant. Typically
 in Rust, we create variants without additional `{}` after the variant name. Here the
@@ -123,7 +123,7 @@ Instead of returning the `Response` type on the success case, we return an arbit
 object. It's because queries are not using a typical actor model message flow - they cannot trigger 
 any actions nor communicate with other contracts in ways different than querying them (which is 
 handled by the `deps` argument). The query always returns plain data, which should be presented 
-directly to the querier. `Sylvia` does that by returning encoded response as
+directly to the querier. ^Sylvia does that by returning encoded response as
 [`Binary`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Binary.html) by calling
 [`to_binary`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/fn.to_binary.html) function in dispatch.
 
