@@ -198,4 +198,5 @@ newly defined error variant.
 
 # Next step
 
-In the next chapter we will talk about entry points overriding.
+We introduced proper error handling to our contract. Now we will learn about `interfaces`. `Sylvia` feature allowing to
+split our contract into semantic parts. 

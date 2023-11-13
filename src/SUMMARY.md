@@ -19,12 +19,15 @@
   - [Introducing multitest](basics/multitest-intro.md)
   - [Execution messsages](basics/execute.md)
   - [Error handling](basics/error_handling.md)
-  - [Override entry point](basics/entry_points_overriding.md)
   - [Interfaces](basics/reusability.md)
   - [Remote type](basics/remote.md)
-  - [Custom messages](basics/custom.md)
   - [Good practices](basics/good-practices.md)
 
-- [Ibc](ibc.md)
+- [Advanced](advanced.md)
+  - [Override entry point](advanced/entry_points_overriding.md)
+  - [Custom messages](advanced/custom.md)
+  - [Generics](advanced/generics.md)
+
+- [Ibc]()
 
 [Legal Information](impressum.md)
