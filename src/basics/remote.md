@@ -2,12 +2,12 @@
 
 Your contract may rely on communication with another one. For example, it could
 `instantiate` a `CW20` contract and, during the workflow, send `Mint` messages to it. If `CW20` 
-contract was created using `sylvia`, it would have a `Remote` type generated which would make this
+contract was created using ^sylvia, it would have a `Remote` type generated which would make this
 process more user friendly.
 Currently, it is only possible to send queries using `Remote` but support for the `execute` messages
 is on the way.
 
-To check some examples, checkout the [`sylvia`](https://github.com/CosmWasm/sylvia) repository
+To check some examples, checkout the [^sylvia](https://github.com/CosmWasm/sylvia) repository
 and go to `sylvia/tests/remote.rs`.
 
 ## Working with Remote
@@ -49,5 +49,5 @@ self.cw20
 
 # Next step
 
-Phew.. that was a journey. We learned most of the `sylvia` features and should be ready to create our first contracts.
+Phew.. that was a journey. We learned most of the ^sylvia features and should be ready to create our first contracts.
 In the last chapter, we will learn about some of the best practices that will make our code more readable and maintainable.

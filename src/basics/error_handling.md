@@ -128,8 +128,8 @@ A little to explain here. We load the count, and check if it's equal to zero. If
 our newly defined error variant. If not, then we decrement its value.
 However, this won't work. If you would try to build this you will receive:
 `error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied`.
-It is because `sylvia` by default generates `dispatch` returning `Result<_, StdError>`. To 
-inform `sylvia` that it should be using a new type we add `#[error(ContractError)]` attribute to 
+It is because ^sylvia by default generates `dispatch` returning `Result<_, StdError>`. To 
+inform ^sylvia that it should be using a new type we add `#[error(ContractError)]` attribute to 
 the `contract` macro call.
 
 ```rust,noplayground
@@ -198,5 +198,5 @@ newly defined error variant.
 
 # Next step
 
-We introduced proper error handling to our contract. Now we will learn about `interfaces`. `Sylvia` feature allowing to
+We introduced proper error handling to our contract. Now we will learn about `interfaces`. ^Sylvia feature allowing to
 split our contract into semantic parts. 

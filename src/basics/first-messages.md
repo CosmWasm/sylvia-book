@@ -56,7 +56,7 @@ which uses standard `CosmWasm` error
 It's generic over [`Response`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Response.html).
 For now, we will return the `default` value of it.
 
-I recommend expanding the macro now and seeing what `Sylvia` generates.
+I recommend expanding the macro now and seeing what ^Sylvia generates.
 It might be overwhelming, as there will be a lot of things generated that seem not relevant to our code,
 so for the bare minimum check the `InstantiateMsg` and its `impl` block.
 

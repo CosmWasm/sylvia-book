@@ -212,6 +212,6 @@ my_contract = { version = "0.1", features = ["library"] }
 
 ## Single file/single macro call 
 
-I talked about it in some previous chapters. I cannot guarantee that future `sylvia` changes won't
+I talked about it in some previous chapters. I cannot guarantee that future ^sylvia changes won't
 cause code generation to overlap. To avoid future problems, I recommend restricting yourself
 to single macro call per file.

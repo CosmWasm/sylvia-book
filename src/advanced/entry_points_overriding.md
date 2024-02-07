@@ -1,12 +1,12 @@
 # Override entry point
 
-`Sylvia` is still developing and lacks features like f.e. `sudo` support.
+^Sylvia is still developing and lacks features like f.e. `sudo` support.
 If you need to use a lacking feature of `CosmWasm` or prefer to define some custom
 entry point, it is possible to use the `#[sv::override_entry_point(...)]` attribute.
 
 ## Example
 
-To make `sylvia` generate multitest helpers with `sudo` support, you first need to define your
+To make ^sylvia generate multitest helpers with `sudo` support, you first need to define your
 `entry point`.
 
 ```rust,noplayground

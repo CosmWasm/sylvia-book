@@ -17,7 +17,7 @@ To start, we will go with three basic entry points:
 
 ## Generate entry points
 
-`Sylvia` provides an attribute macro named [`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html).
+^Sylvia provides an attribute macro named [`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html).
 In most cases, your entry point will just dispatch received messages to the handler,
 so it's not necessary to manually create them, and we can rely on a macro to do that for us.
 
@@ -49,7 +49,7 @@ It is because **`#[contract]`** removes attributes like **`#[msg(...)]`** on whi
 
 Always remember to place **`#[entry_points]`** first.
 
-`Sylvia` generates entry points with [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html)
+^Sylvia generates entry points with [`#[entry_point]`](https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html)
 attribute macro. Its purpose is to wrap the whole entry point to the form the Wasm runtime understands. 
 The proper Wasm entry points can use only basic types supported natively by Wasm specification, and 
 Rust structures and enums are not in this set. Working with such entry points would be 

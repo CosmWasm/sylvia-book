@@ -5,7 +5,7 @@
 Blockchain creators might define chain-specific logic triggered through defined by them messages.
 `CosmWasm` provides a way to send such messages through `cosmwasm_std::CosmosMsg::Custom(..)` variant.
 
-`Sylvia` supports this feature, allowing both custom interfaces and contracts.
+^Sylvia supports this feature, allowing both custom interfaces and contracts.
 
 ## Custom interface 
 
@@ -278,10 +278,10 @@ pub mod impl_non_custom {
 }
 ```
 
-As you can see, although it's non-custom, we still have to inform `sylvia` custom types from the contract.
+As you can see, although it's non-custom, we still have to inform ^sylvia custom types from the contract.
 It's required for the `MultiTest` helpers to be generic over the same types as the contract.
 
-Let's add the last `messages` attribute to the contract. It has to end with `: custom(msg query)`. This way `sylvia`
+Let's add the last `messages` attribute to the contract. It has to end with `: custom(msg query)`. This way ^sylvia
 will know that it has to cast `Response<Custom>` to `Response<Empty>` for `msg` and `Deps<Custom>` to `Deps<Empty>` for `query`.
 
 `src/contract.rs`

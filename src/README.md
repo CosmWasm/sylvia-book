@@ -1,16 +1,16 @@
 # Introduction
 
-This book is a guide for creating CosmWasm smart contracts with the Sylvia framework.
+This book is a guide for creating CosmWasm smart contracts with the ^sylvia framework.
 It will lead you step by step and explain relevant topics from easiest to trickiest.
 
 The idea of the book is not only to tell you about smart contract development but also
 to show you how to do it clean and maintainable. I will show you some good practices
-for using `Sylvia`.
+for using ^sylvia.
 
 This book is not meant to teach you about the `CosmWasm`.
 To learn about that, read [The CosmWasm Book](https://book.cosmwasm.com).
 
-This book covers `Sylvia` in version 0.9.0.
+> ^note This book covers ^sylvia in version **^sylvia-version**.
 
 ## Prerequisites
 
