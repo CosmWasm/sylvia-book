@@ -30,94 +30,50 @@ cw-multi-test = "0.16"
 sylvia = { version = "0.9.0", features = ["mt"] }
 ```
 
-## Generic interface
+## Generics in interface
 
-To define a generic interface, we don't have to add any additional attributes. Simply add
-generics to the trait as you would in regular rust code.
+Since `0.10.0` we no longer support generics in interfaces.
+Sylvia interfaces can be implemented only a single time per contract as otherwise
+the messages would overlap. Idiomatic approach in Rust is to use associated types
+to handle such cases.
 
-`src/generic.rs`
+`src/associated.rs`
 ```rust
-use cosmwasm_std::{CustomMsg, Response, StdError, StdResult};
-use serde::de::DeserializeOwned;
+use cosmwasm_std::{Response, StdError, StdResult};
 use sylvia::interface;
-use sylvia::types::{ExecCtx, QueryCtx};
+use sylvia::types::{CustomMsg, ExecCtx, QueryCtx};
 
 #[interface]
-pub trait Generic<ExecParam, QueryParam>
-where
-    ExecParam: CustomMsg + DeserializeOwned,
-    QueryParam: CustomMsg + DeserializeOwned,
-{
+pub trait Associated {
     type Error: From<StdError>;
+    type ExecParam: CustomMsg;
+    type QueryParam: CustomMsg;
 
     #[msg(exec)]
-    fn generic_exec(&self, ctx: ExecCtx, param: ExecParam) -> StdResult<Response>;
+    fn generic_exec(&self, ctx: ExecCtx, param: Self::ExecParam) -> StdResult<Response>;
 
     #[msg(query)]
-    fn generic_query(&self, ctx: QueryCtx, param: QueryParam) -> StdResult<String>;
+    fn generic_query(&self, ctx: QueryCtx, param: Self::QueryParam) -> StdResult<String>;
 }
 ```
 
-Simple and expected behavior.
-What if we want to extend the `custom` functionality with generics?
-In such a case, we would have to add `#[sv::custom(..)]` attribute to the trait with the name of our generics.
-It is a standard approach when using `CustomMsg` and `CustomQuery` in ^sylvia so there is nothing new here.
+Underhood ^sylvia will parse the associated types and generate generic messages as we cannot
+use associated types in enums.
 
-`src/generic.rs`
-```rust
-use cosmwasm_std::{CustomMsg, CustomQuery, Response, StdError, StdResult};
-use serde::de::DeserializeOwned;
-use sylvia::interface;
-use sylvia::types::{ExecCtx, QueryCtx};
+## Implement interface on the contract
 
-#[interface]
-#[sv::custom(msg = MsgCustom, query = QueryCustom)]
-pub trait Generic<ExecParam, QueryParam, QueryCustom, MsgCustom>
-where
-    ExecParam: CustomMsg + DeserializeOwned,
-    QueryParam: CustomMsg + DeserializeOwned,
-    QueryCustom: CustomQuery,
-    MsgCustom: CustomMsg + DeserializeOwned,
-{
-    type Error: From<StdError>;
-
-    #[msg(exec)]
-    fn generic_exec(
-        &self,
-        ctx: ExecCtx<QueryCustom>,
-        param: ExecParam,
-    ) -> StdResult<Response<MsgCustom>>;
-
-    #[msg(query)]
-    fn generic_query(
-        &self,
-        ctx: QueryCtx<QueryCustom>,
-        param: QueryParam,
-    ) -> StdResult<String>;
-}
-```
-
-## Implement a generic interface on the contract
-
-Defining generic interfaces is as simple as defining generic traits.
-Implementing one on the contract is also straightforward.
-
-We will start by defining the types we will use in place of generics.
+Implementing an interface with associated types is the same as in case of implementing a regular interface.
+We first need to define the type we will assign to the associated type.
 
 `src/messages.rs`
 ```rust
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{CustomMsg, CustomQuery};
+use cosmwasm_std::CustomMsg;
 
 #[cw_serde]
 pub struct MyMsg;
 
 impl CustomMsg for MyMsg {}
-
-#[cw_serde]
-pub struct MyQuery;
-
-impl CustomQuery for MyQuery {}
 ```
 
 We also need a contract on which we will implement the interface.
@@ -132,7 +88,7 @@ pub struct NonGenericContract;
 
 #[contract]
 impl NonGenericContract {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 
@@ -145,48 +101,38 @@ impl NonGenericContract {
 
 We are set and ready to implement the interface.
 
-`src/generic_impl.rs`
+`src/associated_impl.rs`
 ```rust
 use cosmwasm_std::{Response, StdError, StdResult};
-use sylvia::contract;
 use sylvia::types::{ExecCtx, QueryCtx};
 
+use crate::associated::Associated;
 use crate::contract::NonGenericContract;
-use crate::generic::Generic;
-use crate::messages::{MyMsg, MyQuery};
+use crate::messages::MyMsg;
 
-#[contract(module=crate::contract)]
-#[messages(crate::generic as Generic)]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
-impl Generic<MyMsg, MyMsg, MyQuery, MyMsg> for NonGenericContract {
+impl Associated for NonGenericContract {
     type Error = StdError;
+    type ExecParam = MyMsg;
+    type QueryParam = MyMsg;
 
-    #[msg(exec)]
-    fn generic_exec(&self, _ctx: ExecCtx<MyQuery>, _param: MyMsg) -> StdResult<Response<MyMsg>> {
+    fn generic_exec(&self, _ctx: ExecCtx, _param: Self::ExecParam) -> StdResult<Response> {
         Ok(Response::new())
     }
 
-    #[msg(query)]
-    fn generic_query(&self, _ctx: QueryCtx<MyQuery>, _param: MyMsg) -> StdResult<String> {
+    fn generic_query(&self, _ctx: QueryCtx, _param: Self::QueryParam) -> StdResult<String> {
         Ok(String::default())
     }
 }
 ```
 
-To implement a generic interface, we have to specify the types. Here we use `MyMsg` and `MyQuery`
-we defined earlier. No additional attributes have to be passed as ^sylvia will read them
-from the interface type.
-Because we defined the interface as `custom` we have to pass these types into `sv::custom(..)` attribute
-same as in the interface definition.
-
 ## Update impl contract
 
-Now that we have implemented the generic interface on our contract, we can inform
+Now that we have implemented the interface on our contract, we can inform
 main `sylvia::contract` call about it.
 
 `src/contract.rs`
 ```rust
-use crate::messages::{MyMsg, MyQuery};
+use crate::messages::MyMsg;
 use cosmwasm_std::{Response, StdResult};
 use sylvia::contract;
 use sylvia::types::InstantiateCtx;
@@ -194,58 +140,64 @@ use sylvia::types::InstantiateCtx;
 pub struct NonGenericContract;
 
 #[contract]
-#[messages(crate::generic<MyMsg, MyMsg, MyQuery, MyMsg> as Generic)]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
+#[sv::messages(crate::associated<MyMsg, MyMsg> as Associated)]
 impl NonGenericContract {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 
-    #[msg(instantiate)]
-    pub fn instantiate(&self, _ctx: InstantiateCtx<MyQuery>) -> StdResult<Response<MyMsg>> {
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::new())
     }
 }
 ```
 
-First of all, we added types to the `#[messages(..)]` attribute.
-We have to add them in the same order as in the interface definition.
-We also had to add `#[sv::custom(..)]` attribute to the contract definition and update 
-`InstantiateCtx` and `Response` types as our interface is `custom`. 
+As in case of regular interface, we have to add the `messages` attribute to the contract.
+However because the interface has associated types, we have to pass the types to the `messages`.
+We do that by adding them in the `<>` brackets after the path to the interface module.
+
+In this case we passed concrete types, but it is also possible to pass generic types
+defined on the contract.
+More on that in the next paragraph.
 
 ## Generic contract
 
-Using generic interfaces in ^sylvia is simple. Let's see how it works with generic contracts.
+We have covered how we can allow the users to define a types of an interface during
+an interface implementation.
+
+User might want to use a contract inside it's own contract.
+In such cases ^sylvia supports the generics on the contracts.
 
 Let us define a new module in which we will define a generic contract.
 
 `src/generic_contract.rs`
 ```rust
-use cosmwasm_std::{CustomMsg, Response, StdResult};
-use serde::de::DeserializeOwned;
+use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
 use std::marker::PhantomData;
 use sylvia::contract;
-use sylvia::types::InstantiateCtx;
+use sylvia::types::{CustomMsg, InstantiateCtx};
 
 pub struct GenericContract<DataType, InstantiateParam> {
-    _data: Item<'static, DataType>,
+    _data: Item<DataType>,
     _phantom: PhantomData<InstantiateParam>,
 }
 
 #[contract]
 impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
 where
-    InstantiateParam: CustomMsg + DeserializeOwned + 'static,
+    InstantiateParam: CustomMsg + 'static,
     for<'data> DataType: 'data,
 {
-    pub fn new(data: DataType) -> Self {
+    pub const fn new() -> Self {
         Self {
             _data: Item::new("data"),
             _phantom: PhantomData,
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(
         &self,
         _ctx: InstantiateCtx,
@@ -260,135 +212,145 @@ This example showcases two usages of generics in contract:
 - Generic field 
 - Generic message parameter
 
-^Sylvia works in both cases, and you can expand your generics to every message type, return type, or `custom_queries` as shown in the case of the `interface`. For the readability of this example, we will
-keep just these two generic types.
+^Sylvia works in both cases, and you can expand your generics to every message type, return type,
+or `custom_queries` as shown in the case of the `interface`. For the readability of this example,
+we will keep just these two generic types.
 
 `InstantiateParam` is passed as a field to the `InstantiateMsg`. This enforces some bounds
 to this type, which we pass in the `where` clause. 
 Just like that, we created a generic contract.
 
-## Implement generic interface on generic contract
+## Implement interface on generic contract
 
-Now that we have the generic contract, let's implement a generic interface on it.
-Sorry in advance for the naming of the following file ^^.
+Now that we have the generic contract, let's implement an interface from previous paragraphs on it.
 
-`src/generic_generic_impl.rs`
+`src/associated_impl.rs`
 ```rust
 use cosmwasm_std::{Response, StdError, StdResult};
 use sylvia::contract;
 use sylvia::types::{ExecCtx, QueryCtx};
 
-use crate::generic::Generic;
+use crate::associated::Associated;
 use crate::generic_contract::GenericContract;
-use crate::messages::{MyMsg, MyQuery};
+use crate::messages::MyMsg;
 
-#[contract(module=crate::generic_contract)]
-#[messages(crate::generic as Generic)]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
-impl<DataType, InstantiateParam> Generic<MyMsg, MyMsg, MyQuery, MyMsg>
-    for GenericContract<DataType, InstantiateParam>
-{
+impl<DataType, InstantiateParam> Associated for GenericContract<DataType, InstantiateParam> {
     type Error = StdError;
+    type ExecParam = MyMsg;
+    type QueryParam = MyMsg;
 
-    #[msg(exec)]
-    fn generic_exec(&self, _ctx: ExecCtx<MyQuery>, _param: MyMsg) -> StdResult<Response<MyMsg>> {
+    fn generic_exec(&self, _ctx: ExecCtx, _param: Self::ExecParam) -> StdResult<Response> {
         Ok(Response::new())
     }
 
-    #[msg(query)]
-    fn generic_query(&self, _ctx: QueryCtx<MyQuery>, _param: MyMsg) -> StdResult<String> {
+    fn generic_query(&self, _ctx: QueryCtx, _param: Self::QueryParam) -> StdResult<String> {
         Ok(String::default())
     }
 }
 ```
 
+Only thing missing is to add the `messages` attribute to the contract implementation.
+It is the same as in case of the non generic contract so we will skip it.
+
 Implementing a generic interface on the generic contract is very similar to implementing it on a regular one.
 The only change is to pass the generics into the contract.
 
-Now we will have to change the `GenericContract`. If the interface wasn't `custom` we could just
-add the `messages` attribute to it, but because we cannot implement `custom` interface on `non custom`
-contract, as explained in the `custom` chapter, we have to change the contract to be `custom`.
-
+`src/generic_contract.rs`
 ```rust
-use crate::messages::{MyMsg, MyQuery};
-use cosmwasm_std::{CustomMsg, Response, StdResult};
-use serde::de::DeserializeOwned;
+#[contract]
+#[messages(crate::associated<MyMsg, MyMsg> as Associated)]
+impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
+where
+    InstantiateParam: CustomMsg + 'static,
+    for<'data> DataType: 'data,
+{
+    ..
+}
+```
+
+## Forwarding generics
+
+User might want to link the generics from the contract with associated types in implemented interface.
+To do so we have to simply assign the generics to appropriate associated types.
+
+Let's one more time define a new contract.
+
+`src/forward_contract.rs`
+```rust
+use cosmwasm_std::{Response, StdResult};
 use std::marker::PhantomData;
 use sylvia::contract;
-use sylvia::types::InstantiateCtx;
+use sylvia::types::{CustomMsg, InstantiateCtx};
 
-pub struct GenericContract<DataType, InstantiateParam> {
-    _data: Item<'static, DataType>,
-    _phantom: PhantomData<InstantiateParam>,
+pub struct ForwardContract<ExecParam, QueryParam> {
+    _phantom: PhantomData<(ExecParam, QueryParam)>,
 }
 
 #[contract]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
-impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
+impl<ExecParam, QueryParam> ForwardContract<ExecParam, QueryParam>
 where
-    InstantiateParam: CustomMsg + DeserializeOwned + 'static,
-    for<'data> DataType: 'data,
+    ExecParam: CustomMsg + 'static,
+    QueryParam: CustomMsg + 'static,
 {
-    pub fn new(data: DataType) -> Self {
+    pub const fn new() -> Self {
         Self {
-            _data: Item::new("data"),
             _phantom: PhantomData,
         }
     }
 
-    #[msg(instantiate)]
-    pub fn instantiate(
-        &self,
-        _ctx: InstantiateCtx<MyQuery>,
-        _param: InstantiateParam,
-    ) -> StdResult<Response<MyMsg>> {
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::new())
     }
 }
 ```
 
-Now that the contract is set as `custom` we can add the `messages` attribute to it.
+The implementation of the interface should look like this:
 
+`src/associated_impl.rs`
 ```rust
-use crate::messages::{MyMsg, MyQuery};
-use cosmwasm_std::{CustomMsg, Response, StdResult};
-use serde::de::DeserializeOwned;
-use std::marker::PhantomData;
+use cosmwasm_std::{Response, StdError, StdResult};
 use sylvia::contract;
-use sylvia::types::InstantiateCtx;
+use sylvia::types::{CustomMsg, ExecCtx, QueryCtx};
 
-pub struct GenericContract<DataType, InstantiateParam> {
-    _data: Item<'static, DataType>,
-    _phantom: PhantomData<InstantiateParam>,
-}
+use crate::associated::Associated;
+use crate::generic_contract::GenericContract;
 
-#[contract]
-#[messages(crate::generic<MyMsg, MyMsg, MyQuery, MyMsg> as Generic)]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
-impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
+impl<ExecParam, QueryParam> Associated for ForwardContract<ExecParam, QueryParam>
 where
-    InstantiateParam: CustomMsg + DeserializeOwned + 'static,
-    for<'data> DataType: 'data,
+    ExecParam: CustomMsg,
+    QueryParam: CustomMsg,
 {
-    pub fn new(data: DataType) -> Self {
-        Self {
-            _data: Item::new("data"),
-            _phantom: PhantomData,
-        }
+    type Error = StdError;
+    type ExecParam = ExecParam;
+    type QueryParam = QueryParam;
+
+    fn generic_exec(&self, _ctx: ExecCtx, _param: Self::ExecParam) -> StdResult<Response> {
+        Ok(Response::new())
     }
 
-    #[msg(instantiate)]
-    pub fn instantiate(
-        &self,
-        _ctx: InstantiateCtx<MyQuery>,
-        _param: InstantiateParam,
-    ) -> StdResult<Response<MyMsg>> {
-        Ok(Response::new())
+    fn generic_query(&self, _ctx: QueryCtx, _param: Self::QueryParam) -> StdResult<String> {
+        Ok(String::default())
     }
 }
 ```
 
-Cool. The contract is almost ready. We are missing just one thing.
+And as always, we have to add the `messages` attribute to the contract implementation.
+
+`src/forward_contract.rs`
+```rust
+#[contract]
+#[sv::messages(crate::associated<ExecParam, QueryParam> as Associated)]
+impl<ExecParam, QueryParam> ForwardContract<ExecParam, QueryParam>
+where
+    ExecParam: CustomMsg + 'static,
+    QueryParam: CustomMsg + 'static,
+{
+    ..
+}
+```
+
+As you can see ^sylvia is very flexible with how the user might want to use it.
 
 ## Generate entry points
 
@@ -396,130 +358,88 @@ Without the entry points, our contract is just a library defining some message t
 Let's make it a proper contract.
 We have to pass solid types to the `entry_points` macro, as the contract cannot have a generic
 types in the entry points.
-To achieve this, we pass the solid types to the `entry_points` macro call.
+To achieve this, we pass the concrete types to the `entry_points` macro call.
 
 ```rust
-use crate::messages::{MyMsg, MyQuery};
-use cosmwasm_std::{CustomMsg, Response, StdResult};
+use crate::messages::MyMsg;
+use cosmwasm_std::{Response, StdResult};
 use cw_storage_plus::Item;
-use serde::de::DeserializeOwned;
 use std::marker::PhantomData;
-use sylvia::types::InstantiateCtx;
+use sylvia::types::{CustomMsg, InstantiateCtx};
 use sylvia::{contract, entry_points};
 
 pub struct GenericContract<DataType, InstantiateParam> {
-    _data: Item<'static, DataType>,
+    _data: Item<DataType>,
     _phantom: PhantomData<InstantiateParam>,
 }
 
 #[entry_points(generics<String, MyMsg>)]
 #[contract]
-#[messages(crate::generic<MyMsg, MyMsg, MyQuery, MyMsg> as Generic)]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
+#[sv::messages(crate::associated<MyMsg, MyMsg> as Associated)]
 impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
 where
-    InstantiateParam: CustomMsg + DeserializeOwned + 'static,
+    InstantiateParam: CustomMsg + 'static,
     for<'data> DataType: 'data,
 {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             _data: Item::new("data"),
             _phantom: PhantomData,
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(
         &self,
-        _ctx: InstantiateCtx<MyQuery>,
+        _ctx: InstantiateCtx,
         _param: InstantiateParam,
-    ) -> StdResult<Response<MyMsg>> {
+    ) -> StdResult<Response> {
         Ok(Response::new())
     }
 }
 ```
 
+Notice the `generics` attribute in the `entry_points` macro.
+It's goal is to provide us a way to declare the types we want to use in the entry points.
 Our contract is ready to use. We can test it in the last step of this chapter.
 
 ## Test generic contract
 
-^Sylvia enforces the user to specify a solid type while implementing a generic interface on the contract.
-Due to this, we test `NonGenericContract` as a regular contract.
-
-In case of the generic contract, we have to pass the types while constructing `CodeId`.
+Similar to defining a contract, we have to create a `App` with the `cw_multi
 
 `src/contract.rs`
 ```rust
-use crate::messages::{MyMsg, MyQuery};
-use cosmwasm_std::{CustomMsg, Response, StdResult};
-use cw_storage_plus::Item;
-use serde::de::DeserializeOwned;
-use std::marker::PhantomData;
-use sylvia::types::InstantiateCtx;
-use sylvia::{contract, entry_points};
-
-pub struct GenericContract<DataType, InstantiateParam> {
-    _data: Item<'static, DataType>,
-    _phantom: PhantomData<InstantiateParam>,
-}
-
-#[entry_points(generics<String, MyMsg>)]
-#[contract]
-#[messages(crate::generic<MyMsg, MyMsg, MyQuery, MyMsg> as Generic)]
-#[sv::custom(msg=MyMsg, query=MyQuery)]
-impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
-where
-    InstantiateParam: CustomMsg + DeserializeOwned + 'static,
-    for<'data> DataType: 'data,
-{
-    pub fn new() -> Self {
-        Self {
-            _data: Item::new("data"),
-            _phantom: PhantomData,
-        }
-    }
-
-    #[msg(instantiate)]
-    pub fn instantiate(
-        &self,
-        _ctx: InstantiateCtx<MyQuery>,
-        _param: InstantiateParam,
-    ) -> StdResult<Response<MyMsg>> {
-        Ok(Response::new())
-    }
-}
+...
 
 #[cfg(test)]
 mod tests {
+    use sylvia::cw_multi_test::IntoAddr;
     use sylvia::multitest::App;
 
-    use crate::messages::{MyMsg, MyQuery};
+    use crate::messages::MyMsg;
 
-    use super::sv::multitest_utils::CodeId;
+    use super::sv::mt::CodeId;
 
     #[test]
-    fn generic_contract() {
-        let app = App::<cw_multi_test::BasicApp<MyMsg, MyQuery>>::custom(|_, _, _| {});
-        let code_id: CodeId<String, _, _> = CodeId::store_code(&app);
+    fn instantiate_contract() {
+        let app = App::default();
+        let code_id: CodeId<String, MyMsg, _> = CodeId::store_code(&app);
 
-        let owner = "owner";
+        let owner = "owner".into_addr();
 
         let _ = code_id
             .instantiate(MyMsg {})
             .with_label("GenericContract")
-            .with_admin(owner)
-            .call(owner)
+            .with_admin(owner.as_str())
+            .call(&owner)
             .unwrap();
     }
 }
 ```
 
-We have to create the `App` by inserting `cw_multi_test::BasicApp` to it as it was explained
-in the `custom` chapter.
-Because `custom_msg` is defined as one of the generic types we have to pass only one type
-to the `CodeId`, which is `DataType`.
+While creating the `CodeId` we have to pass the types we want to use in the contract.
 It seems strange that `CodeId` is generic over three types while we defined only two,
-but `CodeId` is generic over `cw_multi_test::App`. The compiler will always deduce this type from
+but `CodeId` is also generic over `MtApp` (`cw-multi-test::App`). The compiler will always deduce this type from
 the `app` passed to it, so don't worry and pass a placeholder there.
 
 Perfect! We have learned how to create generic contracts and interfaces.
