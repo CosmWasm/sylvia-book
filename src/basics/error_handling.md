@@ -127,7 +127,9 @@ impl CounterContract {
 A little to explain here. We load the count, and check if it's equal to zero. If yes, then we return
 our newly defined error variant. If not, then we decrement its value.
 However, this won't work. If you would try to build this you will receive:
-`error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied`.
+```
+error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied
+```
 It is because ^sylvia by default generates `dispatch` returning `Result<_, StdError>`. To 
 inform ^sylvia that it should be using a new type we add `#[sv::error(ContractError)]` attribute to 
 the `contract` macro call.
@@ -148,9 +150,11 @@ Now our contract should compile, and we are ready to test it.
 Let's create a new test expecting the proper error to be returned. In `src/multitest.rs`:
 
 ```rust,noplayground
+use sylvia::cw_multi_test::IntoAddr;
 use sylvia::multitest::App;
 
-use crate::{contract::sv::mt::CodeId, error::ContractError};
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::error::ContractError;
 
 #[test]
 fn instantiate() {
