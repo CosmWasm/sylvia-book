@@ -16,14 +16,14 @@ into semantically compatible parts.
 ## Solution
 
 ^Sylvia has a feature to reuse already defined messages and apply them in new contracts.
-Clone and open [^sylvia](https://github.com/CosmWasm/sylvia) repository. Go to
+Clone and open ^sylvia repository. Go to
 `contracts/cw1-subkeys/src/contract.rs`. You can notice that the `impl` block for
-the `Cw1SubkeysContract` is preceded by `#[messages(...)]` attribute.
+the `Cw1SubkeysContract` is preceded by `#[sv::messages(...)]` attribute.
 
 ```rust,noplayground
 #[contract]
-#[messages(cw1 as Cw1)]
-#[messages(whitelist as Whitelist)]
+#[sv::messages(cw1 as Cw1)]
+#[sv::messages(whitelist as Whitelist)]
 impl Cw1SubkeysContract<'_> {
     ...
 }
@@ -93,7 +93,7 @@ forwarding the arguments passed to the contract. To see the implementation,
 you can go to `contract/cw1-whitelist/src/whitelist.rs`. The interface has to be defined as a
 `trait` with a call to macro
 [`interface`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html).
-It currently supports only `execute` and `query` messages. In this case, it is right away
+`Interface` macro supports `execute`, `query` and `sudo` messages. In this case, it is right away
 implemented on the `Cw1Whitelist` contract, and this implementation is being reused in
 `contract/cw1-subkeys/src/whitelist.rs`.
 
@@ -145,13 +145,13 @@ use crate::responses::AdminsResponse;
 pub trait Whitelist {
     type Error: From<StdError>;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn add_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn remove_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error>;
 }
 ```
@@ -162,46 +162,50 @@ otherwise we would have to either expect `StdError` or our custom error in the r
 but we don't know what contracts will use this interface.
 
 Our trait defines three methods. Let's implement them on our contract.
-^Sylvia still grows and there can be some type duplications in the future. I recommend keeping all
-three: contract implementation, interface definition and interface implementation on contract in 
-separate modules.
 
-Let's then create a new file. It will be called `src/whitelist_impl.rs`.
-
+`src/whitelist.rs`
 ```rust,noplayground
-use cosmwasm_std::{Addr, Empty, Response};
-use sylvia::contract;
+use cosmwasm_std::{Addr, Response, StdError};
+use sylvia::interface;
 use sylvia::types::{ExecCtx, QueryCtx};
 
 use crate::contract::CounterContract;
 use crate::error::ContractError;
 use crate::responses::AdminsResponse;
-use crate::whitelist::Whitelist;
 
-#[contract(module=crate::contract)]
-#[messages(crate::whitelist as Whitelist)]
-impl Whitelist for CounterContract<'_> {
+#[interface]
+pub trait Whitelist {
+    type Error: From<StdError>;
+
+    #[sv::msg(exec)]
+    fn add_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
+
+    #[sv::msg(exec)]
+    fn remove_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
+
+    #[sv::msg(query)]
+    fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error>;
+}
+
+impl Whitelist for CounterContract {
     type Error = ContractError;
 
-    #[msg(exec)]
     fn add_admin(&self, ctx: ExecCtx, admin: String) -> Result<Response, Self::Error> {
         let deps = ctx.deps;
         let admin = deps.api.addr_validate(&admin)?;
-        self.admins.save(deps.storage, &admin, &Empty {})?;
+        self.admins.save(deps.storage, admin, &())?;
 
         Ok(Response::default())
     }
 
-    #[msg(exec)]
     fn remove_admin(&self, ctx: ExecCtx, admin: String) -> Result<Response, Self::Error> {
         let deps = ctx.deps;
         let admin = deps.api.addr_validate(&admin)?;
-        self.admins.remove(deps.storage, &admin);
+        self.admins.remove(deps.storage, admin);
 
         Ok(Response::default())
     }
 
-    #[msg(query)]
     fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error> {
         let admins: Vec<Addr> = self
             .admins
@@ -213,17 +217,13 @@ impl Whitelist for CounterContract<'_> {
 }
 ```
 
-We have something new here. First, `contract` has an attribute `module`. Its purpose is to tell
-the macro where our contract is defined. It's required for pathing. You can expand the macro 
-and check where it is used.
+Nothing extra here. We just implement the `Whitelist` trait on our `CounterContract` like
+we would implement any other trait.
 
-Next, there is the attribute mentioned before - `messages`. Its purpose is similar to the `module` 
-with the difference that it provides ^sylvia with path to the interface. We also have to provide 
-the interface's name, although it should be optional in the future.
-We need to do one more thing, which is to add the `messages` attribute to the contract definition.
+The last thing we have to do is to add the `messages` attribute to our contract:
 
 ```rust,noplayground
-#use cosmwasm_std::{Addr, DepsMut, Empty, Response, StdResult};
+#use cosmwasm_std::{Addr, Response, StdResult};
 #use cw_storage_plus::{Item, Map};
 #use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
 #use sylvia::{contract, entry_points};
@@ -231,42 +231,37 @@ We need to do one more thing, which is to add the `messages` attribute to the co
 #use crate::error::ContractError;
 #use crate::responses::CountResponse;
 #
-#pub struct CounterContract<'a> {
-#    pub(crate) count: Item<'static, u32>,
-#    pub(crate) admins: Map<'static, &'a Addr, Empty>,
+#pub struct CounterContract {
+#    pub(crate) count: Item<u32>,
+#    pub(crate) admins: Map<Addr, ()>,
 #}
-
+#
 #[entry_points]
 #[contract]
-#[error(ContractError)]
-#[messages(crate::whitelist as Whitelist)]
-impl CounterContract<'_> {
-#   pub const fn new() -> Self {
+#[sv::error(ContractError)]
+#[sv::messages(crate::whitelist as Whitelist)]
+impl CounterContract {
+#    pub const fn new() -> Self {
 #        Self {
 #            count: Item::new("count"),
 #            admins: Map::new("admins"),
 #        }
 #    }
 #
-#    #[msg(instantiate)]
+#    #[sv::msg(instantiate)]
 #    pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
 #        self.count.save(ctx.deps.storage, &count)?;
-#        self.admins
-#            .save(ctx.deps.storage, &ctx.info.sender, &Empty {})?;
 #        Ok(Response::default())
 #    }
 #
-#    #[msg(query)]
+#    #[sv::msg(query)]
 #    pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
 #        let count = self.count.load(ctx.deps.storage)?;
 #        Ok(CountResponse { count })
 #    }
 #
-#    #[msg(exec)]
-#    pub fn increment_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
-#        if !self.is_admin(&ctx.deps, &ctx.info.sender) {
-#            return Err(ContractError::Unathorized(ctx.info.sender));
-#        }
+#    #[sv::msg(exec)]
+#    pub fn increment_count(&self, ctx: ExecCtx) -> StdResult<Response> {
 #        self.count
 #            .update(ctx.deps.storage, |count| -> StdResult<u32> {
 #                Ok(count + 1)
@@ -274,11 +269,8 @@ impl CounterContract<'_> {
 #        Ok(Response::default())
 #    }
 #
-#    #[msg(exec)]
+#    #[sv::msg(exec)]
 #    pub fn decrement_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
-#        if !self.is_admin(&ctx.deps, &ctx.info.sender) {
-#            return Err(ContractError::Unathorized(ctx.info.sender));
-#        }
 #        let count = self.count.load(ctx.deps.storage)?;
 #        if count == 0 {
 #            return Err(ContractError::CannotDecrementCount);
@@ -286,53 +278,93 @@ impl CounterContract<'_> {
 #        self.count.save(ctx.deps.storage, &(count - 1))?;
 #        Ok(Response::default())
 #    }
-#
-#    fn is_admin(&self, deps: &DepsMut, addr: &Addr) -> bool {
-#        self.admins.has(deps.storage, addr)
-#    }
 }
 ```
 
 Time to test if the new functionality works and is part of our contract.
-Here suggest splitting the tests semantically, but in this example, we will add those tests
+Here suggest splitting the tests semantically, but for simplicity of example, we will add those tests
 to the same test file.
 
 ```rust,noplayground
+use sylvia::cw_multi_test::IntoAddr;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::error::ContractError;
+use crate::whitelist::sv::mt::WhitelistProxy;
+
+#\#[test]
+#fn instantiate() {
+#    let app = App::default();
+#    let code_id = CodeId::store_code(&app);
+#
+#    let owner = "owner".into_addr();
+#
+#    let contract = code_id.instantiate(42).call(&owner).unwrap();
+#
+#    let count = contract.count().unwrap().count;
+#    assert_eq!(count, 42);
+#
+#    contract.increment_count().call(&owner).unwrap();
+#
+#    let count = contract.count().unwrap().count;
+#    assert_eq!(count, 43);
+#}
+#
+#\#[test]
+#fn decrement_below_zero() {
+#    let app = App::default();
+#    let code_id = CodeId::store_code(&app);
+#
+#    let owner = "owner".into_addr();
+#
+#    let contract = code_id.instantiate(1).call(&owner).unwrap();
+#
+#    let count = contract.count().unwrap().count;
+#    assert_eq!(count, 1);
+#
+#    contract.decrement_count().call(&owner).unwrap();
+#
+#    let count = contract.count().unwrap().count;
+#    assert_eq!(count, 0);
+#
+#    let err = contract.decrement_count().call(&owner).unwrap_err();
+#    assert_eq!(err, ContractError::CannotDecrementCount);
+#}
+#
 #[test]
 fn manage_admins() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
 
-    let owner = "owner";
-    let admin = "admin";
+    let owner = "owner".into_addr();
+    let admin = "admin".into_addr();
 
-    let contract = code_id.instantiate(1).call(owner).unwrap();
+    let contract = code_id.instantiate(1).call(&owner).unwrap();
 
     // Admins list is empty
-    let admins = contract.whitelist_proxy().admins().unwrap().admins;
+    let admins = contract.admins().unwrap().admins;
     assert!(admins.is_empty());
 
     // Admin can be added
-    contract
-        .whitelist_proxy()
-        .add_admin(admin.to_owned())
-        .call(owner)
-        .unwrap();
+    contract.add_admin(admin.to_string()).call(&owner).unwrap();
 
-    let admins = contract.whitelist_proxy().admins().unwrap().admins;
-    assert_eq!(admins, &[Addr::unchecked(admin)]);
+    let admins = contract.admins().unwrap().admins;
+    assert_eq!(admins, vec![&admin]);
 
     // Admin can be removed
     contract
-        .whitelist_proxy()
-        .remove_admin(admin.to_owned())
-        .call(owner)
+        .remove_admin(admin.to_string())
+        .call(&owner)
         .unwrap();
 
-    let admins = contract.whitelist_proxy().admins().unwrap().admins;
+    let admins = contract.admins().unwrap().admins;
     assert!(admins.is_empty());
 }
 ```
+
+As in case of the contract we have to import the proxy trait in this case called `WhitelistProxy`.
+Once that's done, we can call methods from the trait directly on the `contract`.
 
 We can add and remove admins. Now you can add the logic preventing users from incrementing and 
 decrementing the count. You can extract the sender address by calling 
@@ -342,5 +374,5 @@ of one.
 
 # Next step
 
-We have learned about almost all of the ^sylvia features. The next chapter will be about talking 
-with remotes.
+We have learned about almost all of the ^sylvia features. The next chapter will be about talking
+to remote contracts.

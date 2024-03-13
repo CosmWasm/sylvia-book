@@ -39,7 +39,7 @@ use sylvia::types::InstantiateCtx;
 use sylvia::{contract, entry_points};
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[contract]
@@ -51,7 +51,7 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::default())
     }
@@ -80,7 +80,7 @@ use sylvia::types::InstantiateCtx;
 use sylvia::{contract, entry_points};
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[contract]
@@ -92,7 +92,7 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
         self.count.save(ctx.deps.storage, &count)?;
         Ok(Response::default())

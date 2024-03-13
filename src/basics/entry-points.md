@@ -37,7 +37,7 @@ impl CounterContract {
         Self
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::default())
     }
@@ -45,7 +45,7 @@ impl CounterContract {
 ```
 
 Note that **`#[entry_points]`** is added above the **`#[contract]`**.
-It is because **`#[contract]`** removes attributes like **`#[msg(...)]`** on which both these macros rely.
+It is because **`#[contract]`** removes attributes like **`#[sv::msg(...)]`** on which both these macros rely.
 
 Always remember to place **`#[entry_points]`** first.
 

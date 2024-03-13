@@ -79,7 +79,7 @@ use crate::error::ContractError;
 use crate::responses::CountResponse;
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[entry_points]
@@ -91,19 +91,19 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
         self.count.save(ctx.deps.storage, &count)?;
         Ok(Response::default())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
         let count = self.count.load(ctx.deps.storage)?;
         Ok(CountResponse { count })
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     pub fn increment_count(&self, ctx: ExecCtx) -> StdResult<Response> {
         self.count
             .update(ctx.deps.storage, |count| -> StdResult<u32> {
@@ -112,7 +112,7 @@ impl CounterContract {
         Ok(Response::default())
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     pub fn decrement_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
         let count = self.count.load(ctx.deps.storage)?;
         if count == 0 {
@@ -127,15 +127,17 @@ impl CounterContract {
 A little to explain here. We load the count, and check if it's equal to zero. If yes, then we return
 our newly defined error variant. If not, then we decrement its value.
 However, this won't work. If you would try to build this you will receive:
-`error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied`.
+```
+error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied
+```
 It is because ^sylvia by default generates `dispatch` returning `Result<_, StdError>`. To 
-inform ^sylvia that it should be using a new type we add `#[error(ContractError)]` attribute to 
+inform ^sylvia that it should be using a new type we add `#[sv::error(ContractError)]` attribute to 
 the `contract` macro call.
 
 ```rust,noplayground
 #[entry_points]
 #[contract]
-#[error(ContractError)]
+#[sv::error(ContractError)]
 impl CounterContract {
 ...
 }
@@ -148,23 +150,25 @@ Now our contract should compile, and we are ready to test it.
 Let's create a new test expecting the proper error to be returned. In `src/multitest.rs`:
 
 ```rust,noplayground
+use sylvia::cw_multi_test::IntoAddr;
 use sylvia::multitest::App;
 
-use crate::{contract::multitest_utils::CodeId, error::ContractError};
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::error::ContractError;
 
 #[test]
 fn instantiate() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
 
-    let owner = "owner";
+    let owner = "owner".into_addr();
 
-    let contract = code_id.instantiate(42).call(owner).unwrap();
+    let contract = code_id.instantiate(42).call(&owner).unwrap();
 
     let count = contract.count().unwrap().count;
     assert_eq!(count, 42);
 
-    contract.increment_count().call(owner).unwrap();
+    contract.increment_count().call(&owner).unwrap();
 
     let count = contract.count().unwrap().count;
     assert_eq!(count, 43);
@@ -175,19 +179,19 @@ fn decrement_below_zero() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
 
-    let owner = "owner";
+    let owner = "owner".into_addr();
 
-    let contract = code_id.instantiate(1).call(owner).unwrap();
+    let contract = code_id.instantiate(1).call(&owner).unwrap();
 
     let count = contract.count().unwrap().count;
     assert_eq!(count, 1);
 
-    contract.decrement_count().call(owner).unwrap();
+    contract.decrement_count().call(&owner).unwrap();
 
     let count = contract.count().unwrap().count;
     assert_eq!(count, 0);
 
-    let err = contract.decrement_count().call(owner).unwrap_err();
+    let err = contract.decrement_count().call(&owner).unwrap_err();
     assert_eq!(err, ContractError::CannotDecrementCount);
 }
 ```

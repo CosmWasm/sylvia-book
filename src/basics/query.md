@@ -40,7 +40,7 @@ use sylvia::{contract, entry_points};
 use crate::responses::CountResponse;
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[entry_points]
@@ -52,13 +52,13 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
         self.count.save(ctx.deps.storage, &count)?;
         Ok(Response::default())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
         let count = self.count.load(ctx.deps.storage)?;
         Ok(CountResponse { count })
