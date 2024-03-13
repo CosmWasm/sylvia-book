@@ -51,18 +51,19 @@ As this module is purely for testing purposes, we prefix it with
 Now create `src/multitest.rs`.
 
 ```rust,noplayground
+use sylvia::cw_multi_test::IntoAddr;
 use sylvia::multitest::App;
 
-use crate::contract::mt::CodeId;
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
 
 #[test]
 fn instantiate() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
 
-    let owner = "owner";
+    let owner = "owner".into_addr();
 
-    let contract = code_id.instantiate(42).call(owner).unwrap();
+    let contract = code_id.instantiate(42).call(&owner).unwrap();
 
     let count = contract.count().unwrap().count;
     assert_eq!(count, 42);
@@ -80,7 +81,9 @@ to set some contract parameters on a blockchain. You can inspect methods like `w
 it as an only argument. This will return `Result<ContractProxy, ..>`. Let's `unwrap` it as it is a 
 testing environment and we expect it to work correctly.
 
-Now that we have the proxy type we can call our `count` method on it. It will generate appropriate
+Now that we have the proxy type we have to import `CounterContractProxy` to the scope.
+It's a trait defining methods for our contract.
+With that setup we can call our `count` method on it. It will generate appropriate
 `QueryMsg` variant underneath and send to blockchain so that we don't have to do it ourselves and
 have business logic transparently shown in the test. We `unwrap` and extract the only field out of 
 it and that's all.

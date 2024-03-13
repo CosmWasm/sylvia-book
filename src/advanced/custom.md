@@ -392,7 +392,7 @@ use std::fmt::Debug;
 use crate::messages::{ExternalMsg, ExternalQuery};
 
 pub struct CustomModule {
-    pub is_poked: Item<'static, bool>,
+    pub is_poked: Item<bool>,
 }
 
 impl CustomModule {
@@ -478,7 +478,7 @@ Running `poke` on our contract will send the `ExternalMsg::Poke`, which `App` wi
 ```rust
 use sylvia::multitest::App;
 
-use crate::contract::mt::CodeId;
+use crate::contract::sv::mt::CodeId;
 use crate::multitest::custom_module::CustomModule;
 
 #[test]

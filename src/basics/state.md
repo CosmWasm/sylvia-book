@@ -39,7 +39,7 @@ use sylvia::types::InstantiateCtx;
 use sylvia::{contract, entry_points};
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[contract]
@@ -80,7 +80,7 @@ use sylvia::types::InstantiateCtx;
 use sylvia::{contract, entry_points};
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[contract]

@@ -17,7 +17,7 @@ use sylvia::{contract, entry_points};
 use crate::responses::CountResponse;
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[entry_points]
@@ -68,7 +68,7 @@ Our contract has a new variant for the `ExecMsg`. Let's check if it works proper
 ```rust,noplayground
 use sylvia::multitest::App;
 
-use crate::contract::mt::CodeId;
+use crate::contract::sv::mt::CodeId;
 
 #[test]
 fn instantiate() {

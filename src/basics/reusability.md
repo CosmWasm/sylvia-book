@@ -232,7 +232,7 @@ We need to do one more thing, which is to add the `messages` attribute to the co
 #use crate::responses::CountResponse;
 #
 #pub struct CounterContract<'a> {
-#    pub(crate) count: Item<'static, u32>,
+#    pub(crate) count: Item<u32>,
 #    pub(crate) admins: Map<'static, &'a Addr, Empty>,
 #}
 

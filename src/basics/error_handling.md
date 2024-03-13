@@ -79,7 +79,7 @@ use crate::error::ContractError;
 use crate::responses::CountResponse;
 
 pub struct CounterContract {
-    pub(crate) count: Item<'static, u32>,
+    pub(crate) count: Item<u32>,
 }
 
 #[entry_points]
@@ -150,7 +150,7 @@ Let's create a new test expecting the proper error to be returned. In `src/multi
 ```rust,noplayground
 use sylvia::multitest::App;
 
-use crate::{contract::mt::CodeId, error::ContractError};
+use crate::{contract::sv::mt::CodeId, error::ContractError};
 
 #[test]
 fn instantiate() {
