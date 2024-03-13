@@ -303,10 +303,10 @@ fn manage_admins() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
 
-    let owner = "owner";
+    let owner = "owner".into_addr();
     let admin = "admin";
 
-    let contract = code_id.instantiate(1).call(owner).unwrap();
+    let contract = code_id.instantiate(1).call(&owner).unwrap();
 
     // Admins list is empty
     let admins = contract.whitelist_proxy().admins().unwrap().admins;
@@ -316,7 +316,7 @@ fn manage_admins() {
     contract
         .whitelist_proxy()
         .add_admin(admin.to_owned())
-        .call(owner)
+        .call(&owner)
         .unwrap();
 
     let admins = contract.whitelist_proxy().admins().unwrap().admins;
@@ -326,7 +326,7 @@ fn manage_admins() {
     contract
         .whitelist_proxy()
         .remove_admin(admin.to_owned())
-        .call(owner)
+        .call(&owner)
         .unwrap();
 
     let admins = contract.whitelist_proxy().admins().unwrap().admins;

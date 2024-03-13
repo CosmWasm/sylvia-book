@@ -478,12 +478,12 @@ Running `poke` on our contract will send the `ExternalMsg::Poke`, which `App` wi
 ```rust
 use sylvia::multitest::App;
 
-use crate::contract::sv::mt::CodeId;
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
 use crate::multitest::custom_module::CustomModule;
 
 #[test]
 fn test_custom() {
-    let owner = "owner";
+    let owner = "owner".into_addr();
 
     let mt_app = cw_multi_test::BasicAppBuilder::new_custom()
         .with_custom(CustomModule::new())
@@ -495,9 +495,9 @@ fn test_custom() {
 
     let code_id = CodeId::store_code(&app);
 
-    let contract = code_id.instantiate().call(owner).unwrap();
+    let contract = code_id.instantiate().call(&owner).unwrap();
 
-    contract.poke().call(owner).unwrap();
+    contract.poke().call(&owner).unwrap();
 
     let count = contract.is_poked().unwrap();
     assert!(count);
