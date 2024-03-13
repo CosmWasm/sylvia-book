@@ -25,7 +25,7 @@ pub struct AdminListResp {
 
 Looking at our `AdminListResp`, you might argue that all these derive look too clunky, and I agree.
 Luckily the [`cosmwasm-schema`](https://docs.rs/cosmwasm-schema/latest/cosmwasm_schema/index.html)
-create delivers `cw_serde` macro, which we can use to reduce a boilerplate:
+crate delivers `cw_serde` macro, which we can use to reduce a boilerplate:
 
 ```rust,noplayground
 use cosmwasm_schema::cw_serde;
@@ -119,7 +119,7 @@ wasm-debug = "build --target wasm32-unknown-unknown --lib"
 schema = "run schema"
 ```
 
-The --lib flag added to wasm cargo aliases tells the toolchain to build only the library target - it
+The `--lib` flag added to wasm cargo aliases tells the toolchain to build only the library target - it
 would skip building any binaries. Additionally, I added the convenience schema alias to
 generate schema calling simply cargo schema.
 
@@ -209,9 +209,3 @@ Since now to add this contract as a dependency, don't forget to enable the featu
 [dependencies]
 my_contract = { version = "0.1", features = ["library"] }
 ```
-
-## Single file/single macro call 
-
-I talked about it in some previous chapters. I cannot guarantee that future ^sylvia changes won't
-cause code generation to overlap. To avoid future problems, I recommend restricting yourself
-to single macro call per file.
