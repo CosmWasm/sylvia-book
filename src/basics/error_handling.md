@@ -150,7 +150,7 @@ Let's create a new test expecting the proper error to be returned. In `src/multi
 ```rust,noplayground
 use sylvia::multitest::App;
 
-use crate::{contract::multitest_utils::CodeId, error::ContractError};
+use crate::{contract::mt::CodeId, error::ContractError};
 
 #[test]
 fn instantiate() {

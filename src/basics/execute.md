@@ -68,7 +68,7 @@ Our contract has a new variant for the `ExecMsg`. Let's check if it works proper
 ```rust,noplayground
 use sylvia::multitest::App;
 
-use crate::contract::multitest_utils::CodeId;
+use crate::contract::mt::CodeId;
 
 #[test]
 fn instantiate() {

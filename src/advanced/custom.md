@@ -478,7 +478,7 @@ Running `poke` on our contract will send the `ExternalMsg::Poke`, which `App` wi
 ```rust
 use sylvia::multitest::App;
 
-use crate::contract::multitest_utils::CodeId;
+use crate::contract::mt::CodeId;
 use crate::multitest::custom_module::CustomModule;
 
 #[test]

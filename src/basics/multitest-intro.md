@@ -53,7 +53,7 @@ Now create `src/multitest.rs`.
 ```rust,noplayground
 use sylvia::multitest::App;
 
-use crate::contract::multitest_utils::CodeId;
+use crate::contract::mt::CodeId;
 
 #[test]
 fn instantiate() {
