@@ -51,13 +51,13 @@ use sylvia::types::{ExecCtx, QueryCtx};
 pub trait SvCustom {
     type Error: From<StdError>;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn sv_custom_exec(
         &self,
         ctx: ExecCtx<ExternalQuery>,
     ) -> Result<Response<ExternalMsg>, Self::Error>;
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn sv_custom_query(&self, ctx: QueryCtx<ExternalQuery>) -> Result<String, Self::Error>;
 }
 ```
@@ -77,11 +77,11 @@ pub trait Associated {
     type ExecC: CustomMsg;
     type QueryC: CustomQuery;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn associated_exec(&self, ctx: ExecCtx<Self::QueryC>)
         -> Result<Response<Self::ExecC>, Self::Error>;
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn associated_query(&self, ctx: QueryCtx<Self::QueryC>) -> Result<String, Self::Error>;
 }
 ```
@@ -111,7 +111,7 @@ impl CustomContract {
         Self
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(
         &self,
         _ctx: InstantiateCtx<ExternalQuery>,
@@ -141,12 +141,12 @@ use sylvia::contract;
 use sylvia::types::{ExecCtx, QueryCtx};
 
 #[contract(module=crate::contract)]
-#[messages(crate::sv_custom as SvCustom)]
+#[sv::messages(crate::sv_custom as SvCustom)]
 #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
 impl SvCustom for CustomContract {
     type Error = StdError;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn sv_custom_exec(
         &self,
         _ctx: ExecCtx<ExternalQuery>,
@@ -154,7 +154,7 @@ impl SvCustom for CustomContract {
         Ok(Response::new())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn sv_custom_query(&self, _ctx: QueryCtx<ExternalQuery>) -> Result<String, Self::Error> {
         Ok(String::default())
     }
@@ -175,13 +175,13 @@ use sylvia::contract;
 use sylvia::types::{ExecCtx, QueryCtx};
 
 #[contract(module=crate::contract)]
-#[messages(crate::associated as Associated)]
+#[sv::messages(crate::associated as Associated)]
 impl Associated for CustomContract {
     type Error = StdError;
     type ExecC = ExternalMsg;
     type QueryC = ExternalQuery;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn associated_exec(
         &self,
         _ctx: ExecCtx<Self::QueryC>,
@@ -189,7 +189,7 @@ impl Associated for CustomContract {
         Ok(Response::new())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn associated_query(&self, _ctx: QueryCtx<Self::QueryC>) -> Result<String, Self::Error> {
         Ok(String::default())
     }
@@ -212,15 +212,15 @@ use crate::messages::{ExternalMsg, ExternalQuery};
 pub struct CustomContract;
 
 #[contract]
-#[messages(crate::sv_custom as SvCustomInterface)]
-#[messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
 #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
 impl CustomContract {
     pub const fn new() -> Self {
         Self
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(
         &self,
         _ctx: InstantiateCtx<ExternalQuery>,
@@ -244,10 +244,10 @@ use sylvia::types::{ExecCtx, QueryCtx};
 pub trait NonCustom {
     type Error: From<StdError>;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn non_custom_exec(&self, ctx: ExecCtx) -> Result<Response, Self::Error>;
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn non_custom_query(&self, ctx: QueryCtx) -> Result<String, Self::Error>;
 }
 
@@ -260,17 +260,17 @@ pub mod impl_non_custom {
     use super::NonCustom;
 
     #[contract(module=crate::contract)]
-    #[messages(crate::non_custom as NonCustom)]
+    #[sv::messages(crate::non_custom as NonCustom)]
     #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
     impl NonCustom for CustomContract {
         type Error = StdError;
 
-        #[msg(exec)]
+        #[sv::msg(exec)]
         fn non_custom_exec(&self, _ctx: ExecCtx) -> Result<Response, Self::Error> {
             Ok(Response::new())
         }
 
-        #[msg(query)]
+        #[sv::msg(query)]
         fn non_custom_query(&self, _ctx: QueryCtx) -> Result<String, Self::Error> {
             Ok(String::default())
         }
@@ -294,16 +294,16 @@ use crate::messages::{ExternalMsg, ExternalQuery};
 pub struct CustomContract;
 
 #[contract]
-#[messages(crate::sv_custom as SvCustomInterface)]
-#[messages(crate::associated as AssociatedInterface)]
-#[messages(crate::non_custom as NonCustom: custom(msg query))]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg query))]
 #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
 impl CustomContract {
     pub const fn new() -> Self {
         Self
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(
         &self,
         _ctx: InstantiateCtx<ExternalQuery>,
@@ -334,16 +334,16 @@ pub struct CustomContract;
 
 #[cfg_attr(not(feature = "library"), entry_points)]
 #[contract]
-#[messages(crate::sv_custom as SvCustomInterface)]
-#[messages(crate::associated as AssociatedInterface)]
-#[messages(crate::non_custom as NonCustom: custom(msg query))]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg query))]
 #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
 impl CustomContract {
     pub const fn new() -> Self {
         Self
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(
         &self,
         _ctx: InstantiateCtx<ExternalQuery>,
@@ -351,14 +351,14 @@ impl CustomContract {
         Ok(Response::new())
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     pub fn poke(&self, _ctx: ExecCtx<ExternalQuery>) -> StdResult<Response<ExternalMsg>> {
         let msg = CosmosMsg::Custom(ExternalMsg::Poke {});
         let resp = Response::default().add_message(msg);
         Ok(resp)
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     pub fn is_poked(&self, ctx: QueryCtx<ExternalQuery>) -> StdResult<bool> {
         let resp = ctx
             .deps

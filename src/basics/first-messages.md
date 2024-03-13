@@ -31,7 +31,7 @@ impl CounterContract {
         Self
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::default())
     }
@@ -41,7 +41,7 @@ impl CounterContract {
 So what is going on here? First, we define the CounterContract struct. It is empty right now but 
 later when we learn about states, we will use its fields to store them.
 We mark the `impl` block with [`contract`](https://docs.rs/sylvia/0.7.0/sylvia/attr.contract.html)
-attribute macro. It will parse every method inside the `impl` block marked with the `[msg(...)]` 
+attribute macro. It will parse every method inside the `impl` block marked with the `[sv::msg(...)]` 
 attribute and create proper messages and utilities like `multitest helpers` for them.
 More on them later.
 

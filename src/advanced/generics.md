@@ -49,10 +49,10 @@ pub trait Associated {
     type ExecParam: CustomMsg;
     type QueryParam: CustomMsg;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn generic_exec(&self, ctx: ExecCtx, param: Self::ExecParam) -> StdResult<Response>;
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn generic_query(&self, ctx: QueryCtx, param: Self::QueryParam) -> StdResult<String>;
 }
 ```
@@ -92,7 +92,7 @@ impl NonGenericContract {
         Self {}
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::new())
     }
@@ -258,7 +258,7 @@ The only change is to pass the generics into the contract.
 `src/generic_contract.rs`
 ```rust
 #[contract]
-#[messages(crate::associated<MyMsg, MyMsg> as Associated)]
+#[sv::messages(crate::associated<MyMsg, MyMsg> as Associated)]
 impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
 where
     InstantiateParam: CustomMsg + 'static,

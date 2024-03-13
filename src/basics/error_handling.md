@@ -91,19 +91,19 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
         self.count.save(ctx.deps.storage, &count)?;
         Ok(Response::default())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
         let count = self.count.load(ctx.deps.storage)?;
         Ok(CountResponse { count })
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     pub fn increment_count(&self, ctx: ExecCtx) -> StdResult<Response> {
         self.count
             .update(ctx.deps.storage, |count| -> StdResult<u32> {
@@ -112,7 +112,7 @@ impl CounterContract {
         Ok(Response::default())
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     pub fn decrement_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
         let count = self.count.load(ctx.deps.storage)?;
         if count == 0 {
@@ -129,13 +129,13 @@ our newly defined error variant. If not, then we decrement its value.
 However, this won't work. If you would try to build this you will receive:
 `error[E0277]: the trait bound `cosmwasm_std::StdError: From<ContractError>` is not satisfied`.
 It is because ^sylvia by default generates `dispatch` returning `Result<_, StdError>`. To 
-inform ^sylvia that it should be using a new type we add `#[error(ContractError)]` attribute to 
+inform ^sylvia that it should be using a new type we add `#[sv::error(ContractError)]` attribute to 
 the `contract` macro call.
 
 ```rust,noplayground
 #[entry_points]
 #[contract]
-#[error(ContractError)]
+#[sv::error(ContractError)]
 impl CounterContract {
 ...
 }

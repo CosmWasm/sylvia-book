@@ -18,12 +18,12 @@ into semantically compatible parts.
 ^Sylvia has a feature to reuse already defined messages and apply them in new contracts.
 Clone and open [^sylvia](https://github.com/CosmWasm/sylvia) repository. Go to
 `contracts/cw1-subkeys/src/contract.rs`. You can notice that the `impl` block for
-the `Cw1SubkeysContract` is preceded by `#[messages(...)]` attribute.
+the `Cw1SubkeysContract` is preceded by `#[sv::messages(...)]` attribute.
 
 ```rust,noplayground
 #[contract]
-#[messages(cw1 as Cw1)]
-#[messages(whitelist as Whitelist)]
+#[sv::messages(cw1 as Cw1)]
+#[sv::messages(whitelist as Whitelist)]
 impl Cw1SubkeysContract<'_> {
     ...
 }
@@ -145,13 +145,13 @@ use crate::responses::AdminsResponse;
 pub trait Whitelist {
     type Error: From<StdError>;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn add_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn remove_admin(&self, ctx: ExecCtx, address: String) -> Result<Response, Self::Error>;
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error>;
 }
 ```
@@ -179,11 +179,11 @@ use crate::responses::AdminsResponse;
 use crate::whitelist::Whitelist;
 
 #[contract(module=crate::contract)]
-#[messages(crate::whitelist as Whitelist)]
+#[sv::messages(crate::whitelist as Whitelist)]
 impl Whitelist for CounterContract<'_> {
     type Error = ContractError;
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn add_admin(&self, ctx: ExecCtx, admin: String) -> Result<Response, Self::Error> {
         let deps = ctx.deps;
         let admin = deps.api.addr_validate(&admin)?;
@@ -192,7 +192,7 @@ impl Whitelist for CounterContract<'_> {
         Ok(Response::default())
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     fn remove_admin(&self, ctx: ExecCtx, admin: String) -> Result<Response, Self::Error> {
         let deps = ctx.deps;
         let admin = deps.api.addr_validate(&admin)?;
@@ -201,7 +201,7 @@ impl Whitelist for CounterContract<'_> {
         Ok(Response::default())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     fn admins(&self, ctx: QueryCtx) -> Result<AdminsResponse, Self::Error> {
         let admins: Vec<Addr> = self
             .admins
@@ -238,8 +238,8 @@ We need to do one more thing, which is to add the `messages` attribute to the co
 
 #[entry_points]
 #[contract]
-#[error(ContractError)]
-#[messages(crate::whitelist as Whitelist)]
+#[sv::error(ContractError)]
+#[sv::messages(crate::whitelist as Whitelist)]
 impl CounterContract<'_> {
 #   pub const fn new() -> Self {
 #        Self {
@@ -248,7 +248,7 @@ impl CounterContract<'_> {
 #        }
 #    }
 #
-#    #[msg(instantiate)]
+#    #[sv::msg(instantiate)]
 #    pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
 #        self.count.save(ctx.deps.storage, &count)?;
 #        self.admins
@@ -256,13 +256,13 @@ impl CounterContract<'_> {
 #        Ok(Response::default())
 #    }
 #
-#    #[msg(query)]
+#    #[sv::msg(query)]
 #    pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
 #        let count = self.count.load(ctx.deps.storage)?;
 #        Ok(CountResponse { count })
 #    }
 #
-#    #[msg(exec)]
+#    #[sv::msg(exec)]
 #    pub fn increment_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
 #        if !self.is_admin(&ctx.deps, &ctx.info.sender) {
 #            return Err(ContractError::Unathorized(ctx.info.sender));
@@ -274,7 +274,7 @@ impl CounterContract<'_> {
 #        Ok(Response::default())
 #    }
 #
-#    #[msg(exec)]
+#    #[sv::msg(exec)]
 #    pub fn decrement_count(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
 #        if !self.is_admin(&ctx.deps, &ctx.info.sender) {
 #            return Err(ContractError::Unathorized(ctx.info.sender));

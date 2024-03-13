@@ -51,7 +51,7 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, _ctx: InstantiateCtx) -> StdResult<Response> {
         Ok(Response::default())
     }
@@ -92,7 +92,7 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
         self.count.save(ctx.deps.storage, &count)?;
         Ok(Response::default())

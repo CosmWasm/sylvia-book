@@ -29,19 +29,19 @@ impl CounterContract {
         }
     }
 
-    #[msg(instantiate)]
+    #[sv::msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {
         self.count.save(ctx.deps.storage, &count)?;
         Ok(Response::default())
     }
 
-    #[msg(query)]
+    #[sv::msg(query)]
     pub fn count(&self, ctx: QueryCtx) -> StdResult<CountResponse> {
         let count = self.count.load(ctx.deps.storage)?;
         Ok(CountResponse { count })
     }
 
-    #[msg(exec)]
+    #[sv::msg(exec)]
     pub fn increment_count(&self, ctx: ExecCtx, ) -> StdResult<Response> {
         self.count
             .update(ctx.deps.storage, |count| -> StdResult<u32> {
@@ -52,7 +52,7 @@ impl CounterContract {
 }
 ```
 
-We will add the `#[msg(exec)]` attribute and make it accept [`ExecCtx`](https://docs.rs/sylvia/latest/sylvia/types/struct.ExecCtx.html)
+We will add the `#[sv::msg(exec)]` attribute and make it accept [`ExecCtx`](https://docs.rs/sylvia/latest/sylvia/types/struct.ExecCtx.html)
 parameter. It will return `StdResult<Response>`, similiar to the instantiate method.
 Inside we call [`update`](https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html#method.update)
 to increment the `count` state.
