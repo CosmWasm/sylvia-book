@@ -1,0 +1,520 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Interfaces - The Sylvia Book</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Guide to building CosmWasm smart contracts">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting started</li><li class="chapter-item expanded "><a href="../setting-up-env.html"><strong aria-hidden="true">1.</strong> Setting up the environment</a></li><li class="chapter-item expanded affix "><li class="part-title">Smart contracts</li><li class="chapter-item expanded "><a href="../basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basics/create-project.html"><strong aria-hidden="true">2.1.</strong> Create a Rust project</a></li><li class="chapter-item expanded "><a href="../basics/first-messages.html"><strong aria-hidden="true">2.2.</strong> Generating first messages</a></li><li class="chapter-item expanded "><a href="../basics/entry-points.html"><strong aria-hidden="true">2.3.</strong> Entry points</a></li><li class="chapter-item expanded "><a href="../basics/building-contract.html"><strong aria-hidden="true">2.4.</strong> Building the contract</a></li><li class="chapter-item expanded "><a href="../basics/state.html"><strong aria-hidden="true">2.5.</strong> Contract state</a></li><li class="chapter-item expanded "><a href="../basics/query.html"><strong aria-hidden="true">2.6.</strong> Creating a query</a></li><li class="chapter-item expanded "><a href="../basics/multitest-intro.html"><strong aria-hidden="true">2.7.</strong> Introducing multitest</a></li><li class="chapter-item expanded "><a href="../basics/execute.html"><strong aria-hidden="true">2.8.</strong> Execution messsages</a></li><li class="chapter-item expanded "><a href="../basics/error_handling.html"><strong aria-hidden="true">2.9.</strong> Error handling</a></li><li class="chapter-item expanded "><a href="../basics/reusability.html" class="active"><strong aria-hidden="true">2.10.</strong> Interfaces</a></li><li class="chapter-item expanded "><a href="../basics/remote.html"><strong aria-hidden="true">2.11.</strong> Remote type</a></li><li class="chapter-item expanded "><a href="../basics/good-practices.html"><strong aria-hidden="true">2.12.</strong> Good practices</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced.html"><strong aria-hidden="true">3.</strong> Advanced</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced/entry_points_overriding.html"><strong aria-hidden="true">3.1.</strong> Override entry point</a></li><li class="chapter-item expanded "><a href="../advanced/custom.html"><strong aria-hidden="true">3.2.</strong> Custom messages</a></li><li class="chapter-item expanded "><a href="../advanced/generics.html"><strong aria-hidden="true">3.3.</strong> Generics</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Ibc</div></li><li class="chapter-item expanded affix "><a href="../impressum.html">Legal Information</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Sylvia Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="reusability"><a class="header" href="#reusability">Reusability</a></h1>
+<p>We have covered almost all the basics of writing smart contracts with <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>.
+In this last chapter of the <code>basics</code> section, I will tell you about the ability to define
+<a href="https://docs.rs/sylvia/latest/sylvia/attr.interface.html"><code>interface</code></a> in <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>.</p>
+<h2 id="problem"><a class="header" href="#problem">Problem</a></h2>
+<p>Let's say that after creating this contract we start working on another one. While planning its
+implementation, we notice that its functionality is just a superset of our <code>AdminContract</code>.
+We could copy all the code to our new contract, but it's creating unnecessary redundancy and would
+force us to maintain multiple implementations of the same functionality. It would also mean that 
+a bunch of functionality would be crammed together. A better solution would be to divide the code
+into semantically compatible parts.</p>
+<h2 id="solution"><a class="header" href="#solution">Solution</a></h2>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> has a feature to reuse already defined messages and apply them in new contracts.
+Clone and open <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> repository. Go to
+<code>contracts/cw1-subkeys/src/contract.rs</code>. You can notice that the <code>impl</code> block for
+the <code>Cw1SubkeysContract</code> is preceded by <code>#[sv::messages(...)]</code> attribute.</p>
+<pre><code class="language-rust noplayground">#[contract]
+#[sv::messages(cw1 as Cw1)]
+#[sv::messages(whitelist as Whitelist)]
+impl Cw1SubkeysContract&lt;'_&gt; {
+    ...
+}
+</code></pre>
+<p><code>contract</code> macro considers both interfaces marked as <code>messages</code>, which in our case
+are <code>cw1</code> and <code>whitelist</code>. It then generates <code>ContractQueryMsg</code> and <code>ContractExecMsg</code> as such:</p>
+<pre><code class="language-rust noplayground">#[allow(clippy::derive_partial_eq_without_eq)]
+#[serde(rename_all = &quot;snake_case&quot;, untagged)]
+pub enum ContractQueryMsg {
+    Cw1(cw1::Cw1QueryMsg),
+    Whitelist(whitelist::WhitelistQueryMsg),
+    Cw1SubkeysContract(QueryMsg),
+}
+
+impl ContractQueryMsg {
+    pub fn dispatch(
+        self,
+        contract: &amp;Cw1SubkeysContract,
+        ctx: (cosmwasm_std::Deps, cosmwasm_std::Env),
+    ) -&gt; std::result::Result&lt;sylvia::cw_std::Binary, ContractError&gt; {
+        const _: () = {
+            let msgs: [&amp;[&amp;str]; 3usize] = [
+                &amp;cw1::Cw1QueryMsg::messages(),
+                &amp;whitelist::WhitelistQueryMsg::messages(),
+                &amp;QueryMsg::messages(),
+            ];
+            sylvia::utils::assert_no_intersection(msgs);
+        };
+        match self {
+            ContractQueryMsg::Cw1(msg) =&gt; msg.dispatch(contract, ctx),
+            ContractQueryMsg::Whitelist(msg) =&gt; msg.dispatch(contract, ctx),
+            ContractQueryMsg::Cw1SubkeysContract(msg) =&gt; msg.dispatch(contract, ctx),
+        }
+    }
+}
+</code></pre>
+<p>We can finally see why we need these <code>ContractQueryMsg</code> and <code>ContractExecMsg</code> next to our
+regular message enums. <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> generated three tuple variants:</p>
+<ul>
+<li>
+<p><code>Cw1</code> - which contains query msg defined in <code>cw1</code>;</p>
+</li>
+<li>
+<p><code>Whitelist</code>- which contains query msg defined in <code>whitelist</code>;</p>
+</li>
+<li>
+<p><code>Cw1SubkeysContract</code> - which contains query msg defined in our contract.</p>
+</li>
+</ul>
+<p>We use this wrapper to match with the proper variant and then call <code>dispatch</code> on this message.
+<a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> also ensure that no message overlaps between interfaces and contract so that
+contracts API won't break.</p>
+<h2 id="declaring-interface"><a class="header" href="#declaring-interface">Declaring interface</a></h2>
+<p>How are the <code>interface</code> messages implemented? <code>Cw1SubkeysContract</code> is an excellent example because
+it presents two situations:</p>
+<ul>
+<li><code>Cw1</code> - declares a set of functionality that should be supported in implementing this interface
+contract and forces the user to define behavior for them;</li>
+<li><code>Whitelist</code> - same as above, but being primarily implemented for the <code>Cw1Whitelist</code> contract, it
+has already implementation defined.</li>
+</ul>
+<p>For the latter one, we can either implement it ourselves or reuse it as it was done
+in <code>contract/cw1-subkeys/src/whitelist.rs</code>. As you can see, we only call a method on <code>whitelist</code>
+forwarding the arguments passed to the contract. To see the implementation,
+you can go to <code>contract/cw1-whitelist/src/whitelist.rs</code>. The interface has to be defined as a
+<code>trait</code> with a call to macro
+<a href="https://docs.rs/sylvia/latest/sylvia/attr.interface.html"><code>interface</code></a>.
+<code>Interface</code> macro supports <code>execute</code>, <code>query</code> and <code>sudo</code> messages. In this case, it is right away
+implemented on the <code>Cw1Whitelist</code> contract, and this implementation is being reused in
+<code>contract/cw1-subkeys/src/whitelist.rs</code>.</p>
+<p>You should also separate the functionalities of your contract in some sets. It is the case
+of <code>Cw1</code>. It is created as a separate crate and reused in both <code>Cw1WhitelistContract</code> and
+<code>Cw1SubkeysContract</code>. You can check the implementation in <code>contracts/cw1-subkeys/src/cw1.rs</code>.
+For interface declaration itself, take a look at <code>contracts/cw1/src/lib.rs</code>.</p>
+<h2 id="practice"><a class="header" href="#practice">Practice</a></h2>
+<p>We now have enough background to create an <code>interface</code> ourselves. Let's say we started
+working on some other contract and found out that we would like to restrict access to modify 
+the state of the contract. We will create a new <code>Whitelist</code> interface which only responsibility will be 
+managing a list of admins.
+Usually I would suggest switching from a single crate to a workspace repository, but to simplify this
+example, I will keep working on a single crate repository.</p>
+<p>We want to be able to access the list of <code>admins</code> via query. Let's create a new response type 
+in <code>src/responses.rs</code>:</p>
+<pre><code class="language-rust noplayground">use cosmwasm_schema::cw_serde;
+use cosmwasm_std::Addr;
+
+#[cw_serde]
+pub struct CountResponse {
+    pub count: u32,
+}
+
+#[cw_serde]
+pub struct AdminsResponse {
+    pub admins: Vec&lt;Addr&gt;,
+}
+</code></pre>
+<p>We are going to keep the admins as <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Addr.html"><code>Addr</code></a>
+which is a representation of a real address on the blockchain.</p>
+<p>Now we create a new module, <code>src/whitelist.rs</code> (remember to add it to <code>src/lib.rs</code> as public).</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::responses::AdminsResponse;
+
+#[interface]
+pub trait Whitelist {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn add_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(exec)]
+    fn remove_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn admins(&amp;self, ctx: QueryCtx) -&gt; Result&lt;AdminsResponse, Self::Error&gt;;
+}
+</code></pre>
+<p>We annotate interfaces with <a href="https://docs.rs/sylvia/0.7.0/sylvia/attr.interface.html"><code>interface</code></a>
+attribute macro. It expects us to declare the associated type <code>Error</code>. This will help us later as 
+otherwise we would have to either expect <code>StdError</code> or our custom error in the return type,
+but we don't know what contracts will use this interface.</p>
+<p>Our trait defines three methods. Let's implement them on our contract.</p>
+<p><code>src/whitelist.rs</code></p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Addr, Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::contract::CounterContract;
+use crate::error::ContractError;
+use crate::responses::AdminsResponse;
+
+#[interface]
+pub trait Whitelist {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn add_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(exec)]
+    fn remove_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn admins(&amp;self, ctx: QueryCtx) -&gt; Result&lt;AdminsResponse, Self::Error&gt;;
+}
+
+impl Whitelist for CounterContract {
+    type Error = ContractError;
+
+    fn add_admin(&amp;self, ctx: ExecCtx, admin: String) -&gt; Result&lt;Response, Self::Error&gt; {
+        let deps = ctx.deps;
+        let admin = deps.api.addr_validate(&amp;admin)?;
+        self.admins.save(deps.storage, admin, &amp;())?;
+
+        Ok(Response::default())
+    }
+
+    fn remove_admin(&amp;self, ctx: ExecCtx, admin: String) -&gt; Result&lt;Response, Self::Error&gt; {
+        let deps = ctx.deps;
+        let admin = deps.api.addr_validate(&amp;admin)?;
+        self.admins.remove(deps.storage, admin);
+
+        Ok(Response::default())
+    }
+
+    fn admins(&amp;self, ctx: QueryCtx) -&gt; Result&lt;AdminsResponse, Self::Error&gt; {
+        let admins: Vec&lt;Addr&gt; = self
+            .admins
+            .keys(ctx.deps.storage, None, None, cosmwasm_std::Order::Ascending)
+            .collect::&lt;Result&lt;_, _&gt;&gt;()?;
+
+        Ok(AdminsResponse { admins })
+    }
+}
+</code></pre>
+<p>Nothing extra here. We just implement the <code>Whitelist</code> trait on our <code>CounterContract</code> like
+we would implement any other trait.</p>
+<p>The last thing we have to do is to add the <code>messages</code> attribute to our contract:</p>
+<pre><code class="language-rust noplayground"><span class="boring">use cosmwasm_std::{Addr, Response, StdResult};
+</span><span class="boring">use cw_storage_plus::{Item, Map};
+</span><span class="boring">use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+</span><span class="boring">use sylvia::{contract, entry_points};
+</span><span class="boring">
+</span><span class="boring">use crate::error::ContractError;
+</span><span class="boring">use crate::responses::CountResponse;
+</span><span class="boring">
+</span><span class="boring">pub struct CounterContract {
+</span><span class="boring">   pub(crate) count: Item&lt;u32&gt;,
+</span><span class="boring">   pub(crate) admins: Map&lt;Addr, ()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[entry_points]
+#[contract]
+#[sv::error(ContractError)]
+#[sv::messages(crate::whitelist as Whitelist)]
+impl CounterContract {
+<span class="boring">   pub const fn new() -&gt; Self {
+</span><span class="boring">       Self {
+</span><span class="boring">           count: Item::new(&quot;count&quot;),
+</span><span class="boring">           admins: Map::new(&quot;admins&quot;),
+</span><span class="boring">       }
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(instantiate)]
+</span><span class="boring">   pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+</span><span class="boring">       self.count.save(ctx.deps.storage, &amp;count)?;
+</span><span class="boring">       Ok(Response::default())
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(query)]
+</span><span class="boring">   pub fn count(&amp;self, ctx: QueryCtx) -&gt; StdResult&lt;CountResponse&gt; {
+</span><span class="boring">       let count = self.count.load(ctx.deps.storage)?;
+</span><span class="boring">       Ok(CountResponse { count })
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(exec)]
+</span><span class="boring">   pub fn increment_count(&amp;self, ctx: ExecCtx) -&gt; StdResult&lt;Response&gt; {
+</span><span class="boring">       self.count
+</span><span class="boring">           .update(ctx.deps.storage, |count| -&gt; StdResult&lt;u32&gt; {
+</span><span class="boring">               Ok(count + 1)
+</span><span class="boring">           })?;
+</span><span class="boring">       Ok(Response::default())
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(exec)]
+</span><span class="boring">   pub fn decrement_count(&amp;self, ctx: ExecCtx) -&gt; Result&lt;Response, ContractError&gt; {
+</span><span class="boring">       let count = self.count.load(ctx.deps.storage)?;
+</span><span class="boring">       if count == 0 {
+</span><span class="boring">           return Err(ContractError::CannotDecrementCount);
+</span><span class="boring">       }
+</span><span class="boring">       self.count.save(ctx.deps.storage, &amp;(count - 1))?;
+</span><span class="boring">       Ok(Response::default())
+</span><span class="boring">   }
+</span>}
+</code></pre>
+<p>Time to test if the new functionality works and is part of our contract.
+Here suggest splitting the tests semantically, but for simplicity of example, we will add those tests
+to the same test file.</p>
+<pre><code class="language-rust noplayground">use sylvia::cw_multi_test::IntoAddr;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::error::ContractError;
+use crate::whitelist::sv::mt::WhitelistProxy;
+
+<span class="boring">\#[test]
+</span><span class="boring">fn instantiate() {
+</span><span class="boring">   let app = App::default();
+</span><span class="boring">   let code_id = CodeId::store_code(&amp;app);
+</span><span class="boring">
+</span><span class="boring">   let owner = &quot;owner&quot;.into_addr();
+</span><span class="boring">
+</span><span class="boring">   let contract = code_id.instantiate(42).call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 42);
+</span><span class="boring">
+</span><span class="boring">   contract.increment_count().call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 43);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">\#[test]
+</span><span class="boring">fn decrement_below_zero() {
+</span><span class="boring">   let app = App::default();
+</span><span class="boring">   let code_id = CodeId::store_code(&amp;app);
+</span><span class="boring">
+</span><span class="boring">   let owner = &quot;owner&quot;.into_addr();
+</span><span class="boring">
+</span><span class="boring">   let contract = code_id.instantiate(1).call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 1);
+</span><span class="boring">
+</span><span class="boring">   contract.decrement_count().call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 0);
+</span><span class="boring">
+</span><span class="boring">   let err = contract.decrement_count().call(&amp;owner).unwrap_err();
+</span><span class="boring">   assert_eq!(err, ContractError::CannotDecrementCount);
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[test]
+fn manage_admins() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&amp;app);
+
+    let owner = &quot;owner&quot;.into_addr();
+    let admin = &quot;admin&quot;.into_addr();
+
+    let contract = code_id.instantiate(1).call(&amp;owner).unwrap();
+
+    // Admins list is empty
+    let admins = contract.admins().unwrap().admins;
+    assert!(admins.is_empty());
+
+    // Admin can be added
+    contract.add_admin(admin.to_string()).call(&amp;owner).unwrap();
+
+    let admins = contract.admins().unwrap().admins;
+    assert_eq!(admins, vec![&amp;admin]);
+
+    // Admin can be removed
+    contract
+        .remove_admin(admin.to_string())
+        .call(&amp;owner)
+        .unwrap();
+
+    let admins = contract.admins().unwrap().admins;
+    assert!(admins.is_empty());
+}
+</code></pre>
+<p>As in case of the contract we have to import the proxy trait in this case called <code>WhitelistProxy</code>.
+Once that's done, we can call methods from the trait directly on the <code>contract</code>.</p>
+<p>We can add and remove admins. Now you can add the logic preventing users from incrementing and 
+decrementing the count. You can extract the sender address by calling 
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.MessageInfo.html"><code>ctx.info.sender</code></a>.
+It would also be nice if the owner was an admin by default and if adding admins required the status 
+of one.</p>
+<h1 id="next-step"><a class="header" href="#next-step">Next step</a></h1>
+<p>We have learned about almost all of the <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> features. The next chapter will be about talking
+to remote contracts.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../basics/error_handling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../basics/remote.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../basics/error_handling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../basics/remote.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

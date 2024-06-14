@@ -1,0 +1,610 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Generics - The Sylvia Book</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Guide to building CosmWasm smart contracts">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting started</li><li class="chapter-item expanded "><a href="../setting-up-env.html"><strong aria-hidden="true">1.</strong> Setting up the environment</a></li><li class="chapter-item expanded affix "><li class="part-title">Smart contracts</li><li class="chapter-item expanded "><a href="../basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basics/create-project.html"><strong aria-hidden="true">2.1.</strong> Create a Rust project</a></li><li class="chapter-item expanded "><a href="../basics/first-messages.html"><strong aria-hidden="true">2.2.</strong> Generating first messages</a></li><li class="chapter-item expanded "><a href="../basics/entry-points.html"><strong aria-hidden="true">2.3.</strong> Entry points</a></li><li class="chapter-item expanded "><a href="../basics/building-contract.html"><strong aria-hidden="true">2.4.</strong> Building the contract</a></li><li class="chapter-item expanded "><a href="../basics/state.html"><strong aria-hidden="true">2.5.</strong> Contract state</a></li><li class="chapter-item expanded "><a href="../basics/query.html"><strong aria-hidden="true">2.6.</strong> Creating a query</a></li><li class="chapter-item expanded "><a href="../basics/multitest-intro.html"><strong aria-hidden="true">2.7.</strong> Introducing multitest</a></li><li class="chapter-item expanded "><a href="../basics/execute.html"><strong aria-hidden="true">2.8.</strong> Execution messsages</a></li><li class="chapter-item expanded "><a href="../basics/error_handling.html"><strong aria-hidden="true">2.9.</strong> Error handling</a></li><li class="chapter-item expanded "><a href="../basics/reusability.html"><strong aria-hidden="true">2.10.</strong> Interfaces</a></li><li class="chapter-item expanded "><a href="../basics/remote.html"><strong aria-hidden="true">2.11.</strong> Remote type</a></li><li class="chapter-item expanded "><a href="../basics/good-practices.html"><strong aria-hidden="true">2.12.</strong> Good practices</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced.html"><strong aria-hidden="true">3.</strong> Advanced</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced/entry_points_overriding.html"><strong aria-hidden="true">3.1.</strong> Override entry point</a></li><li class="chapter-item expanded "><a href="../advanced/custom.html"><strong aria-hidden="true">3.2.</strong> Custom messages</a></li><li class="chapter-item expanded "><a href="../advanced/generics.html" class="active"><strong aria-hidden="true">3.3.</strong> Generics</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Ibc</div></li><li class="chapter-item expanded affix "><a href="../impressum.html">Legal Information</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Sylvia Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="generics"><a class="header" href="#generics">Generics</a></h1>
+<p>When implementing a contract, users might want to define some generic data it should store.
+One might even want the message to have some generic parameters or return type.
+<a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> supports generics in the contracts and interfaces.</p>
+<h2 id="prepare-project"><a class="header" href="#prepare-project">Prepare project</a></h2>
+<p>To improve readability and focus solely on the feature support in this chapter, paste this
+dependencies to your project <code>Cargo.toml</code>.
+It contains every dependency we will use in this chapter.</p>
+<pre><code class="language-toml">[package]
+name = &quot;generic&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+sylvia = &quot;0.9.0&quot;
+cosmwasm-std = &quot;1.5&quot;
+schemars = &quot;0.8&quot;
+serde = &quot;1&quot;
+cosmwasm-schema = &quot;1.5&quot;
+cw-storage-plus = &quot;1.1.0&quot;
+
+[dev-dependencies]
+anyhow = &quot;1.0&quot;
+cw-multi-test = &quot;0.16&quot;
+sylvia = { version = &quot;0.9.0&quot;, features = [&quot;mt&quot;] }
+</code></pre>
+<h2 id="generics-in-interface"><a class="header" href="#generics-in-interface">Generics in interface</a></h2>
+<p>Since <code>0.10.0</code> we no longer support generics in interfaces.
+Sylvia interfaces can be implemented only a single time per contract as otherwise
+the messages would overlap. Idiomatic approach in Rust is to use associated types
+to handle such cases.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError, StdResult};
+use sylvia::interface;
+use sylvia::types::{CustomMsg, ExecCtx, QueryCtx};
+
+#[interface]
+pub trait Associated {
+    type Error: From&lt;StdError&gt;;
+    type ExecParam: CustomMsg;
+    type QueryParam: CustomMsg;
+
+    #[sv::msg(exec)]
+    fn generic_exec(&amp;self, ctx: ExecCtx, param: Self::ExecParam) -&gt; StdResult&lt;Response&gt;;
+
+    #[sv::msg(query)]
+    fn generic_query(&amp;self, ctx: QueryCtx, param: Self::QueryParam) -&gt; StdResult&lt;String&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Underhood <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> will parse the associated types and generate generic messages as we cannot
+use associated types in enums.</p>
+<h2 id="implement-interface-on-the-contract"><a class="header" href="#implement-interface-on-the-contract">Implement interface on the contract</a></h2>
+<p>Implementing an interface with associated types is the same as in case of implementing a regular interface.
+We first need to define the type we will assign to the associated type.</p>
+<p><code>src/messages.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_schema::cw_serde;
+use cosmwasm_std::CustomMsg;
+
+#[cw_serde]
+pub struct MyMsg;
+
+impl CustomMsg for MyMsg {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We also need a contract on which we will implement the interface.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::contract;
+use sylvia::types::InstantiateCtx;
+
+pub struct NonGenericContract;
+
+#[contract]
+impl NonGenericContract {
+    pub const fn new() -&gt; Self {
+        Self {}
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We are set and ready to implement the interface.</p>
+<p><code>src/associated_impl.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError, StdResult};
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::associated::Associated;
+use crate::contract::NonGenericContract;
+use crate::messages::MyMsg;
+
+impl Associated for NonGenericContract {
+    type Error = StdError;
+    type ExecParam = MyMsg;
+    type QueryParam = MyMsg;
+
+    fn generic_exec(&amp;self, _ctx: ExecCtx, _param: Self::ExecParam) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+
+    fn generic_query(&amp;self, _ctx: QueryCtx, _param: Self::QueryParam) -&gt; StdResult&lt;String&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="update-impl-contract"><a class="header" href="#update-impl-contract">Update impl contract</a></h2>
+<p>Now that we have implemented the interface on our contract, we can inform
+main <code>sylvia::contract</code> call about it.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::MyMsg;
+use cosmwasm_std::{Response, StdResult};
+use sylvia::contract;
+use sylvia::types::InstantiateCtx;
+
+pub struct NonGenericContract;
+
+#[contract]
+#[sv::messages(crate::associated&lt;MyMsg, MyMsg&gt; as Associated)]
+impl NonGenericContract {
+    pub const fn new() -&gt; Self {
+        Self {}
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As in case of regular interface, we have to add the <code>messages</code> attribute to the contract.
+However because the interface has associated types, we have to pass the types to the <code>messages</code>.
+We do that by adding them in the <code>&lt;&gt;</code> brackets after the path to the interface module.</p>
+<p>In this case we passed concrete types, but it is also possible to pass generic types
+defined on the contract.
+More on that in the next paragraph.</p>
+<h2 id="generic-contract"><a class="header" href="#generic-contract">Generic contract</a></h2>
+<p>We have covered how we can allow the users to define a types of an interface during
+an interface implementation.</p>
+<p>User might want to use a contract inside it's own contract.
+In such cases <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> supports the generics on the contracts.</p>
+<p>Let us define a new module in which we will define a generic contract.</p>
+<p><code>src/generic_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use std::marker::PhantomData;
+use sylvia::contract;
+use sylvia::types::{CustomMsg, InstantiateCtx};
+
+pub struct GenericContract&lt;DataType, InstantiateParam&gt; {
+    _data: Item&lt;DataType&gt;,
+    _phantom: PhantomData&lt;InstantiateParam&gt;,
+}
+
+#[contract]
+impl&lt;DataType, InstantiateParam&gt; GenericContract&lt;DataType, InstantiateParam&gt;
+where
+    InstantiateParam: CustomMsg + 'static,
+    for&lt;'data&gt; DataType: 'data,
+{
+    pub const fn new() -&gt; Self {
+        Self {
+            _data: Item::new(&quot;data&quot;),
+            _phantom: PhantomData,
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx,
+        _param: InstantiateParam,
+    ) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This example showcases two usages of generics in contract:</p>
+<ul>
+<li>Generic field </li>
+<li>Generic message parameter</li>
+</ul>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> works in both cases, and you can expand your generics to every message type, return type,
+or <code>custom_queries</code> as shown in the case of the <code>interface</code>. For the readability of this example,
+we will keep just these two generic types.</p>
+<p><code>InstantiateParam</code> is passed as a field to the <code>InstantiateMsg</code>. This enforces some bounds
+to this type, which we pass in the <code>where</code> clause. 
+Just like that, we created a generic contract.</p>
+<h2 id="implement-interface-on-generic-contract"><a class="header" href="#implement-interface-on-generic-contract">Implement interface on generic contract</a></h2>
+<p>Now that we have the generic contract, let's implement an interface from previous paragraphs on it.</p>
+<p><code>src/associated_impl.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError, StdResult};
+use sylvia::contract;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::associated::Associated;
+use crate::generic_contract::GenericContract;
+use crate::messages::MyMsg;
+
+impl&lt;DataType, InstantiateParam&gt; Associated for GenericContract&lt;DataType, InstantiateParam&gt; {
+    type Error = StdError;
+    type ExecParam = MyMsg;
+    type QueryParam = MyMsg;
+
+    fn generic_exec(&amp;self, _ctx: ExecCtx, _param: Self::ExecParam) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+
+    fn generic_query(&amp;self, _ctx: QueryCtx, _param: Self::QueryParam) -&gt; StdResult&lt;String&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Only thing missing is to add the <code>messages</code> attribute to the contract implementation.
+It is the same as in case of the non generic contract so we will skip it.</p>
+<p>Implementing a generic interface on the generic contract is very similar to implementing it on a regular one.
+The only change is to pass the generics into the contract.</p>
+<p><code>src/generic_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[contract]
+#[sv::messages(crate::associated&lt;MyMsg, MyMsg&gt; as Associated)]
+impl&lt;DataType, InstantiateParam&gt; GenericContract&lt;DataType, InstantiateParam&gt;
+where
+    InstantiateParam: CustomMsg + 'static,
+    for&lt;'data&gt; DataType: 'data,
+{
+    ..
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="forwarding-generics"><a class="header" href="#forwarding-generics">Forwarding generics</a></h2>
+<p>User might want to link the generics from the contract with associated types in implemented interface.
+To do so we have to simply assign the generics to appropriate associated types.</p>
+<p>Let's one more time define a new contract.</p>
+<p><code>src/forward_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use std::marker::PhantomData;
+use sylvia::contract;
+use sylvia::types::{CustomMsg, InstantiateCtx};
+
+pub struct ForwardContract&lt;ExecParam, QueryParam&gt; {
+    _phantom: PhantomData&lt;(ExecParam, QueryParam)&gt;,
+}
+
+#[contract]
+impl&lt;ExecParam, QueryParam&gt; ForwardContract&lt;ExecParam, QueryParam&gt;
+where
+    ExecParam: CustomMsg + 'static,
+    QueryParam: CustomMsg + 'static,
+{
+    pub const fn new() -&gt; Self {
+        Self {
+            _phantom: PhantomData,
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The implementation of the interface should look like this:</p>
+<p><code>src/associated_impl.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError, StdResult};
+use sylvia::contract;
+use sylvia::types::{CustomMsg, ExecCtx, QueryCtx};
+
+use crate::associated::Associated;
+use crate::generic_contract::GenericContract;
+
+impl&lt;ExecParam, QueryParam&gt; Associated for ForwardContract&lt;ExecParam, QueryParam&gt;
+where
+    ExecParam: CustomMsg,
+    QueryParam: CustomMsg,
+{
+    type Error = StdError;
+    type ExecParam = ExecParam;
+    type QueryParam = QueryParam;
+
+    fn generic_exec(&amp;self, _ctx: ExecCtx, _param: Self::ExecParam) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+
+    fn generic_query(&amp;self, _ctx: QueryCtx, _param: Self::QueryParam) -&gt; StdResult&lt;String&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>And as always, we have to add the <code>messages</code> attribute to the contract implementation.</p>
+<p><code>src/forward_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[contract]
+#[sv::messages(crate::associated&lt;ExecParam, QueryParam&gt; as Associated)]
+impl&lt;ExecParam, QueryParam&gt; ForwardContract&lt;ExecParam, QueryParam&gt;
+where
+    ExecParam: CustomMsg + 'static,
+    QueryParam: CustomMsg + 'static,
+{
+    ..
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As you can see <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> is very flexible with how the user might want to use it.</p>
+<h2 id="generate-entry-points"><a class="header" href="#generate-entry-points">Generate entry points</a></h2>
+<p>Without the entry points, our contract is just a library defining some message types.
+Let's make it a proper contract.
+We have to pass solid types to the <code>entry_points</code> macro, as the contract cannot have a generic
+types in the entry points.
+To achieve this, we pass the concrete types to the <code>entry_points</code> macro call.</p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::MyMsg;
+use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use std::marker::PhantomData;
+use sylvia::types::{CustomMsg, InstantiateCtx};
+use sylvia::{contract, entry_points};
+
+pub struct GenericContract&lt;DataType, InstantiateParam&gt; {
+    _data: Item&lt;DataType&gt;,
+    _phantom: PhantomData&lt;InstantiateParam&gt;,
+}
+
+#[entry_points(generics&lt;String, MyMsg&gt;)]
+#[contract]
+#[sv::messages(crate::associated&lt;MyMsg, MyMsg&gt; as Associated)]
+impl&lt;DataType, InstantiateParam&gt; GenericContract&lt;DataType, InstantiateParam&gt;
+where
+    InstantiateParam: CustomMsg + 'static,
+    for&lt;'data&gt; DataType: 'data,
+{
+    pub const fn new() -&gt; Self {
+        Self {
+            _data: Item::new(&quot;data&quot;),
+            _phantom: PhantomData,
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx,
+        _param: InstantiateParam,
+    ) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Notice the <code>generics</code> attribute in the <code>entry_points</code> macro.
+It's goal is to provide us a way to declare the types we want to use in the entry points.
+Our contract is ready to use. We can test it in the last step of this chapter.</p>
+<h2 id="test-generic-contract"><a class="header" href="#test-generic-contract">Test generic contract</a></h2>
+<p>Similar to defining a contract, we have to create a <code>App</code> with the `cw_multi</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>...
+
+#[cfg(test)]
+mod tests {
+    use sylvia::cw_multi_test::IntoAddr;
+    use sylvia::multitest::App;
+
+    use crate::messages::MyMsg;
+
+    use super::sv::mt::CodeId;
+
+    #[test]
+    fn instantiate_contract() {
+        let app = App::default();
+        let code_id: CodeId&lt;String, MyMsg, _&gt; = CodeId::store_code(&amp;app);
+
+        let owner = &quot;owner&quot;.into_addr();
+
+        let _ = code_id
+            .instantiate(MyMsg {})
+            .with_label(&quot;GenericContract&quot;)
+            .with_admin(owner.as_str())
+            .call(&amp;owner)
+            .unwrap();
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>While creating the <code>CodeId</code> we have to pass the types we want to use in the contract.
+It seems strange that <code>CodeId</code> is generic over three types while we defined only two,
+but <code>CodeId</code> is also generic over <code>MtApp</code> (<code>cw-multi-test::App</code>). The compiler will always deduce this type from
+the <code>app</code> passed to it, so don't worry and pass a placeholder there.</p>
+<p>Perfect! We have learned how to create generic contracts and interfaces.
+Good luck applying this knowledge to your projects!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../advanced/custom.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../impressum.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../advanced/custom.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../impressum.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

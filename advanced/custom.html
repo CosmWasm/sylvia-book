@@ -1,0 +1,680 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Custom messages - The Sylvia Book</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Guide to building CosmWasm smart contracts">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting started</li><li class="chapter-item expanded "><a href="../setting-up-env.html"><strong aria-hidden="true">1.</strong> Setting up the environment</a></li><li class="chapter-item expanded affix "><li class="part-title">Smart contracts</li><li class="chapter-item expanded "><a href="../basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basics/create-project.html"><strong aria-hidden="true">2.1.</strong> Create a Rust project</a></li><li class="chapter-item expanded "><a href="../basics/first-messages.html"><strong aria-hidden="true">2.2.</strong> Generating first messages</a></li><li class="chapter-item expanded "><a href="../basics/entry-points.html"><strong aria-hidden="true">2.3.</strong> Entry points</a></li><li class="chapter-item expanded "><a href="../basics/building-contract.html"><strong aria-hidden="true">2.4.</strong> Building the contract</a></li><li class="chapter-item expanded "><a href="../basics/state.html"><strong aria-hidden="true">2.5.</strong> Contract state</a></li><li class="chapter-item expanded "><a href="../basics/query.html"><strong aria-hidden="true">2.6.</strong> Creating a query</a></li><li class="chapter-item expanded "><a href="../basics/multitest-intro.html"><strong aria-hidden="true">2.7.</strong> Introducing multitest</a></li><li class="chapter-item expanded "><a href="../basics/execute.html"><strong aria-hidden="true">2.8.</strong> Execution messsages</a></li><li class="chapter-item expanded "><a href="../basics/error_handling.html"><strong aria-hidden="true">2.9.</strong> Error handling</a></li><li class="chapter-item expanded "><a href="../basics/reusability.html"><strong aria-hidden="true">2.10.</strong> Interfaces</a></li><li class="chapter-item expanded "><a href="../basics/remote.html"><strong aria-hidden="true">2.11.</strong> Remote type</a></li><li class="chapter-item expanded "><a href="../basics/good-practices.html"><strong aria-hidden="true">2.12.</strong> Good practices</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced.html"><strong aria-hidden="true">3.</strong> Advanced</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced/entry_points_overriding.html"><strong aria-hidden="true">3.1.</strong> Override entry point</a></li><li class="chapter-item expanded "><a href="../advanced/custom.html" class="active"><strong aria-hidden="true">3.2.</strong> Custom messages</a></li><li class="chapter-item expanded "><a href="../advanced/generics.html"><strong aria-hidden="true">3.3.</strong> Generics</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Ibc</div></li><li class="chapter-item expanded affix "><a href="../impressum.html">Legal Information</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Sylvia Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="custom-messages"><a class="header" href="#custom-messages">Custom messages</a></h1>
+<p><em>Since version 0.8.0.</em></p>
+<p>Blockchain creators might define chain-specific logic triggered through defined by them messages.
+<code>CosmWasm</code> provides a way to send such messages through <code>cosmwasm_std::CosmosMsg::Custom(..)</code> variant.</p>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> supports this feature, allowing both custom interfaces and contracts.</p>
+<h2 id="custom-interface"><a class="header" href="#custom-interface">Custom interface</a></h2>
+<p>To make further code examples simpler to read, let's consider we have the custom query and exec defined as such:</p>
+<p><code>src/messages.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_schema::cw_serde;
+use cosmwasm_std::{CustomMsg, CustomQuery};
+
+#[cw_serde]
+pub enum ExternalMsg {
+    Poke,
+}
+
+#[cw_serde]
+pub enum ExternalQuery {
+    IsPoked,
+}
+
+impl CustomQuery for ExternalQuery {}
+impl CustomMsg for ExternalMsg {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Notice that query has to implement <code>cosmwasm_std::CustomQuery</code>, and the message has to implement <code>cosmwasm_std::CustomMsg</code>.</p>
+<p>Now that we have our messages defined, we should consider if our new interface is meant to work only on a specific chain
+or if the developer implementing it should be free to choose which chain it should support.</p>
+<p>To enforce support for the specific chain, the user has to use <code>#[sv::custom(msg=.., query=..)]</code> attribute.
+Once <code>msg</code> or <code>query</code> is defined, it will be enforced that all messages or queries used in the interface
+will use them. This is necessary for <code>dispatch</code> to work.</p>
+<p><code>src/sv_custom.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::{ExternalMsg, ExternalQuery};
+use cosmwasm_std::{Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[interface]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+pub trait SvCustom {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn sv_custom_exec(
+        &amp;self,
+        ctx: ExecCtx&lt;ExternalQuery&gt;,
+    ) -&gt; Result&lt;Response&lt;ExternalMsg&gt;, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn sv_custom_query(&amp;self, ctx: QueryCtx&lt;ExternalQuery&gt;) -&gt; Result&lt;String, Self::Error&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If, however, we would like to give the developers the freedom to choose which chain to support, we can use define
+the interface with the associated type instead.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{CustomMsg, CustomQuery, Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[interface]
+pub trait Associated {
+    type Error: From&lt;StdError&gt;;
+    type ExecC: CustomMsg;
+    type QueryC: CustomQuery;
+
+    #[sv::msg(exec)]
+    fn associated_exec(&amp;self, ctx: ExecCtx&lt;Self::QueryC&gt;)
+        -&gt; Result&lt;Response&lt;Self::ExecC&gt;, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn associated_query(&amp;self, ctx: QueryCtx&lt;Self::QueryC&gt;) -&gt; Result&lt;String, Self::Error&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>ExecC</code> and <code>QueryC</code> associated types are reserved for custom messages and queries, respectively, and should not
+be used in other contexts.</p>
+<h2 id="custom-contract"><a class="header" href="#custom-contract">Custom contract</a></h2>
+<p>Before we implement the interfaces, let's create the contract that will use them.
+In the case of a contract, there is only one way to define the custom <code>msg</code> and <code>query</code>. We do it through
+<code>#[sv::custom(..)]</code> attribute.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::{contract, types::InstantiateCtx};
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomContract;
+
+#[contract]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As in the case of interfaces, remember to make <code>Deps</code> and <code>Response</code> generic over custom <code>msg</code> and <code>query</code>, respectively.</p>
+<h2 id="implement-custom-interface-on-contract"><a class="header" href="#implement-custom-interface-on-contract">Implement custom interface on contract</a></h2>
+<p>Now that we have defined the interfaces, we can implement them on the contract. Because it would be impossible to
+cast <code>Response&lt;Custom&gt;</code> to <code>Response&lt;Empty&gt;</code> or <code>Deps&lt;Empty&gt;</code> to <code>Deps&lt;Custom&gt;</code>, implementation of the custom interface
+on non-custom contracts is not possible. It is possible, however, to implement a non-custom interface on a custom contract.</p>
+<p>Implementation of chain-specific custom interfaces is simple. We have to pass the <code>sv::custom(..)</code> attribute once again.</p>
+<p><code>src/sv_custom.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use super::SvCustom;
+use crate::contract::CustomContract;
+use crate::messages::{ExternalMsg, ExternalQuery};
+use cosmwasm_std::{Response, StdError};
+use sylvia::contract;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[contract(module=crate::contract)]
+#[sv::messages(crate::sv_custom as SvCustom)]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl SvCustom for CustomContract {
+    type Error = StdError;
+
+    #[sv::msg(exec)]
+    fn sv_custom_exec(
+        &amp;self,
+        _ctx: ExecCtx&lt;ExternalQuery&gt;,
+    ) -&gt; Result&lt;Response&lt;ExternalMsg&gt;, Self::Error&gt; {
+        Ok(Response::new())
+    }
+
+    #[sv::msg(query)]
+    fn sv_custom_query(&amp;self, _ctx: QueryCtx&lt;ExternalQuery&gt;) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>To implement the interface with the associated type, we have to assign types for them.
+Because the type of <code>ExecC</code> and <code>QueryC</code> is defined by the user, the interface is reusable in the context of
+different chains.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use super::Associated;
+use crate::contract::CustomContract;
+use crate::messages::{ExternalMsg, ExternalQuery};
+use cosmwasm_std::{Response, StdError};
+use sylvia::contract;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[contract(module=crate::contract)]
+#[sv::messages(crate::associated as Associated)]
+impl Associated for CustomContract {
+    type Error = StdError;
+    type ExecC = ExternalMsg;
+    type QueryC = ExternalQuery;
+
+    #[sv::msg(exec)]
+    fn associated_exec(
+        &amp;self,
+        _ctx: ExecCtx&lt;Self::QueryC&gt;,
+    ) -&gt; Result&lt;Response&lt;Self::ExecC&gt;, Self::Error&gt; {
+        Ok(Response::new())
+    }
+
+    #[sv::msg(query)]
+    fn associated_query(&amp;self, _ctx: QueryCtx&lt;Self::QueryC&gt;) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="messages-attribute-on-main-contract-call"><a class="header" href="#messages-attribute-on-main-contract-call"><code>messages</code> attribute on main <code>contract</code> call</a></h2>
+<p>We implemented the custom interfaces on the contract. Now, we can use it in the contract itself.
+Because the contract is already defined as <code>custom,</code> we only need to use the <code>messages</code> attribute as in the case of
+non-custom interfaces.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::{contract, types::InstantiateCtx};
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomContract;
+
+#[contract]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Nice and easy, isn't it?
+Only one thing that needs to be added. I mentioned earlier that it is possible to implement a non-custom interface on a custom contract.
+Let's define a non-custom interface.</p>
+<p><code>src/non_custom.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[interface]
+pub trait NonCustom {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn non_custom_exec(&amp;self, ctx: ExecCtx) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn non_custom_query(&amp;self, ctx: QueryCtx) -&gt; Result&lt;String, Self::Error&gt;;
+}
+
+pub mod impl_non_custom {
+    use crate::contract::CustomContract;
+    use cosmwasm_std::{Response, StdError};
+    use sylvia::contract;
+    use sylvia::types::{ExecCtx, QueryCtx};
+
+    use super::NonCustom;
+
+    #[contract(module=crate::contract)]
+    #[sv::messages(crate::non_custom as NonCustom)]
+    #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+    impl NonCustom for CustomContract {
+        type Error = StdError;
+
+        #[sv::msg(exec)]
+        fn non_custom_exec(&amp;self, _ctx: ExecCtx) -&gt; Result&lt;Response, Self::Error&gt; {
+            Ok(Response::new())
+        }
+
+        #[sv::msg(query)]
+        fn non_custom_query(&amp;self, _ctx: QueryCtx) -&gt; Result&lt;String, Self::Error&gt; {
+            Ok(String::default())
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As you can see, although it's non-custom, we still have to inform <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> custom types from the contract.
+It's required for the <code>MultiTest</code> helpers to be generic over the same types as the contract.</p>
+<p>Let's add the last <code>messages</code> attribute to the contract. It has to end with <code>: custom(msg query)</code>. This way <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>
+will know that it has to cast <code>Response&lt;Custom&gt;</code> to <code>Response&lt;Empty&gt;</code> for <code>msg</code> and <code>Deps&lt;Custom&gt;</code> to <code>Deps&lt;Empty&gt;</code> for <code>query</code>.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::{contract, types::InstantiateCtx};
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomContract;
+
+#[contract]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg query))]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="test-custom-contract"><a class="header" href="#test-custom-contract">Test custom contract</a></h2>
+<p>Contract and interfaces implemented. We can finally test it. </p>
+<p>Before setting up the test environment, we have to add to our contract logic
+sending the custom messages. Let's add <code>query</code> and <code>exec</code> messages to our contract.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::{ExternalMsg, ExternalQuery};
+use cosmwasm_std::{CosmosMsg, QueryRequest, Response, StdResult};
+use sylvia::contract;
+use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+
+#[cfg(not(feature = &quot;library&quot;))]
+use sylvia::entry_points;
+
+pub struct CustomContract;
+
+#[cfg_attr(not(feature = &quot;library&quot;), entry_points)]
+#[contract]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg query))]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+
+    #[sv::msg(exec)]
+    pub fn poke(&amp;self, _ctx: ExecCtx&lt;ExternalQuery&gt;) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        let msg = CosmosMsg::Custom(ExternalMsg::Poke {});
+        let resp = Response::default().add_message(msg);
+        Ok(resp)
+    }
+
+    #[sv::msg(query)]
+    pub fn is_poked(&amp;self, ctx: QueryCtx&lt;ExternalQuery&gt;) -&gt; StdResult&lt;bool&gt; {
+        let resp = ctx
+            .deps
+            .querier
+            .query::&lt;bool&gt;(&amp;QueryRequest::Custom(ExternalQuery::IsPoked {}))?;
+        Ok(resp)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Message <code>poke</code> will return the <code>Response</code> with the <code>CosmosMsg::Custom(ExternalMsg::Poke {})</code> message.
+In <code>is_poked</code> we will trigger the custom module by sending <a href="https://docs.rs/cosmwasm-std/latest/cosmwasm_std/enum.QueryRequest.html"><code>QueryRequest::Custom</code></a> via <a href="https://docs.rs/cosmwasm-std/latest/cosmwasm_std/struct.QuerierWrapper.html#method.query"><code>cosmwasm_std::QuerierWrapper::query</code></a>.</p>
+<p>The contract is able to send our custom messages. We can start creating a test environment.
+First, we have to define a custom module that will handle our custom messages.
+It will be simple module tracking if it has received the <code>ExternalMsg::Poke</code> message.
+To add handling of custom messages, we have to implement <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/trait.Module.html"><code>cw_multi_test::Module</code></a> on it.
+We are only interested in <code>execute</code> and <code>query</code> methods in our example. In case of <code>sudo</code> we will return <code>Ok(..)</code> response.</p>
+<p><code>src/multitest/custom_module.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_schema::schemars::JsonSchema;
+use cosmwasm_std::{
+    to_binary, Addr, Api, Binary, BlockInfo, CustomQuery, Empty, Querier, StdResult, Storage,
+};
+use cw_multi_test::{AppResponse, CosmosRouter, Module};
+use cw_storage_plus::Item;
+use serde::de::DeserializeOwned;
+use std::fmt::Debug;
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomModule {
+    pub is_poked: Item&lt;bool&gt;,
+}
+
+impl CustomModule {
+    pub fn new() -&gt; Self {
+        Self {
+            is_poked: Item::new(&quot;is_poked&quot;),
+        }
+    }
+
+    pub fn setup(&amp;self, storage: &amp;mut dyn Storage) -&gt; StdResult&lt;()&gt; {
+        self.is_poked.save(storage, &amp;true)
+    }
+}
+
+impl Module for CustomModule {
+    type ExecT = ExternalMsg;
+    type QueryT = ExternalQuery;
+    type SudoT = Empty;
+
+    fn execute&lt;ExecC, QueryC&gt;(
+        &amp;self,
+        _api: &amp;dyn Api,
+        storage: &amp;mut dyn Storage,
+        _router: &amp;dyn CosmosRouter&lt;ExecC = ExecC, QueryC = QueryC&gt;,
+        _block: &amp;BlockInfo,
+        _sender: Addr,
+        msg: Self::ExecT,
+    ) -&gt; anyhow::Result&lt;AppResponse&gt;
+    where
+        ExecC: Debug + Clone + PartialEq + JsonSchema + DeserializeOwned + 'static,
+        QueryC: CustomQuery + DeserializeOwned + 'static,
+    {
+        match msg {
+            ExternalMsg::Poke {} =&gt; {
+                self.is_poked.save(storage, &amp;true)?;
+                Ok(AppResponse::default())
+            }
+        }
+    }
+
+    fn sudo&lt;ExecC, QueryC&gt;(
+        &amp;self,
+        _api: &amp;dyn Api,
+        _storage: &amp;mut dyn Storage,
+        _router: &amp;dyn CosmosRouter&lt;ExecC = ExecC, QueryC = QueryC&gt;,
+        _block: &amp;BlockInfo,
+        _msg: Self::SudoT,
+    ) -&gt; anyhow::Result&lt;AppResponse&gt;
+    where
+        ExecC: Debug + Clone + PartialEq + JsonSchema + DeserializeOwned + 'static,
+        QueryC: CustomQuery + DeserializeOwned + 'static,
+    {
+        Ok(AppResponse::default())
+    }
+
+    fn query(
+        &amp;self,
+        _api: &amp;dyn Api,
+        storage: &amp;dyn Storage,
+        _querier: &amp;dyn Querier,
+        _block: &amp;BlockInfo,
+        request: Self::QueryT,
+    ) -&gt; anyhow::Result&lt;Binary&gt; {
+        match request {
+            ExternalQuery::IsPoked {} =&gt; {
+                let is_poked = self.is_poked.load(storage)?;
+                to_binary(&amp;is_poked).map_err(Into::into)
+            }
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>With this module, we can move to testing.
+We are going to use <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/type.BasicAppBuilder.html"><code>BasicAppBuilder</code></a> to save ourselves from typing the all the generics.
+It's fine as we are only interested in setting <code>ExecC</code> and <code>QueryC</code> types.
+Installing our module is done via <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/type.BasicAppBuilder.html"><code>with_custom</code></a> method.
+In case you need to initialize some values in your module, you can use <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.AppBuilder.html#method.build"><code>build</code></a> method.
+Generics are set on <code>mt_app</code>, and there is no need to set them on <code>App</code>.
+Running <code>poke</code> on our contract will send the <code>ExternalMsg::Poke</code>, which <code>App</code> will dispatch to our custom module.</p>
+<p><code>src/multitest/tests.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::multitest::custom_module::CustomModule;
+
+#[test]
+fn test_custom() {
+    let owner = &quot;owner&quot;.into_addr();
+
+    let mt_app = cw_multi_test::BasicAppBuilder::new_custom()
+        .with_custom(CustomModule::new())
+        .build(|router, _, storage| {
+            router.custom.setup(storage).unwrap();
+        });
+
+    let app = App::new(mt_app);
+
+    let code_id = CodeId::store_code(&amp;app);
+
+    let contract = code_id.instantiate().call(&amp;owner).unwrap();
+
+    contract.poke().call(&amp;owner).unwrap();
+
+    let count = contract.is_poked().unwrap();
+    assert!(count);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h1 id="next-step"><a class="header" href="#next-step">Next step</a></h1>
+<p>We now know how to trigger chain-specific functionality. In the next chapter, we will expand a little on that by
+exploring support for generics.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../advanced/entry_points_overriding.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../advanced/generics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../advanced/entry_points_overriding.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../advanced/generics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

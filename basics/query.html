@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Creating a query - The Sylvia Book</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Guide to building CosmWasm smart contracts">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting started</li><li class="chapter-item expanded "><a href="../setting-up-env.html"><strong aria-hidden="true">1.</strong> Setting up the environment</a></li><li class="chapter-item expanded affix "><li class="part-title">Smart contracts</li><li class="chapter-item expanded "><a href="../basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basics/create-project.html"><strong aria-hidden="true">2.1.</strong> Create a Rust project</a></li><li class="chapter-item expanded "><a href="../basics/first-messages.html"><strong aria-hidden="true">2.2.</strong> Generating first messages</a></li><li class="chapter-item expanded "><a href="../basics/entry-points.html"><strong aria-hidden="true">2.3.</strong> Entry points</a></li><li class="chapter-item expanded "><a href="../basics/building-contract.html"><strong aria-hidden="true">2.4.</strong> Building the contract</a></li><li class="chapter-item expanded "><a href="../basics/state.html"><strong aria-hidden="true">2.5.</strong> Contract state</a></li><li class="chapter-item expanded "><a href="../basics/query.html" class="active"><strong aria-hidden="true">2.6.</strong> Creating a query</a></li><li class="chapter-item expanded "><a href="../basics/multitest-intro.html"><strong aria-hidden="true">2.7.</strong> Introducing multitest</a></li><li class="chapter-item expanded "><a href="../basics/execute.html"><strong aria-hidden="true">2.8.</strong> Execution messsages</a></li><li class="chapter-item expanded "><a href="../basics/error_handling.html"><strong aria-hidden="true">2.9.</strong> Error handling</a></li><li class="chapter-item expanded "><a href="../basics/reusability.html"><strong aria-hidden="true">2.10.</strong> Interfaces</a></li><li class="chapter-item expanded "><a href="../basics/remote.html"><strong aria-hidden="true">2.11.</strong> Remote type</a></li><li class="chapter-item expanded "><a href="../basics/good-practices.html"><strong aria-hidden="true">2.12.</strong> Good practices</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced.html"><strong aria-hidden="true">3.</strong> Advanced</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced/entry_points_overriding.html"><strong aria-hidden="true">3.1.</strong> Override entry point</a></li><li class="chapter-item expanded "><a href="../advanced/custom.html"><strong aria-hidden="true">3.2.</strong> Custom messages</a></li><li class="chapter-item expanded "><a href="../advanced/generics.html"><strong aria-hidden="true">3.3.</strong> Generics</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Ibc</div></li><li class="chapter-item expanded affix "><a href="../impressum.html">Legal Information</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Sylvia Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="creating-a-query"><a class="header" href="#creating-a-query">Creating a query</a></h1>
+<p>We can now initialize our contract and store some data in it. Let's write <code>query</code> to read it's
+content.</p>
+<h2 id="declaring-query-response"><a class="header" href="#declaring-query-response">Declaring query response</a></h2>
+<p>Let's create a new file, <code>src/responses.rs</code>, containing responses to all the queries in our contract.</p>
+<p><code>src/responses.rs</code> is not part of our project, so let's change it. Go to <code>src/lib.rs</code> and add this 
+module:</p>
+<pre><code class="language-rust noplayground">pub mod contract;
+pub mod responses;
+</code></pre>
+<p>Now in <code>src/responses.rs</code>, we will create a response struct.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_schema::cw_serde;
+
+#[cw_serde]
+pub struct CountResponse {
+    pub count: u32,
+}
+</code></pre>
+<p>We used the <a href="https://docs.rs/cosmwasm-schema/1.3.1/cosmwasm_schema/attr.cw_serde.html"><code>cw_serde</code></a>
+attribute macro here. It expands into multiple derives required by your types in the blockchain environment.</p>
+<p>After creating a response, go to your <code>src/contract.rs</code> file and declare a new <code>query</code>.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use sylvia::types::{InstantiateCtx, QueryCtx};
+use sylvia::{contract, entry_points};
+
+use crate::responses::CountResponse;
+
+pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+}
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+        self.count.save(ctx.deps.storage, &amp;count)?;
+        Ok(Response::default())
+    }
+
+    #[sv::msg(query)]
+    pub fn count(&amp;self, ctx: QueryCtx) -&gt; StdResult&lt;CountResponse&gt; {
+        let count = self.count.load(ctx.deps.storage)?;
+        Ok(CountResponse { count })
+    }
+}
+</code></pre>
+<p>With this done, we can expand our <code>contract</code> macro and see that QueryMsg is generated.</p>
+<pre><code class="language-rust noplayground">#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(
+    sylvia::serde::Serialize,
+    sylvia::serde::Deserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    sylvia::schemars::JsonSchema,
+    cosmwasm_schema::QueryResponses,
+)]
+#[serde(rename_all = &quot;snake_case&quot;)]
+pub enum QueryMsg {
+    #[returns(CountResponse)]
+    Count {},
+}
+impl QueryMsg {
+    pub fn dispatch(
+        self,
+        contract: &amp;CounterContract,
+        ctx: (sylvia::cw_std::Deps, sylvia::cw_std::Env),
+    ) -&gt; std::result::Result&lt;sylvia::cw_std::Binary, sylvia::cw_std::StdError&gt; {
+        use QueryMsg::*;
+        match self {
+            Count {} =&gt; {
+                sylvia::cw_std::to_binary(&amp;contract.count(Into::into(ctx))?).map_err(Into::into)
+            }
+        }
+    }
+    pub const fn messages() -&gt; [&amp;'static str; 1usize] {
+        [&quot;count&quot;]
+    }
+    pub fn count() -&gt; Self {
+        Self::Count {}
+    }
+}
+</code></pre>
+<p>We will ignore <code>#[returns(_)]</code> and <code>cosmwasm_schema::QueryResponses</code> as they will be described later
+when we will talk about generating schema.</p>
+<p><code>QueryMsg</code> is an enum that will contain every <code>query</code> declared in your expanded <code>impl</code>. Thanks to
+that you can focus solely on defining the behavior of the contract on receiving a message, and you
+can leave it to <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> to generate the messages and the <code>dispatch</code>.</p>
+<p>Note that our enum has no type assigned to the only <code>Count</code> variant. Typically
+in Rust, we create variants without additional <code>{}</code> after the variant name. Here the
+curly braces have a purpose. Without them, the variant would serialize to just a string
+type - so instead of <code>{ &quot;admin_list&quot;: {} }</code>, the JSON representation of this variant would be
+<code>&quot;admin_list&quot;</code>.</p>
+<p>Instead of returning the <code>Response</code> type on the success case, we return an arbitrary serializable 
+object. It's because queries are not using a typical actor model message flow - they cannot trigger 
+any actions nor communicate with other contracts in ways different than querying them (which is 
+handled by the <code>deps</code> argument). The query always returns plain data, which should be presented 
+directly to the querier. <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> does that by returning encoded response as
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Binary.html"><code>Binary</code></a> by calling
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/fn.to_binary.html"><code>to_binary</code></a> function in dispatch.</p>
+<p><code>Queries</code> can never alter the internal state of the smart contracts. Because of that, <code>QueryCtx</code> has
+<code>Deps</code> as a field instead of <code>DepsMut</code> as it was in case of <code>InstantiateCtx</code>. It comes with some
+consequences - for example, it is impossible to implement caching for future queries (as it would
+require some data cache to write to).</p>
+<p>The other difference is the lack of the <code>info</code> argument. The reason here is that the entry point 
+which performs actions (like instantiation or execution) can differ in how an action is performed 
+based on the message metadata - for example, they can limit who can perform an action (and do so by
+checking the message <code>sender</code>). It is not a case for queries. Queries are purely to return some
+transformed contract state. It can be calculated based on chain metadata (so the state can
+&quot;automatically&quot; change after some time) but not on message info.</p>
+<p><code>#[entry_points]</code> generates <code>query</code> entry point as in case of <code>instantiate</code> so we don't have to do 
+anything more here.</p>
+<h1 id="next-step"><a class="header" href="#next-step">Next step</a></h1>
+<p>Now, when we have the contract ready to do something, let's go and test it.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../basics/state.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../basics/multitest-intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../basics/state.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../basics/multitest-intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

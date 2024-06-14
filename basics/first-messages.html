@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Generating first messages - The Sylvia Book</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Guide to building CosmWasm smart contracts">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting started</li><li class="chapter-item expanded "><a href="../setting-up-env.html"><strong aria-hidden="true">1.</strong> Setting up the environment</a></li><li class="chapter-item expanded affix "><li class="part-title">Smart contracts</li><li class="chapter-item expanded "><a href="../basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basics/create-project.html"><strong aria-hidden="true">2.1.</strong> Create a Rust project</a></li><li class="chapter-item expanded "><a href="../basics/first-messages.html" class="active"><strong aria-hidden="true">2.2.</strong> Generating first messages</a></li><li class="chapter-item expanded "><a href="../basics/entry-points.html"><strong aria-hidden="true">2.3.</strong> Entry points</a></li><li class="chapter-item expanded "><a href="../basics/building-contract.html"><strong aria-hidden="true">2.4.</strong> Building the contract</a></li><li class="chapter-item expanded "><a href="../basics/state.html"><strong aria-hidden="true">2.5.</strong> Contract state</a></li><li class="chapter-item expanded "><a href="../basics/query.html"><strong aria-hidden="true">2.6.</strong> Creating a query</a></li><li class="chapter-item expanded "><a href="../basics/multitest-intro.html"><strong aria-hidden="true">2.7.</strong> Introducing multitest</a></li><li class="chapter-item expanded "><a href="../basics/execute.html"><strong aria-hidden="true">2.8.</strong> Execution messsages</a></li><li class="chapter-item expanded "><a href="../basics/error_handling.html"><strong aria-hidden="true">2.9.</strong> Error handling</a></li><li class="chapter-item expanded "><a href="../basics/reusability.html"><strong aria-hidden="true">2.10.</strong> Interfaces</a></li><li class="chapter-item expanded "><a href="../basics/remote.html"><strong aria-hidden="true">2.11.</strong> Remote type</a></li><li class="chapter-item expanded "><a href="../basics/good-practices.html"><strong aria-hidden="true">2.12.</strong> Good practices</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced.html"><strong aria-hidden="true">3.</strong> Advanced</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced/entry_points_overriding.html"><strong aria-hidden="true">3.1.</strong> Override entry point</a></li><li class="chapter-item expanded "><a href="../advanced/custom.html"><strong aria-hidden="true">3.2.</strong> Custom messages</a></li><li class="chapter-item expanded "><a href="../advanced/generics.html"><strong aria-hidden="true">3.3.</strong> Generics</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Ibc</div></li><li class="chapter-item expanded affix "><a href="../impressum.html">Legal Information</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Sylvia Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="generating-first-messages"><a class="header" href="#generating-first-messages">Generating first messages</a></h1>
+<p>We have set up our dependencies. Now let's use them to create simple messages.</p>
+<h2 id="creating-an-instantiation-message"><a class="header" href="#creating-an-instantiation-message">Creating an instantiation message</a></h2>
+<p>For this step we will create a new file:</p>
+<ul>
+<li><code>src/contract.rs</code> - here, we will define our messages and behavior of the contract upon receiving
+them</li>
+</ul>
+<p>Add this module to <code>src/lib.rs</code>. You want it to be public, as users might want to get access to
+types stored inside your contract.</p>
+<pre><code class="language-rust noplayground">pub mod contract;
+</code></pre>
+<p>Now let's create an <code>instantiate</code> method for our contract. In <code>src/contract.rs</code></p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use sylvia::contract;
+use sylvia::types::InstantiateCtx;
+
+pub struct CounterContract;
+
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>So what is going on here? First, we define the CounterContract struct. It is empty right now but 
+later when we learn about states, we will use its fields to store them.
+We mark the <code>impl</code> block with <a href="https://docs.rs/sylvia/0.7.0/sylvia/attr.contract.html"><code>contract</code></a>
+attribute macro. It will parse every method inside the <code>impl</code> block marked with the <code>[sv::msg(...)]</code> 
+attribute and create proper messages and utilities like <code>multitest helpers</code> for them.
+More on them later.</p>
+<p><code>CosmWasm</code> contract requires only the <code>instantiate</code> entry point, and it is mandatory to specify
+it for the <code>contract</code> macro. We have to provide it with the proper context type 
+<a href="https://docs.rs/sylvia/0.7.0/sylvia/types/struct.InstantiateCtx.html"><code>InstantiateCtx</code></a>.</p>
+<p>Context gives us access to the blockchain state, information about our contract, and the sender of the 
+message. We return the <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/type.StdResult.html"><code>StdResult</code></a>
+which uses standard <code>CosmWasm</code> error 
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/enum.StdError.html"><code>StdError</code></a>.
+It's generic over <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Response.html"><code>Response</code></a>.
+For now, we will return the <code>default</code> value of it.</p>
+<p>I recommend expanding the macro now and seeing what <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> generates.
+It might be overwhelming, as there will be a lot of things generated that seem not relevant to our code,
+so for the bare minimum check the <code>InstantiateMsg</code> and its <code>impl</code> block.</p>
+<h2 id="next-step"><a class="header" href="#next-step">Next step</a></h2>
+<p>If we build our contract with command:</p>
+<pre><code class="language-shell">contract $ cargo build --release --target wasm32-unknown-unknown --lib
+</code></pre>
+<p>and then run:</p>
+<pre><code class="language-shell">contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+</code></pre>
+<p><strong>IT WILL FAIL</strong> with message:</p>
+<pre><code class="language-shell">Available capabilities: {&quot;cosmwasm_1_2&quot;, &quot;iterator&quot;, &quot;staking&quot;, &quot;stargate&quot;, &quot;cosmwasm_1_1&quot;, &quot;cosmwasm_1_3&quot;}
+
+target/wasm32-unknown-unknown/release/contract.wasm: failure
+Error during static Wasm validation: Wasm contract doesn't have required export: &quot;instantiate&quot;. Exports required by VM: [&quot;allocate&quot;, &quot;deallocate&quot;, &quot;instantiate&quot;].
+
+Passes: 0, failures: 1
+</code></pre>
+<p>This is because our contract <strong>IS NOT YET COMPLETE</strong>. We defined the message that could be sent to it but
+didn't provide any <code>entry_point</code>. In the next chapter, we will finally make it a proper contract.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../basics/create-project.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../basics/entry-points.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../basics/create-project.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../basics/entry-points.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
