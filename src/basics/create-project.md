@@ -20,7 +20,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 cosmwasm-std = { version = "1.3.1", features = ["staking"] }
-sylvia = "0.7.0"
+sylvia = "1.0.2"
 schemars = "0.8.12"
 cosmwasm-schema = "1.3.1"
 serde = "1.0.180"
