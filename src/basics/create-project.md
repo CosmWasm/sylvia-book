@@ -21,9 +21,9 @@ crate-type = ["cdylib"]
 [dependencies]
 cosmwasm-std = { version = "2.0.4", features = ["staking"] }
 sylvia = "1.0.2"
-schemars = "0.8.12"
+schemars = "0.8.16"
 cosmwasm-schema = "2.0.4"
-serde = "1.0.180"
+serde = { version = "1.0.198", default-features = false, features = ["derive"] }
 ```
 
 As you can see, I added a `crate-type` field for the library section.
