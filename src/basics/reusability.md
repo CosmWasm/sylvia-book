@@ -156,7 +156,7 @@ pub trait Whitelist {
 }
 ```
 
-We annotate interfaces with [`interface`](https://docs.rs/sylvia/0.7.0/sylvia/attr.interface.html)
+We annotate interfaces with [`interface`](https://docs.rs/sylvia/latest/sylvia/attr.interface.html)
 attribute macro. It expects us to declare the associated type `Error`. This will help us later as 
 otherwise we would have to either expect `StdError` or our custom error in the return type,
 but we don't know what contracts will use this interface.

@@ -38,7 +38,7 @@ Additionally, we added some core dependencies for smart contracts:
 standard library for smart contracts. It provides essential utilities for communication with the
 outside world, helper functions, and types. Every smart contract we will build will
 use this dependency.
-- [`sylvia`](https://docs.rs/sylvia/0.9.3/sylvia/) - Crate, we will learn in this
+- [`sylvia`](https://docs.rs/sylvia/latest/sylvia/) - Crate, we will learn in this
 book. It provides us with three procedural macros: `entry_points`, `contract` and `interface`.
 I will expand on them later in the book. 
 - [`schemars`](https://docs.rs/schemars/0.8.12/schemars/index.html) - Crate used to create JSON

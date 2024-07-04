@@ -25,8 +25,10 @@
 
 - [Advanced](advanced.md)
   - [Override entry point](advanced/entry_points_overriding.md)
+  - [Sudo entry point](advanced/sudo.md)
   - [Custom messages](advanced/custom.md)
   - [Generics](advanced/generics.md)
+  - [Attributes forwarding](advanced/attributes_forwarding.md)
 
 - [Ibc]()
 
