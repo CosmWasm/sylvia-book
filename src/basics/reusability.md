@@ -220,7 +220,8 @@ impl Whitelist for CounterContract {
 Nothing extra here. We just implement the `Whitelist` trait on our `CounterContract` like
 we would implement any other trait.
 
-The last thing we have to do is to add the `messages` attribute to our contract:
+The last thing we have to do is to add the `messages` attribute to our contract along with
+a new field `admins`:
 
 ```rust,noplayground
 #use cosmwasm_std::{Addr, Response, StdResult};
@@ -231,22 +232,24 @@ The last thing we have to do is to add the `messages` attribute to our contract:
 #use crate::error::ContractError;
 #use crate::responses::CountResponse;
 #
-#pub struct CounterContract {
-#    pub(crate) count: Item<u32>,
-#    pub(crate) admins: Map<Addr, ()>,
-#}
+pub struct CounterContract {
+    pub(crate) count: Item<u32>,
+    pub(crate) admins: Map<Addr, ()>,
+}
+
 #
 #[entry_points]
 #[contract]
 #[sv::error(ContractError)]
 #[sv::messages(crate::whitelist as Whitelist)]
 impl CounterContract {
-#    pub const fn new() -> Self {
-#        Self {
-#            count: Item::new("count"),
-#            admins: Map::new("admins"),
-#        }
-#    }
+    pub const fn new() -> Self {
+        Self {
+            count: Item::new("count"),
+            admins: Map::new("admins"),
+        }
+    }
+    // [...]
 #
 #    #[sv::msg(instantiate)]
 #    pub fn instantiate(&self, ctx: InstantiateCtx, count: u32) -> StdResult<Response> {

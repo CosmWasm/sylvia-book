@@ -23,15 +23,16 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-cosmwasm-std = { version = "1.3.1", features = ["staking"] }
-sylvia = "0.7.0"
-schemars = "0.8.12"
-cosmwasm-schema = "1.3.1"
+cosmwasm-std = { version = "2.0.4", features = ["staking"] }
+sylvia = "1.1.0"
+schemars = "0.8.16"
+cosmwasm-schema = "2.0.4"
 serde = "1.0.180"
-cw-storage-plus = "1.1.0"
+cw-storage-plus = "2.0.0"
 
 [dev-dependencies]
-sylvia = { version = "0.7.0", features = ["mt"] }
+sylvia = { version = "1.1.0", features = ["mt"] }
+cw-multi-test = { version = "2.1.0", features = ["staking"] }
 ```
 
 ## Creating a module for tests

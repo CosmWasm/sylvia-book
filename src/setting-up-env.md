@@ -27,7 +27,7 @@ If the installation succeeds, you can execute the utility from your command line
 
 ```shell
 $ cosmwasm-check --version
-Contract checking 1.4.1
+Contract checking 2.0.4
 ```
 
 ## Verifying the installation
