@@ -8,12 +8,12 @@ like `execute` and `query`.
 
 ## Example
 
-To make ^sylvia generate multitest helpers with `cusom_entrypoint` support, you first need to define your
+To make ^sylvia generate multitest helpers with `custom_entrypoint` support, you first need to define your
 `entry point`.
 
 ```rust,noplayground
 #[entry_point]
-pub fn cusom_entrypoint(deps: DepsMut, _env: Env, _msg: SudoMsg) -> StdResult<Response> {
+pub fn custom_entrypoint(deps: DepsMut, _env: Env, _msg: SudoMsg) -> StdResult<Response> {
     CounterContract::new().counter.save(deps.storage, &3)?;
     Ok(Response::new())
 }

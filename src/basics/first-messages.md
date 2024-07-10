@@ -73,3 +73,13 @@ and then run:
 ```shell
 contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
 ```
+
+The output should look like this:
+
+```shell
+Available capabilities: {"stargate", "staking", "cosmwasm_1_3", "cosmwasm_2_0", "cosmwasm_1_1", "cosmwasm_1_2", "cosmwasm_1_4", "iterator"}
+
+target/wasm32-unknown-unknown/release/contract.wasm: pass
+
+All contracts (1) passed checks!
+```

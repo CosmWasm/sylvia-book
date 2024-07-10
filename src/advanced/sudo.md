@@ -3,8 +3,9 @@
 Sylvia supports a `sudo` type entry point both in interfaces and in
 contracts. Those methods can be used as a part of the network's
 governance procedures. More informations can be found in official
-CosmWasm documentation. From ^sylvia user point of view there's no
-much difference between `sudo` and `exec` methods.
+[CosmWasm documentation](https://cosmwasm-docs.vercel.app/core/entrypoints/sudo).
+From ^sylvia user point of view there's no much difference between `sudo`
+and `exec` methods.
 
 ## Example
 

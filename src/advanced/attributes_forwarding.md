@@ -1,9 +1,8 @@
 # Attributes forwarding
 
-This feature allows ^sylvia users to forward any attribute to every message
-type using `#[sv::msg_attr(msg_type, ...)]` attribute. For the messages
-that resolves to enum types it is possible to forward attributes per
-enum field by using `#[sv::attr(...)]` - this works for `exec`, `query`
+This feature allows ^sylvia users to forward any attribute to any message
+type using `#[sv::msg_attr(msg_type, ...)]` attribute.
+For the messages that resolves to enum types it is possible to forward attributes to their specific variants by using `#[sv::attr(...)]` on top of the appropriate method - this works for `exec`, `query`
 and `sudo` methods.
 
 ## Example

@@ -75,7 +75,7 @@ use sylvia::types::Remote;
 use crate::contract::sv::Executor;
 
 let increment_msg: WasmMsg = Remote::<CounterContract>::new(addr)
-    .executor(&ctx.deps.querier)
+    .executor()
     .increment_count()?
     .build();
 ```
