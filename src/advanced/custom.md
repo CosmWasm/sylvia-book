@@ -1,7 +1,5 @@
 # Custom messages
 
-*Since version 0.8.0.*
-
 Blockchain creators might define chain-specific logic triggered through defined by them messages.
 `CosmWasm` provides a way to send such messages through `cosmwasm_std::CosmosMsg::Custom(..)` variant.
 
@@ -146,8 +144,6 @@ Now that we have defined the interfaces, we can implement them on the contract. 
 cast `Response<Custom>` to `Response<Empty>` or `Deps<Empty>` to `Deps<Custom>`, implementation of the custom interface
 on non-custom contracts is not possible. It is possible, however, to implement a non-custom interface on a custom contract.
 
-Implementation of chain-specific custom interfaces is simple. We have to pass the `sv::custom(..)` attribute once again.
-
 To implement the interface with the associated type, we have to assign types for them.
 Because the type of `ExecC` and `QueryC` is defined by the user, the interface is reusable in the context of
 different chains.
@@ -247,9 +243,6 @@ impl NonCustom for CustomContract {
     }
 }
 ```
-
-As you can see, although it's non-custom, we still have to inform ^sylvia custom types from the contract.
-It's required for the `MultiTest` helpers to be generic over the same types as the contract.
 
 Let's add the last `messages` attribute to the contract. It has to end with `: custom(msg query)`. This way ^sylvia
 will know that it has to cast `Response<Custom>` to `Response<Empty>` for `msg` and `Deps<Custom>` to `Deps<Empty>` for `query`.

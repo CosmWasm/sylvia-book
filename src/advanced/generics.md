@@ -17,17 +17,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sylvia = "0.9.0"
-cosmwasm-std = "1.5"
-schemars = "0.8"
+sylvia = "1.1.0"
+cosmwasm-std = "2.0.4"
+schemars = "0.8.16"
 serde = "1"
-cosmwasm-schema = "1.5"
-cw-storage-plus = "1.1.0"
+cosmwasm-schema = "2.0.4"
+cw-storage-plus = "2.0.0"
 
 [dev-dependencies]
 anyhow = "1.0"
-cw-multi-test = "0.16"
-sylvia = { version = "0.9.0", features = ["mt"] }
+cw-multi-test = "2.1.0"
+sylvia = { version = "1.1.0", features = ["mt"] }
 ```
 
 ## Generics in interface
@@ -101,12 +101,10 @@ impl NonGenericContract {
 
 We are set and ready to implement the interface.
 
-`src/associated_impl.rs`
+`src/associated.rs`
 ```rust
-use cosmwasm_std::{Response, StdError, StdResult};
-use sylvia::types::{ExecCtx, QueryCtx};
+// [...]
 
-use crate::associated::Associated;
 use crate::contract::NonGenericContract;
 use crate::messages::MyMsg;
 
@@ -132,7 +130,6 @@ main `sylvia::contract` call about it.
 
 `src/contract.rs`
 ```rust
-use crate::messages::MyMsg;
 use cosmwasm_std::{Response, StdResult};
 use sylvia::contract;
 use sylvia::types::InstantiateCtx;
@@ -140,7 +137,7 @@ use sylvia::types::InstantiateCtx;
 pub struct NonGenericContract;
 
 #[contract]
-#[sv::messages(crate::associated<MyMsg, MyMsg> as Associated)]
+#[sv::messages(crate::associated as Associated)]
 impl NonGenericContract {
     pub const fn new() -> Self {
         Self {}
@@ -154,12 +151,6 @@ impl NonGenericContract {
 ```
 
 As in case of regular interface, we have to add the `messages` attribute to the contract.
-However because the interface has associated types, we have to pass the types to the `messages`.
-We do that by adding them in the `<>` brackets after the path to the interface module.
-
-In this case we passed concrete types, but it is also possible to pass generic types
-defined on the contract.
-More on that in the next paragraph.
 
 ## Generic contract
 
@@ -175,6 +166,7 @@ Let us define a new module in which we will define a generic contract.
 ```rust
 use cosmwasm_std::{Response, StdResult};
 use cw_storage_plus::Item;
+use serde::Deserialize;
 use std::marker::PhantomData;
 use sylvia::contract;
 use sylvia::types::{CustomMsg, InstantiateCtx};
@@ -187,7 +179,7 @@ pub struct GenericContract<DataType, InstantiateParam> {
 #[contract]
 impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
 where
-    InstantiateParam: CustomMsg + 'static,
+    for<'msg_de> InstantiateParam: CustomMsg + Deserialize<'msg_de> + 'msg_de,
     for<'data> DataType: 'data,
 {
     pub const fn new() -> Self {
@@ -224,15 +216,10 @@ Just like that, we created a generic contract.
 
 Now that we have the generic contract, let's implement an interface from previous paragraphs on it.
 
-`src/associated_impl.rs`
+`src/associated.rs`
 ```rust
-use cosmwasm_std::{Response, StdError, StdResult};
-use sylvia::contract;
-use sylvia::types::{ExecCtx, QueryCtx};
-
-use crate::associated::Associated;
+// [...]
 use crate::generic_contract::GenericContract;
-use crate::messages::MyMsg;
 
 impl<DataType, InstantiateParam> Associated for GenericContract<DataType, InstantiateParam> {
     type Error = StdError;
@@ -249,19 +236,16 @@ impl<DataType, InstantiateParam> Associated for GenericContract<DataType, Instan
 }
 ```
 
-Only thing missing is to add the `messages` attribute to the contract implementation.
-It is the same as in case of the non generic contract so we will skip it.
-
 Implementing a generic interface on the generic contract is very similar to implementing it on a regular one.
 The only change is to pass the generics into the contract.
 
 `src/generic_contract.rs`
 ```rust
 #[contract]
-#[sv::messages(crate::associated<MyMsg, MyMsg> as Associated)]
+#[sv::messages(crate::associated as Associated)]
 impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
 where
-    InstantiateParam: CustomMsg + 'static,
+    for<'msg_de> InstantiateParam: CustomMsg + Deserialize<'msg_de> + 'msg_de,
     for<'data> DataType: 'data,
 {
     ..
@@ -307,14 +291,10 @@ where
 
 The implementation of the interface should look like this:
 
-`src/associated_impl.rs`
+`src/associated.rs`
 ```rust
-use cosmwasm_std::{Response, StdError, StdResult};
-use sylvia::contract;
-use sylvia::types::{CustomMsg, ExecCtx, QueryCtx};
-
-use crate::associated::Associated;
-use crate::generic_contract::GenericContract;
+// [...]
+use crate::forward_contract::ForwardContract;
 
 impl<ExecParam, QueryParam> Associated for ForwardContract<ExecParam, QueryParam>
 where
@@ -340,7 +320,7 @@ And as always, we have to add the `messages` attribute to the contract implement
 `src/forward_contract.rs`
 ```rust
 #[contract]
-#[sv::messages(crate::associated<ExecParam, QueryParam> as Associated)]
+#[sv::messages(crate::associated as Associated)]
 impl<ExecParam, QueryParam> ForwardContract<ExecParam, QueryParam>
 where
     ExecParam: CustomMsg + 'static,
@@ -375,7 +355,7 @@ pub struct GenericContract<DataType, InstantiateParam> {
 
 #[entry_points(generics<String, MyMsg>)]
 #[contract]
-#[sv::messages(crate::associated<MyMsg, MyMsg> as Associated)]
+#[sv::messages(crate::associated as Associated)]
 impl<DataType, InstantiateParam> GenericContract<DataType, InstantiateParam>
 where
     InstantiateParam: CustomMsg + 'static,
@@ -409,7 +389,7 @@ Similar to defining a contract, we have to create a `App` with the `cw_multi
 
 `src/contract.rs`
 ```rust
-...
+// [...]
 
 #[cfg(test)]
 mod tests {
@@ -419,11 +399,12 @@ mod tests {
     use crate::messages::MyMsg;
 
     use super::sv::mt::CodeId;
+    use super::GenericContract;
 
     #[test]
     fn instantiate_contract() {
         let app = App::default();
-        let code_id: CodeId<String, MyMsg, _> = CodeId::store_code(&app);
+        let code_id: CodeId<GenericContract<String, MyMsg>, _> = CodeId::store_code(&app);
 
         let owner = "owner".into_addr();
 
@@ -437,10 +418,7 @@ mod tests {
 }
 ```
 
-While creating the `CodeId` we have to pass the types we want to use in the contract.
-It seems strange that `CodeId` is generic over three types while we defined only two,
-but `CodeId` is also generic over `MtApp` (`cw-multi-test::App`). The compiler will always deduce this type from
-the `app` passed to it, so don't worry and pass a placeholder there.
+While creating the `CodeId` we have to pass the contract type as generic parameter.
 
 Perfect! We have learned how to create generic contracts and interfaces.
 Good luck applying this knowledge to your projects!
