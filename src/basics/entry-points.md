@@ -17,7 +17,7 @@ To start, we will go with three basic entry points:
 
 ## Generate entry points
 
-^Sylvia provides an attribute macro named [`entry_points`](https://docs.rs/sylvia/0.7.0/sylvia/attr.entry_points.html).
+^Sylvia provides an attribute macro named [`entry_points`](https://docs.rs/sylvia/latest/sylvia/attr.entry_points.html).
 In most cases, your entry point will just dispatch received messages to the handler,
 so it's not necessary to manually create them, and we can rely on a macro to do that for us.
 

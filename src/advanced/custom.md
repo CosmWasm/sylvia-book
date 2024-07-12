@@ -1,7 +1,5 @@
 # Custom messages
 
-*Since version 0.8.0.*
-
 Blockchain creators might define chain-specific logic triggered through defined by them messages.
 `CosmWasm` provides a way to send such messages through `cosmwasm_std::CosmosMsg::Custom(..)` variant.
 
@@ -59,6 +57,23 @@ pub trait SvCustom {
 
     #[sv::msg(query)]
     fn sv_custom_query(&self, ctx: QueryCtx<ExternalQuery>) -> Result<String, Self::Error>;
+}
+
+use crate::contract::CustomContract;
+
+impl SvCustom for CustomContract {
+    type Error = StdError;
+
+    fn sv_custom_exec(
+        &self,
+        _ctx: ExecCtx<ExternalQuery>,
+    ) -> Result<Response<ExternalMsg>, Self::Error> {
+        Ok(Response::new())
+    }
+
+    fn sv_custom_query(&self, _ctx: QueryCtx<ExternalQuery>) -> Result<String, Self::Error> {
+        Ok(String::default())
+    }
 }
 ```
 
@@ -129,59 +144,22 @@ Now that we have defined the interfaces, we can implement them on the contract. 
 cast `Response<Custom>` to `Response<Empty>` or `Deps<Empty>` to `Deps<Custom>`, implementation of the custom interface
 on non-custom contracts is not possible. It is possible, however, to implement a non-custom interface on a custom contract.
 
-Implementation of chain-specific custom interfaces is simple. We have to pass the `sv::custom(..)` attribute once again.
-
-`src/sv_custom.rs`
-```rust
-use super::SvCustom;
-use crate::contract::CustomContract;
-use crate::messages::{ExternalMsg, ExternalQuery};
-use cosmwasm_std::{Response, StdError};
-use sylvia::contract;
-use sylvia::types::{ExecCtx, QueryCtx};
-
-#[contract(module=crate::contract)]
-#[sv::messages(crate::sv_custom as SvCustom)]
-#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
-impl SvCustom for CustomContract {
-    type Error = StdError;
-
-    #[sv::msg(exec)]
-    fn sv_custom_exec(
-        &self,
-        _ctx: ExecCtx<ExternalQuery>,
-    ) -> Result<Response<ExternalMsg>, Self::Error> {
-        Ok(Response::new())
-    }
-
-    #[sv::msg(query)]
-    fn sv_custom_query(&self, _ctx: QueryCtx<ExternalQuery>) -> Result<String, Self::Error> {
-        Ok(String::default())
-    }
-}
-```
-
 To implement the interface with the associated type, we have to assign types for them.
 Because the type of `ExecC` and `QueryC` is defined by the user, the interface is reusable in the context of
 different chains.
 
 `src/associated.rs`
 ```rust
-use super::Associated;
+// [...]
+
 use crate::contract::CustomContract;
 use crate::messages::{ExternalMsg, ExternalQuery};
-use cosmwasm_std::{Response, StdError};
-use sylvia::contract;
-use sylvia::types::{ExecCtx, QueryCtx};
 
-#[contract(module=crate::contract)]
-#[sv::messages(crate::associated as Associated)]
 impl Associated for CustomContract {
     type Error = StdError;
     type ExecC = ExternalMsg;
     type QueryC = ExternalQuery;
 
-    #[sv::msg(exec)]
     fn associated_exec(
         &self,
         _ctx: ExecCtx<Self::QueryC>,
@@ -189,7 +167,6 @@ impl Associated for CustomContract {
         Ok(Response::new())
     }
 
-    #[sv::msg(query)]
     fn associated_query(&self, _ctx: QueryCtx<Self::QueryC>) -> Result<String, Self::Error> {
         Ok(String::default())
     }
@@ -251,35 +228,21 @@ pub trait NonCustom {
     fn non_custom_query(&self, ctx: QueryCtx) -> Result<String, Self::Error>;
 }
 
-pub mod impl_non_custom {
-    use crate::contract::CustomContract;
-    use cosmwasm_std::{Response, StdError};
-    use sylvia::contract;
-    use sylvia::types::{ExecCtx, QueryCtx};
+use crate::contract::CustomContract;
 
-    use super::NonCustom;
 
-    #[contract(module=crate::contract)]
-    #[sv::messages(crate::non_custom as NonCustom)]
-    #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
-    impl NonCustom for CustomContract {
-        type Error = StdError;
+impl NonCustom for CustomContract {
+    type Error = StdError;
 
-        #[sv::msg(exec)]
-        fn non_custom_exec(&self, _ctx: ExecCtx) -> Result<Response, Self::Error> {
-            Ok(Response::new())
-        }
+    fn non_custom_exec(&self, _ctx: ExecCtx) -> Result<Response, Self::Error> {
+        Ok(Response::new())
+    }
 
-        #[sv::msg(query)]
-        fn non_custom_query(&self, _ctx: QueryCtx) -> Result<String, Self::Error> {
-            Ok(String::default())
-        }
+    fn non_custom_query(&self, _ctx: QueryCtx) -> Result<String, Self::Error> {
+        Ok(String::default())
     }
 }
 ```
-
-As you can see, although it's non-custom, we still have to inform ^sylvia custom types from the contract.
-It's required for the `MultiTest` helpers to be generic over the same types as the contract.
 
 Let's add the last `messages` attribute to the contract. It has to end with `: custom(msg query)`. This way ^sylvia
 will know that it has to cast `Response<Custom>` to `Response<Empty>` for `msg` and `Deps<Custom>` to `Deps<Empty>` for `query`.
@@ -296,7 +259,7 @@ pub struct CustomContract;
 #[contract]
 #[sv::messages(crate::sv_custom as SvCustomInterface)]
 #[sv::messages(crate::associated as AssociatedInterface)]
-#[sv::messages(crate::non_custom as NonCustom: custom(msg query))]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg, query))]
 #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
 impl CustomContract {
     pub const fn new() -> Self {
@@ -336,7 +299,7 @@ pub struct CustomContract;
 #[contract]
 #[sv::messages(crate::sv_custom as SvCustomInterface)]
 #[sv::messages(crate::associated as AssociatedInterface)]
-#[sv::messages(crate::non_custom as NonCustom: custom(msg query))]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg, query))]
 #[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
 impl CustomContract {
     pub const fn new() -> Self {
@@ -382,7 +345,7 @@ We are only interested in `execute` and `query` methods in our example. In case 
 ```rust
 use cosmwasm_schema::schemars::JsonSchema;
 use cosmwasm_std::{
-    to_binary, Addr, Api, Binary, BlockInfo, CustomQuery, Empty, Querier, StdResult, Storage,
+    to_json_binary, Addr, Api, Binary, BlockInfo, CustomQuery, Empty, Querier, StdResult, Storage
 };
 use cw_multi_test::{AppResponse, CosmosRouter, Module};
 use cw_storage_plus::Item;
@@ -459,7 +422,7 @@ impl Module for CustomModule {
         match request {
             ExternalQuery::IsPoked {} => {
                 let is_poked = self.is_poked.load(storage)?;
-                to_binary(&is_poked).map_err(Into::into)
+                to_json_binary(&is_poked).map_err(Into::into)
             }
         }
     }
@@ -476,14 +439,15 @@ Running `poke` on our contract will send the `ExternalMsg::Poke`, which `App` wi
 
 `src/multitest/tests.rs`
 ```rust
+use cw_multi_test::IntoBech32;
 use sylvia::multitest::App;
 
-use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::contract::sv::mt::{CodeId, CustomContractProxy};
 use crate::multitest::custom_module::CustomModule;
 
 #[test]
 fn test_custom() {
-    let owner = "owner".into_addr();
+    let owner = "owner".into_bech32();
 
     let mt_app = cw_multi_test::BasicAppBuilder::new_custom()
         .with_custom(CustomModule::new())

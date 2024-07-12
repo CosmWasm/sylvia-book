@@ -60,18 +60,18 @@ crate-type = ["cdylib", "rlib"]
 library = []
 
 [dependencies]
-cosmwasm-std = { version = "1.1", features = ["staking"] }
-cosmwasm-schema = "1.1.6"
+cosmwasm-std = { version = "2.0.4", features = ["staking"] }
+cosmwasm-schema = "2.0.4"
 serde = { version = "1.0.147", features = ["derive"] }
-sylvia = "0.2.1"
-schemars = "0.8.11"
+sylvia = "1.1.0"
+schemars = "0.8.16"
 thiserror = "1.0.37"
-cw-storage-plus = "0.16.0"
-cw-utils = "0.16"
+cw-storage-plus = "2.0.0"
+cw-utils = "2.0.0"
 
 [dev-dependencies]
 anyhow = "1"
-cw-multi-test = "0.16"
+cw-multi-test = "2.1.0"
 ```
 
 I added `rlib`. `cdylib` crates cannot be used as typical Rust dependencies. As a consequence, it is
@@ -123,37 +123,6 @@ The `--lib` flag added to wasm cargo aliases tells the toolchain to build only t
 would skip building any binaries. Additionally, I added the convenience schema alias to
 generate schema calling simply cargo schema.
 
-If you are using `cw-utils` in version `1.0` `cargo wasm` command will still fail because of the
-dependency to [`getrandom`](https://docs.rs/getrandom/latest/getrandom/#) crate. To fix the
-`wasm` compilation, you have to add yet another dependency to our `Cargo.toml`:
-
-```toml,noplayground
-[package]
-name = "contract"
-version = "0.1.0"
-edition = "2021"
-
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-cosmwasm-std = { version = "1.1", features = ["staking"] }
-cosmwasm-schema = "1.1.6"
-serde = { version = "1.0.147", features = ["derive"] }
-sylvia = "0.2.1"
-schemars = "0.8.11"
-cw-storage-plus = "1.0"
-thiserror = "1.0.37"
-cw-utils = "1.0"
-getrandom = { version = "0.2", features = ["js"] }
-
-[dev-dependencies]
-anyhow = "1"
-cw-multi-test = "0.16"
-```
-
-With this last tweak, `cargo wasm` should compile correctly.
-
 ## Disabling entry points for libraries
 
 Since we added the `rlib` target for the contract, it is, as mentioned before, usable as a
@@ -173,17 +142,21 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[features]
+library = []
+
 [dependencies]
-cosmwasm-std = { version = "1.3.1", features = ["staking"] }
-sylvia = { path = "../../confio/sylvia/sylvia" }
-schemars = "0.8.12"
-cosmwasm-schema = "1.3.1"
+cosmwasm-std = { version = "2.0.4", features = ["staking"] }
+sylvia = "1.1.0"
+schemars = "0.8.16"
+cosmwasm-schema = "2.0.4"
 serde = "1.0.180"
-cw-storage-plus = "1.1.0"
+cw-storage-plus = "2.0.0"
 thiserror = "1.0.44"
 
 [dev-dependencies]
-sylvia = { path = "../../confio/sylvia/sylvia", features = ["mt"] }
+sylvia = { version = "1.1.0", features = ["mt"] }
+cw-multi-test = "2.1.0"
 ```
 
 This way, we created a new feature flag for our crate. Now we want to disable the `entry_points`
