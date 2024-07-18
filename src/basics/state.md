@@ -42,8 +42,8 @@ pub struct CounterContract {
     pub(crate) count: Item<u32>,
 }
 
-#[contract]
 #[entry_points]
+#[contract]
 impl CounterContract {
     pub const fn new() -> Self {
         Self {
@@ -83,8 +83,8 @@ pub struct CounterContract {
     pub(crate) count: Item<u32>,
 }
 
-#[contract]
 #[entry_points]
+#[contract]
 impl CounterContract {
     pub const fn new() -> Self {
         Self {
