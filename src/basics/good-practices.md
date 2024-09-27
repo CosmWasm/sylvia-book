@@ -81,7 +81,7 @@ The next step is to create a tool generating actual schemas. We will do it by cr
 our crate. Create a new `bin/schema.rs` file:
 
 ```rust,noplayground
-use contract::contract::{ContractExecMsg, ContractQueryMsg, InstantiateMsg};
+use contract::contract::sv::{ContractExecMsg, ContractQueryMsg, InstantiateMsg};
 use cosmwasm_schema::write_api;
 
 fn main() {
