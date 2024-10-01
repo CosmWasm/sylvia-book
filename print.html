@@ -1,0 +1,2663 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The Sylvia Book</title>
+        <meta name="robots" content="noindex" />
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Guide to building CosmWasm smart contracts">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting started</li><li class="chapter-item expanded "><a href="setting-up-env.html"><strong aria-hidden="true">1.</strong> Setting up the environment</a></li><li class="chapter-item expanded affix "><li class="part-title">Smart contracts</li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="basics/create-project.html"><strong aria-hidden="true">2.1.</strong> Create a Rust project</a></li><li class="chapter-item expanded "><a href="basics/first-messages.html"><strong aria-hidden="true">2.2.</strong> Generating first messages</a></li><li class="chapter-item expanded "><a href="basics/entry-points.html"><strong aria-hidden="true">2.3.</strong> Entry points</a></li><li class="chapter-item expanded "><a href="basics/building-contract.html"><strong aria-hidden="true">2.4.</strong> Building the contract</a></li><li class="chapter-item expanded "><a href="basics/state.html"><strong aria-hidden="true">2.5.</strong> Contract state</a></li><li class="chapter-item expanded "><a href="basics/query.html"><strong aria-hidden="true">2.6.</strong> Creating a query</a></li><li class="chapter-item expanded "><a href="basics/multitest-intro.html"><strong aria-hidden="true">2.7.</strong> Introducing multitest</a></li><li class="chapter-item expanded "><a href="basics/execute.html"><strong aria-hidden="true">2.8.</strong> Execution messsages</a></li><li class="chapter-item expanded "><a href="basics/error_handling.html"><strong aria-hidden="true">2.9.</strong> Error handling</a></li><li class="chapter-item expanded "><a href="basics/reusability.html"><strong aria-hidden="true">2.10.</strong> Interfaces</a></li><li class="chapter-item expanded "><a href="basics/remote.html"><strong aria-hidden="true">2.11.</strong> Remote type</a></li><li class="chapter-item expanded "><a href="basics/good-practices.html"><strong aria-hidden="true">2.12.</strong> Good practices</a></li></ol></li><li class="chapter-item expanded "><a href="advanced.html"><strong aria-hidden="true">3.</strong> Advanced</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="advanced/entry_points_overriding.html"><strong aria-hidden="true">3.1.</strong> Override entry point</a></li><li class="chapter-item expanded "><a href="advanced/sudo.html"><strong aria-hidden="true">3.2.</strong> Sudo entry point</a></li><li class="chapter-item expanded "><a href="advanced/custom.html"><strong aria-hidden="true">3.3.</strong> Custom messages</a></li><li class="chapter-item expanded "><a href="advanced/generics.html"><strong aria-hidden="true">3.4.</strong> Generics</a></li><li class="chapter-item expanded "><a href="advanced/attributes_forwarding.html"><strong aria-hidden="true">3.5.</strong> Attributes forwarding</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Ibc</div></li><li class="chapter-item expanded affix "><a href="impressum.html">Legal Information</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Sylvia Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>This book is a guide for creating CosmWasm smart contracts with the <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> framework.
+It will lead you step by step and explain relevant topics from easiest to trickiest.</p>
+<p>The idea of the book is not only to tell you about smart contract development but also
+to show you how to do it clean and maintainable. I will show you some good practices
+for using <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>.</p>
+<p>This book is not meant to teach you about the <code>CosmWasm</code>.
+To learn about that, read <a href="https://book.cosmwasm.com">The CosmWasm Book</a>.</p>
+<blockquote>
+<p><strong>NOTE</strong>: This book covers <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> in version <strong>1.1.x</strong>.</p>
+</blockquote>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<p>This book explores CosmWasm smart contracts.
+It is not intended to be a Rust tutorial, and it assumes a basic Rust knowledge.
+As you will probably learn it alongside this book, I recommend first grasping the language.
+You can find great resources to start with Rust on <a href="https://www.rust-lang.org/learn">Learn Rust</a> page.</p>
+<h2 id="cosmwasm-api-documentation"><a class="header" href="#cosmwasm-api-documentation">CosmWasm API documentation</a></h2>
+<p>This is the guide-like documentation. If you are looking for the API documentation,
+you may be interested in checking one of the following:</p>
+<ul>
+<li><a href="https://crates.io/crates/cosmwasm-std">cosmwasm-std</a></li>
+<li><a href="https://crates.io/crates/cw-storage-plus">cw-storage-plus</a></li>
+<li><a href="https://crates.io/crates/cw-multi-test">cw-multi-test</a></li>
+<li><a href="https://crates.io/crates/cw-utils">cw-utils</a></li>
+<li><a href="https://crates.io/crates/sylvia">sylvia framework</a></li>
+</ul>
+<h2 id="contributing-to-the-book"><a class="header" href="#contributing-to-the-book">Contributing to the book</a></h2>
+<p>This book is maintained on <a href="https://github.com/CosmWasm/sylvia-book">GitHub</a>
+and auto deployed from there.
+Please create an <a href="https://github.com/CosmWasm/sylvia-book/issues">issue</a>
+or pull request if you find any mistakes, bugs, or ambiguities.</p>
+<h2 id="warning"><a class="header" href="#warning">Warning</a></h2>
+<p>This book is still under construction, so be aware that, in some places, it might feel disjointed.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="setting-up-the-environment"><a class="header" href="#setting-up-the-environment">Setting up the environment</a></h1>
+<p>To work with CosmWasm smart contract, you will need Rust installed on your machine.
+If you don't have one, you can find installation instructions on 
+<a href="https://www.rust-lang.org/tools/install">the Rust website</a>.</p>
+<p>I assume you are working with a stable Rust channel in this book.</p>
+<p>Additionally, you will need the <strong>Wasm</strong> Rust compiler backend installed to build
+Wasm binaries. To install it, run the following:</p>
+<pre><code class="language-shell">$ rustup target add wasm32-unknown-unknown
+</code></pre>
+<h2 id="check-contract-utility"><a class="header" href="#check-contract-utility">Check contract utility</a></h2>
+<p>An additional helpful tool for building smart contracts is the <code>cosmwasm-check</code>
+utility. It allows you to check if the wasm binary is a proper smart contract
+ready to upload into the blockchain. You can install it using cargo:</p>
+<pre><code class="language-shell">$ cargo install cosmwasm-check
+</code></pre>
+<p>If the installation succeeds, you can execute the utility from your command line.</p>
+<pre><code class="language-shell">$ cosmwasm-check --version
+Contract checking 2.0.4
+</code></pre>
+<h2 id="verifying-the-installation"><a class="header" href="#verifying-the-installation">Verifying the installation</a></h2>
+<p>To guarantee you are ready to build your smart contracts, you must ensure you can build examples.
+Checkout the <a href="https://github.com/CosmWasm/sylvia">sylvia</a> repository and run the testing command in
+its folder:</p>
+<pre><code class="language-shell">$ git clone https://github.com/CosmWasm/sylvia.git
+$ cd sylvia
+sylvia $ cargo test
+</code></pre>
+<p>You should see that everything in the repository gets compiled and all tests pass. </p>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> framework contains some examples of contracts. To find them go to <code>examples/contracts</code>
+directory. These contracts are maintained by CosmWasm creators, so contracts in there should follow 
+good practices.</p>
+<p>To verify contract using the <code>cosmwasm-check</code> utility, first you need to build a smart contract.
+Go to some contract directory, for example, <code>examples/contracts/cw1-whitelist</code>, and run the following commands:</p>
+<pre><code class="language-shell">sylvia $ cd examples/contracts/cw1-whitelist
+sylvia/examples/contracts/cw1-whitelist $ cargo wasm
+</code></pre>
+<p><code>wasm</code> is a cargo alias for <code>build --release --target wasm32-unknown-unknown --lib</code>.
+You should be able to find your output binary in the <code>examples/target/wasm32-unknown-unknown/release/</code>
+of the root repo directory, not in the contract directory itself!
+Now you can check if contract validation passes:</p>
+<pre><code class="language-shell">sylvia $ cosmwasm-check examples/target/wasm32-unknown-unknown/release/cw1_whitelist.wasm
+
+Available capabilities: {&quot;cosmwasm_1_2&quot;, &quot;cosmwasm_1_3&quot;, &quot;staking&quot;, &quot;iterator&quot;, &quot;stargate&quot;, &quot;cosmwasm_1_1&quot;}
+
+examples/target/wasm32-unknown-unknown/release/cw1_whitelist.wasm: pass
+
+All contracts (1) passed checks!
+</code></pre>
+<h2 id="macro-expansion"><a class="header" href="#macro-expansion">Macro expansion</a></h2>
+<p>Sylvia generates a lot of code for us, which is not visible in the code. To see what code is generated
+with it, go to <code>examples/contracts/cw1-whitelist/src/contract.rs</code>. In VSCode you can click on
+<code>#[contract]</code>, do <code>shift+p</code> and then type: <code>rust analyzer: Expand macro recursively</code>. This will open
+a window with a fully expanded macro, which you can browse. In Vim you can consider installing 
+the <a href="https://github.com/simrat39/rust-tools.nvim">rust-tools</a> plugin.
+You can also use <code>cargo expand</code> tool from CLI, like this:</p>
+<pre><code class="language-shell">sylvia/examples/contracts/cw1-whitelist $ cargo expand --lib
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="basics"><a class="header" href="#basics">Basics</a></h1>
+<p>This chapter will guide you through creating basic smart contract, step by step.
+I will explain the core features of <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> framework and some good practices.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="create-a-rust-project"><a class="header" href="#create-a-rust-project">Create a Rust project</a></h1>
+<p>Smart contracts are Rust library crates. We will start with creating one:</p>
+<pre><code class="language-shell">$ cargo new --lib ./contract
+</code></pre>
+<p>You created a simple Rust library, but it is not yet ready to be a smart contract.
+The first thing to do is to update the <code>Cargo.toml</code> file:</p>
+<pre><code class="language-toml">[package]
+name = &quot;contract&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[lib]
+crate-type = [&quot;cdylib&quot;]
+
+[dependencies]
+cosmwasm-std = { version = &quot;2.0.4&quot;, features = [&quot;staking&quot;] }
+sylvia = &quot;1.1.0&quot;
+schemars = &quot;0.8.16&quot;
+cosmwasm-schema = &quot;2.0.4&quot;
+serde = { version = &quot;1.0.198&quot;, default-features = false, features = [&quot;derive&quot;] }
+</code></pre>
+<p>As you can see, I added a <code>crate-type</code> field for the library section.
+Generating the <a href="https://doc.rust-lang.org/reference/linkage.html"><code>cdylib</code></a> is
+required to create a proper web assembly binary.
+The downside of this is that such a library cannot be used as a dependency
+for other Rust crates - for now, it is not needed, but later we will show
+how to approach reusing contracts as dependencies.</p>
+<p>Additionally, we added some core dependencies for smart contracts:</p>
+<ul>
+<li><a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/"><code>cosmwasm-std</code></a> - Crate that is a
+standard library for smart contracts. It provides essential utilities for communication with the
+outside world, helper functions, and types. Every smart contract we will build will
+use this dependency.</li>
+<li><a href="https://docs.rs/sylvia/latest/sylvia/"><code>sylvia</code></a> - Crate, we will learn in this
+book. It provides us with three procedural macros: <code>entry_points</code>, <code>contract</code> and <code>interface</code>.
+I will expand on them later in the book. </li>
+<li><a href="https://docs.rs/schemars/0.8.12/schemars/index.html"><code>schemars</code></a> - Crate used to create JSON
+schema documents for our contracts. It is automatically derived on types generated by
+<a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> and will be later used to provide concise API for blockchain users, who might not be Rust developers.</li>
+<li><a href="https://docs.rs/cosmwasm-schema/1.3.1/cosmwasm_schema/"><code>cosmwasm-schema</code></a> - Similar to <code>schemars</code>.
+This crate expands on <code>schemars</code> and provides us with trait 
+<a href="https://docs.rs/cosmwasm-schema/1.3.1/cosmwasm_schema/trait.QueryResponses.html"><code>QueryResponses</code></a> 
+which ties query variants to their responses. I will expand on that later in the book.</li>
+<li><a href="https://docs.rs/serde/1.0.180/serde/"><code>serde</code></a> - Framework for serializing and deserializing
+Rust data structures efficiently and generically.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="generating-first-messages"><a class="header" href="#generating-first-messages">Generating first messages</a></h1>
+<p>We have set up our dependencies. Now let's use them to create simple messages.</p>
+<h2 id="creating-an-instantiation-message"><a class="header" href="#creating-an-instantiation-message">Creating an instantiation message</a></h2>
+<p>For this step we will create a new file:</p>
+<ul>
+<li><code>src/contract.rs</code> - here, we will define our messages and behavior of the contract upon receiving
+them</li>
+</ul>
+<p>Add this module to <code>src/lib.rs</code>. You want it to be public, as users might want to get access to
+types stored inside your contract.</p>
+<pre><code class="language-rust noplayground">pub mod contract;
+</code></pre>
+<p>Now let's create an <code>instantiate</code> method for our contract. In <code>src/contract.rs</code></p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use sylvia::contract;
+use sylvia::types::InstantiateCtx;
+
+pub struct CounterContract;
+
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>So what is going on here? First, we define the CounterContract struct. It is empty right now but 
+later when we learn about states, we will use its fields to store them.
+We mark the <code>impl</code> block with <a href="https://docs.rs/sylvia/latest/sylvia/attr.contract.html"><code>contract</code></a>
+attribute macro. It will parse every method inside the <code>impl</code> block marked with the <code>[sv::msg(...)]</code> 
+attribute and create proper messages and utilities like <code>multitest helpers</code> for them.
+More on them later.</p>
+<p><code>CosmWasm</code> contract requires only the <code>instantiate</code> entry point, and it is mandatory to specify
+it for the <code>contract</code> macro. We have to provide it with the proper context type 
+<a href="https://docs.rs/sylvia/latest/sylvia/types/struct.InstantiateCtx.html"><code>InstantiateCtx</code></a>.</p>
+<p>Context gives us access to the blockchain state, information about our contract, and the sender of the 
+message. We return the <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/type.StdResult.html"><code>StdResult</code></a>
+which uses standard <code>CosmWasm</code> error 
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/enum.StdError.html"><code>StdError</code></a>.
+It's generic over <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Response.html"><code>Response</code></a>.
+For now, we will return the <code>default</code> value of it.</p>
+<p>I recommend expanding the macro now and seeing what <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> generates.
+It might be overwhelming, as there will be a lot of things generated that seem not relevant to our code,
+so for the bare minimum check the <code>InstantiateMsg</code> and its <code>impl</code> block.</p>
+<h2 id="next-step"><a class="header" href="#next-step">Next step</a></h2>
+<p>If we build our contract with command:</p>
+<pre><code class="language-shell">contract $ cargo build --release --target wasm32-unknown-unknown --lib
+</code></pre>
+<p>and then run:</p>
+<pre><code class="language-shell">contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+</code></pre>
+<p>The output should look like this:</p>
+<pre><code class="language-shell">Available capabilities: {&quot;stargate&quot;, &quot;staking&quot;, &quot;cosmwasm_1_3&quot;, &quot;cosmwasm_2_0&quot;, &quot;cosmwasm_1_1&quot;, &quot;cosmwasm_1_2&quot;, &quot;cosmwasm_1_4&quot;, &quot;iterator&quot;}
+
+target/wasm32-unknown-unknown/release/contract.wasm: pass
+
+All contracts (1) passed checks!
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="entry-points"><a class="header" href="#entry-points">Entry points</a></h1>
+<p>Typical Rust application starts with the <code>fn main()</code> function called by the operating system.
+Smart contracts are not significantly different. When the message is sent to the contract, a
+function called &quot;entry point&quot; is executed. Unlike native applications, which have only a single
+<code>main</code> entry point, smart contracts have a couple of them, each corresponding to different
+message type: <code>instantiate</code>, <code>execute</code>, <code>query</code>, <code>sudo</code>, <code>migrate</code> and more.</p>
+<p>To start, we will go with three basic entry points:</p>
+<ul>
+<li><strong><code>instantiate</code></strong> is called once per smart contract lifetime; you can think about it as
+a constructor or initializer of a contract.</li>
+<li><strong><code>execute</code></strong> for handling messages which can modify contract state; they are used to
+perform some actual actions.</li>
+<li><strong><code>query</code></strong> for handling messages requesting some information from a contract; unlike <strong><code>execute</code></strong>,
+they can never alter any contract state, and are used in a similar manner to database queries.</li>
+</ul>
+<h2 id="generate-entry-points"><a class="header" href="#generate-entry-points">Generate entry points</a></h2>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> provides an attribute macro named <a href="https://docs.rs/sylvia/latest/sylvia/attr.entry_points.html"><code>entry_points</code></a>.
+In most cases, your entry point will just dispatch received messages to the handler,
+so it's not necessary to manually create them, and we can rely on a macro to do that for us.</p>
+<p>Let's add the <strong><code>entry_points</code></strong> attribute macro to our contract:</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use sylvia::types::InstantiateCtx;
+use sylvia::{contract, entry_points};
+
+pub struct CounterContract;
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>Note that <strong><code>#[entry_points]</code></strong> is added above the <strong><code>#[contract]</code></strong>.
+It is because <strong><code>#[contract]</code></strong> removes attributes like <strong><code>#[sv::msg(...)]</code></strong> on which both these macros rely.</p>
+<p>Always remember to place <strong><code>#[entry_points]</code></strong> first.</p>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> generates entry points with <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/attr.entry_point.html"><code>#[entry_point]</code></a>
+attribute macro. Its purpose is to wrap the whole entry point to the form the Wasm runtime understands. 
+The proper Wasm entry points can use only basic types supported natively by Wasm specification, and 
+Rust structures and enums are not in this set. Working with such entry points would be 
+overcomplicated, so CosmWasm creators delivered the <code>entry_point</code> macro. It creates the raw Wasm 
+entry point, calling the decorated function internally and doing all the magic required to build our 
+high-level Rust arguments from arguments passed by Wasm runtime.</p>
+<p>Now, when our contract has a proper entry point, let's build it and check if it's correctly defined:</p>
+<pre><code class="language-shell">contract $ cargo build --release --target wasm32-unknown-unknown --lib
+    Finished release [optimized] target(s) in 0.03s
+
+contract $ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+Available capabilities: {&quot;stargate&quot;, &quot;cosmwasm_1_3&quot;, &quot;cosmwasm_1_1&quot;, &quot;cosmwasm_1_2&quot;, &quot;staking&quot;, &quot;iterator&quot;}
+
+target/wasm32-unknown-unknown/release/contract.wasm: pass
+
+All contracts (1) passed checks!
+</code></pre>
+<h2 id="next-step-1"><a class="header" href="#next-step-1">Next step</a></h2>
+<p>Well done! We have now a proper <code>CosmWasm</code> contract.
+Let's add some state to it, so it will actually be able to do something.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="building-the-contract"><a class="header" href="#building-the-contract">Building the contract</a></h1>
+<p>Now that our contract correctly compiles into Wasm, let's digest our build command.</p>
+<pre><code class="language-shell">$ cargo build --target wasm32-unknown-unknown --release --lib
+</code></pre>
+<p>The <code>--target</code> argument tells cargo to perform cross-compilation for a given target, instead of
+building a native binary for an OS it is running on. In this case the target is <code>wasm32-unknown-unknown</code>,
+which is a fancy name for Wasm target.</p>
+<p>Our contract would be also properly compiled without <code>--lib</code> flag, but later, when we add <code>query</code>,
+this flag will be required, so using it from the beginning is a good habit.</p>
+<p>Additionally, I passed the <code>--release</code> argument to the command - it is not
+required, but in most cases, debug information is not very useful while running
+on-chain. It is crucial to reduce the uploaded binary size for gas cost
+minimization. It is worth knowing that there is a <a href="https://github.com/CosmWasm/rust-optimizer">CosmWasm Rust
+Optimizer</a> tool that takes care of
+building even smaller binaries. For production, all the contracts should be compiled using this
+tool, but it is now not essential for learning purposes.</p>
+<h2 id="aliasing-build-command"><a class="header" href="#aliasing-build-command">Aliasing build command</a></h2>
+<p>Now I see you are disappointed in building your contracts with some overcomplicated command
+instead of simple <code>cargo build</code>. Hopefully, it is not the case. The common practice is to alias
+the building command, to make it as simple as building a native application.</p>
+<p>Let's create <code>.cargo/config</code> file in your contract project directory with the following content:</p>
+<pre><code class="language-toml">[alias]
+wasm = &quot;build --target wasm32-unknown-unknown --release --lib&quot;
+wasm-debug = &quot;build --target wasm32-unknown-unknown --lib&quot;
+</code></pre>
+<p>Building your Wasm binary is now as easy as executing <code>cargo wasm</code>. We also added the additional
+<code>wasm-debug</code> command for rare cases, when we want to build the Wasm binary with debug information included.</p>
+<h2 id="checking-contract-validity"><a class="header" href="#checking-contract-validity">Checking contract validity</a></h2>
+<p>When the contract is built, the last step to ensure that it is a valid CosmWasm contract
+is to call <code>cosmwasm-check</code> on it:</p>
+<pre><code class="language-shell">$ cargo wasm
+    .
+    . (compilation messages)
+    .
+    Finished release [optimized] target(s) in 0.03s
+
+$ cosmwasm-check target/wasm32-unknown-unknown/release/contract.wasm
+Available capabilities: {&quot;cosmwasm_1_1&quot;, &quot;iterator&quot;, &quot;staking&quot;, &quot;stargate&quot;}
+
+target/wasm32-unknown-unknown/release/contract.wasm: pass
+
+All contracts (1) passed checks!
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contract-state"><a class="header" href="#contract-state">Contract state</a></h1>
+<p>We can instantiate our contract, but it doesn't do anything afterward.
+Let's make it more usable. In this chapter, we will introduce the contract's state.</p>
+<h2 id="adding-contract-state"><a class="header" href="#adding-contract-state">Adding contract state</a></h2>
+<p>The name of our contract is a little spoiler. We will add the <code>counter</code> state. It's not a real world 
+usage of smart contracts, but it helps to see the usage of <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> without getting into business logic.</p>
+<p>The first thing to do, is to update <code>Cargo.toml</code> with yet another dependency - the
+<a href="https://crates.io/crates/cw-storage-plus"><code>storage-plus</code></a> crate with high-level bindings for
+CosmWasm smart contracts state management:</p>
+<pre><code class="language-toml">[package]
+name = &quot;contract&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[lib]
+crate-type = [&quot;cdylib&quot;]
+
+[dependencies]
+cosmwasm-std = { version = &quot;2.0.4&quot;, features = [&quot;staking&quot;] }
+sylvia = &quot;1.1.0&quot;
+schemars = &quot;0.8.16&quot;
+cosmwasm-schema = &quot;2.0.4&quot;
+serde = &quot;1.0.180&quot;
+cw-storage-plus = &quot;2.0.0&quot;
+</code></pre>
+<p>Now add state as a field in your contract and instantiate it in the <code>new</code> function (constructor):</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use sylvia::types::InstantiateCtx;
+use sylvia::{contract, entry_points};
+
+pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+}
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>New type:</p>
+<ul>
+<li><a href="https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html"><code>Item&lt;_&gt;</code></a> - this is 
+just an <strong>accessor</strong> that allows to read a state stored on the blockchain via the key <strong>&quot;count&quot;</strong>
+in our case. It doesn't hold any state by itself.</li>
+</ul>
+<p>In CosmWasm, the blockchain state is just a massive key-value storage. The keys are prefixed with
+metainformation, pointing to the contract which owns them (so no other contract can alter them),
+but even after removing the prefixes, the single contract state is a smaller key-value pair.</p>
+<h2 id="initializing-the-state"><a class="header" href="#initializing-the-state">Initializing the state</a></h2>
+<p>Now that the state field has been added, we can improve the instantiation of our contract.
+We make it possible for a user to add an initial counter value at contract instantiation.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use sylvia::types::InstantiateCtx;
+use sylvia::{contract, entry_points};
+
+pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+}
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+        self.count.save(ctx.deps.storage, &amp;count)?;
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>Having data to store, we use the
+<a href="https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html#method.save"><code>save</code></a>
+function to write it into the contract state. Note that the first argument of <code>save</code> is
+<a href="https://docs.rs/cosmwasm-std/1.1.0/cosmwasm_std/trait.Storage.html"><code>&amp;mut Storage</code></a>, which is
+actual blockchain storage. As emphasized, the <code>Item</code> object holds no state by itself,
+and is just an accessor to blockchain's storage. <code>Item</code> only determines how to store
+the data in the storage given to it.</p>
+<p>Now let's expand the <code>contract</code> macro and see what changed.</p>
+<pre><code class="language-rust noplayground">pub struct InstantiateMsg {
+    pub count: u32,
+}
+impl InstantiateMsg {
+    pub fn new(count: u32) -&gt; Self {
+        Self { count }
+    }
+    pub fn dispatch(
+        self,
+        contract: &amp;CounterContract,
+        ctx: (
+            sylvia::cw_std::DepsMut,
+            sylvia::cw_std::Env,
+            sylvia::cw_std::MessageInfo,
+        ),
+    ) -&gt; StdResult&lt;Response&gt; {
+        let Self { count } = self;
+        contract
+            .instantiate(Into::into(ctx), count)
+            .map_err(Into::into)
+    }
+}
+</code></pre>
+<p>First, adding parameter to the <code>instantiate</code> method added it as a field to the <code>InstantiateMsg</code>.
+It also caused <code>dispatch</code> to pass this field to the <code>instantiate</code> method. Thanks to Sylvia we don't
+have to tweak every function, entry point or message, and all we need to do, is just to modify
+the <code>instantiate</code> function.</p>
+<h2 id="next-step-2"><a class="header" href="#next-step-2">Next step</a></h2>
+<p>Well, now we have the state initialized for our contract, but we still can't validate,
+if the data we passed during instantiation is stored correctly.
+Let's add it in the next chapter, in which we introduce <strong><code>query</code></strong>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-query"><a class="header" href="#creating-a-query">Creating a query</a></h1>
+<p>We can now initialize our contract and store some data in it. Let's write <code>query</code> to read it's
+content.</p>
+<h2 id="declaring-query-response"><a class="header" href="#declaring-query-response">Declaring query response</a></h2>
+<p>Let's create a new file, <code>src/responses.rs</code>, containing responses to all the queries in our contract.</p>
+<p><code>src/responses.rs</code> is not part of our project, so let's change it. Go to <code>src/lib.rs</code> and add this 
+module:</p>
+<pre><code class="language-rust noplayground">pub mod contract;
+pub mod responses;
+</code></pre>
+<p>Now in <code>src/responses.rs</code>, we will create a response struct.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_schema::cw_serde;
+
+#[cw_serde]
+pub struct CountResponse {
+    pub count: u32,
+}
+</code></pre>
+<p>We used the <a href="https://docs.rs/cosmwasm-schema/1.3.1/cosmwasm_schema/attr.cw_serde.html"><code>cw_serde</code></a>
+attribute macro here. It expands into multiple derives required by your types in the blockchain environment.</p>
+<p>After creating a response, go to your <code>src/contract.rs</code> file and declare a new <code>query</code>.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use sylvia::types::{InstantiateCtx, QueryCtx};
+use sylvia::{contract, entry_points};
+
+use crate::responses::CountResponse;
+
+pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+}
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+        self.count.save(ctx.deps.storage, &amp;count)?;
+        Ok(Response::default())
+    }
+
+    #[sv::msg(query)]
+    pub fn count(&amp;self, ctx: QueryCtx) -&gt; StdResult&lt;CountResponse&gt; {
+        let count = self.count.load(ctx.deps.storage)?;
+        Ok(CountResponse { count })
+    }
+}
+</code></pre>
+<p>With this done, we can expand our <code>contract</code> macro and see that QueryMsg is generated.</p>
+<pre><code class="language-rust noplayground">#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(
+    sylvia::serde::Serialize,
+    sylvia::serde::Deserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    sylvia::schemars::JsonSchema,
+    cosmwasm_schema::QueryResponses,
+)]
+#[serde(rename_all = &quot;snake_case&quot;)]
+pub enum QueryMsg {
+    #[returns(CountResponse)]
+    Count {},
+}
+impl QueryMsg {
+    pub fn dispatch(
+        self,
+        contract: &amp;CounterContract,
+        ctx: (sylvia::cw_std::Deps, sylvia::cw_std::Env),
+    ) -&gt; std::result::Result&lt;sylvia::cw_std::Binary, sylvia::cw_std::StdError&gt; {
+        use QueryMsg::*;
+        match self {
+            Count {} =&gt; {
+                sylvia::cw_std::to_binary(&amp;contract.count(Into::into(ctx))?).map_err(Into::into)
+            }
+        }
+    }
+    pub const fn messages() -&gt; [&amp;'static str; 1usize] {
+        [&quot;count&quot;]
+    }
+    pub fn count() -&gt; Self {
+        Self::Count {}
+    }
+}
+</code></pre>
+<p>We will ignore <code>#[returns(_)]</code> and <code>cosmwasm_schema::QueryResponses</code> as they will be described later
+when we will talk about generating schema.</p>
+<p><code>QueryMsg</code> is an enum that will contain every <code>query</code> declared in your expanded <code>impl</code>. Thanks to
+that you can focus solely on defining the behavior of the contract on receiving a message, and you
+can leave it to <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> to generate the messages and the <code>dispatch</code>.</p>
+<p>Note that our enum has no type assigned to the only <code>Count</code> variant. Typically
+in Rust, we create variants without additional <code>{}</code> after the variant name. Here the
+curly braces have a purpose. Without them, the variant would serialize to just a string
+type - so instead of <code>{ &quot;admin_list&quot;: {} }</code>, the JSON representation of this variant would be
+<code>&quot;admin_list&quot;</code>.</p>
+<p>Instead of returning the <code>Response</code> type on the success case, we return an arbitrary serializable 
+object. It's because queries are not using a typical actor model message flow - they cannot trigger 
+any actions nor communicate with other contracts in ways different than querying them (which is 
+handled by the <code>deps</code> argument). The query always returns plain data, which should be presented 
+directly to the querier. <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> does that by returning encoded response as
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Binary.html"><code>Binary</code></a> by calling
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/fn.to_binary.html"><code>to_binary</code></a> function in dispatch.</p>
+<p><code>Queries</code> can never alter the internal state of the smart contracts. Because of that, <code>QueryCtx</code> has
+<code>Deps</code> as a field instead of <code>DepsMut</code> as it was in case of <code>InstantiateCtx</code>. It comes with some
+consequences - for example, it is impossible to implement caching for future queries (as it would
+require some data cache to write to).</p>
+<p>The other difference is the lack of the <code>info</code> argument. The reason here is that the entry point 
+which performs actions (like instantiation or execution) can differ in how an action is performed 
+based on the message metadata - for example, they can limit who can perform an action (and do so by
+checking the message <code>sender</code>). It is not a case for queries. Queries are purely to return some
+transformed contract state. It can be calculated based on chain metadata (so the state can
+&quot;automatically&quot; change after some time) but not on message info.</p>
+<p><code>#[entry_points]</code> generates <code>query</code> entry point as in case of <code>instantiate</code> so we don't have to do 
+anything more here.</p>
+<h1 id="next-step-3"><a class="header" href="#next-step-3">Next step</a></h1>
+<p>Now, when we have the contract ready to do something, let's go and test it.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="introducing-multitest"><a class="header" href="#introducing-multitest">Introducing multitest</a></h1>
+<p>Let me introduce the <a href="https://crates.io/crates/cw-multi-test"><code>multitest</code></a> -
+library for creating tests for smart contracts in Rust.</p>
+<p>The core idea of <code>multitest</code> is abstracting an entity of contract and
+simulating the blockchain environment for testing purposes. The purpose of this
+is to be able to test communication between smart contracts. It does its job
+well, but it is also an excellent tool for testing single-contract scenarios.</p>
+<h2 id="update-dependencies"><a class="header" href="#update-dependencies">Update dependencies</a></h2>
+<p>First, we need to add <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> with <code>mt</code> feature enabled to our
+<a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#development-dependencies"><code>dev-dependencies</code></a>.</p>
+<pre><code class="language-toml">[package]
+name = &quot;contract&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[lib]
+crate-type = [&quot;cdylib&quot;]
+
+[dependencies]
+cosmwasm-std = { version = &quot;2.0.4&quot;, features = [&quot;staking&quot;] }
+sylvia = &quot;1.1.0&quot;
+schemars = &quot;0.8.16&quot;
+cosmwasm-schema = &quot;2.0.4&quot;
+serde = &quot;1.0.180&quot;
+cw-storage-plus = &quot;2.0.0&quot;
+
+[dev-dependencies]
+sylvia = { version = &quot;1.1.0&quot;, features = [&quot;mt&quot;] }
+cw-multi-test = { version = &quot;2.1.0&quot;, features = [&quot;staking&quot;] }
+</code></pre>
+<h2 id="creating-a-module-for-tests"><a class="header" href="#creating-a-module-for-tests">Creating a module for tests</a></h2>
+<p>Now we will create a new module, <code>multitest</code>. Let's first add it to the <code>src/lib.rs</code></p>
+<pre><code class="language-rust noplayground">pub mod contract;
+#[cfg(test)]
+pub mod multitest;
+pub mod responses;
+</code></pre>
+<p>As this module is purely for testing purposes, we prefix it with
+<a href="https://doc.rust-lang.org/book/ch11-03-test-organization.html#the-tests-module-and-cfgtest"><code>#[cfg(test)]</code></a>.</p>
+<p>Now create <code>src/multitest.rs</code>.</p>
+<pre><code class="language-rust noplayground">use sylvia::cw_multi_test::IntoAddr;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+
+#[test]
+fn instantiate() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&amp;app);
+
+    let owner = &quot;owner&quot;.into_addr();
+
+    let contract = code_id.instantiate(42).call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 42);
+}
+</code></pre>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> generates a lot of helpers for us to make testing as easy as possible.
+To simulate blockchain, we create <code>sylvia::multitest::App</code>. Then we will use it to store the code id
+of our contract on the blockchain using <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> generated <code>CodeId</code>.</p>
+<p>Code id identifies our contract on the blockchain and allows us to instantiate the contract on it.
+We do that using <code>CodeId::instantiate</code> method. It returns the <code>InstantiateProxy</code> type, allowing us
+to set some contract parameters on a blockchain. You can inspect methods like <code>with_label(..)</code>,
+<code>with_funds(..)</code> or <code>with_admins(..)</code>. Once all parameters are set you use <code>call</code> passing caller to
+it as an only argument. This will return <code>Result&lt;ContractProxy, ..&gt;</code>. Let's <code>unwrap</code> it as it is a 
+testing environment and we expect it to work correctly.</p>
+<p>Now that we have the proxy type we have to import <code>CounterContractProxy</code> to the scope.
+It's a trait defining methods for our contract.
+With that setup we can call our <code>count</code> method on it. It will generate appropriate
+<code>QueryMsg</code> variant underneath and send to blockchain so that we don't have to do it ourselves and
+have business logic transparently shown in the test. We <code>unwrap</code> and extract the only field out of 
+it and that's all.</p>
+<h2 id="next-step-4"><a class="header" href="#next-step-4">Next step</a></h2>
+<p>We tested our contract on a simulated environment. Now let's add some fluidity to it and introduce
+execute messages which will alter the state of our contract.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="execution-messages"><a class="header" href="#execution-messages">Execution messages</a></h1>
+<p>We created <code>instantiate</code> and <code>query</code> messages. We have the state in our contract and can test it.
+Now let's expand our contract by adding the possibility of updating the state. In this chapter, we
+will add the <code>increase_count</code> execute message.</p>
+<h2 id="add-a-message"><a class="header" href="#add-a-message">Add a message</a></h2>
+<p>Adding a new variant of <code>ExecMsg</code> is as simple as adding one to the <code>QueryMsg</code>.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+use sylvia::{contract, entry_points};
+
+use crate::responses::CountResponse;
+
+pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+}
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+        self.count.save(ctx.deps.storage, &amp;count)?;
+        Ok(Response::default())
+    }
+
+    #[sv::msg(query)]
+    pub fn count(&amp;self, ctx: QueryCtx) -&gt; StdResult&lt;CountResponse&gt; {
+        let count = self.count.load(ctx.deps.storage)?;
+        Ok(CountResponse { count })
+    }
+
+    #[sv::msg(exec)]
+    pub fn increment_count(&amp;self, ctx: ExecCtx, ) -&gt; StdResult&lt;Response&gt; {
+        self.count
+            .update(ctx.deps.storage, |count| -&gt; StdResult&lt;u32&gt; {
+                Ok(count + 1)
+            })?;
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>We will add the <code>#[sv::msg(exec)]</code> attribute and make it accept <a href="https://docs.rs/sylvia/latest/sylvia/types/struct.ExecCtx.html"><code>ExecCtx</code></a>
+parameter. It will return <code>StdResult&lt;Response&gt;</code>, similiar to the instantiate method.
+Inside we call <a href="https://docs.rs/cw-storage-plus/1.1.0/cw_storage_plus/struct.Item.html#method.update"><code>update</code></a>
+to increment the <code>count</code> state.
+Like that new variant for the <code>ExecMsg</code> is created, <code>execute</code> entry point properly dispatches a message
+to this method and our multitest helpers are updated and ready to use.</p>
+<p>Again I encourage you to expand the macro and inspect all three things mentioned above.</p>
+<h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
+<p>Our contract has a new variant for the <code>ExecMsg</code>. Let's check if it works properly.</p>
+<pre><code class="language-rust noplayground">use sylvia::cw_multi_test::IntoAddr;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+
+#[test]
+fn instantiate() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&amp;app);
+
+    let owner = &quot;owner&quot;.into_addr();
+
+    let contract = code_id.instantiate(42).call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 42);
+
+    contract.increment_count().call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 43);
+}
+</code></pre>
+<p>As in the case of query we can call <code>increment_count</code> directly on our proxy contract. Same as in 
+the case of instantiate we have to pass the caller here. We could also send funds here using <code>with_funds</code> 
+method.</p>
+<h2 id="next-step-5"><a class="header" href="#next-step-5">Next step</a></h2>
+<p>I encourage you to add a new <code>ExecMsg</code> variant by yourself. It could be called <code>set_count</code>. Test it 
+and see how easy it is to add new message variants even without the guide.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="error-handling"><a class="header" href="#error-handling">Error handling</a></h1>
+<p><code>StdError</code> provides useful variants related to the <code>CosmWasm</code> smart contract development. What if 
+you would like to emit errors related to your business logic?</p>
+<h2 id="define-custom-error"><a class="header" href="#define-custom-error">Define custom error</a></h2>
+<p>We start by adding a new dependency <a href="https://docs.rs/thiserror/1.0.44/thiserror/"><code>thiserror</code></a> to
+our <code>Cargo.toml</code>.</p>
+<pre><code class="language-toml">[package]
+name = &quot;contract&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[lib]
+crate-type = [&quot;cdylib&quot;]
+
+[dependencies]
+cosmwasm-std = { version = &quot;2.0.4&quot;, features = [&quot;staking&quot;] }
+sylvia = &quot;1.1.0&quot;
+schemars = &quot;0.8.12&quot;
+cosmwasm-schema = &quot;2.0.4&quot;
+serde = &quot;1.0.180&quot;
+cw-storage-plus = &quot;2.0.0&quot;
+thiserror = &quot;1.0.44&quot;
+
+[dev-dependencies]
+sylvia = { version = &quot;1.1.0&quot;, features = [&quot;mt&quot;] }
+cw-multi-test = { version = &quot;2.1.0&quot;, features = [&quot;staking&quot;] }
+</code></pre>
+<p>It provides an easy-to-use derive macro to set up our errors.</p>
+<p>Let's create new file <code>src/error.rs</code>.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::StdError;
+use thiserror::Error;
+
+#[derive(Error, Debug, PartialEq)]
+pub enum ContractError {
+    #[error(&quot;{0}&quot;)]
+    Std(#[from] StdError),
+
+    #[error(&quot;Cannot decrement count. Already at zero.&quot;)]
+    CannotDecrementCount,
+}
+</code></pre>
+<p>We annotate the <code>ContractError</code> enum with <a href="https://docs.rs/thiserror/1.0.44/thiserror/derive.Error.html"><code>Error</code></a>
+macro as well as <code>Debug</code> and <code>PartialEq</code>. Variants need to be prefixed with <code>#[error(..)]</code> attribute.
+First one will be called <code>Std</code> and will implement <a href="https://doc.rust-lang.org/std/convert/trait.From.html"><code>From</code></a> trait on our error. This way we can both
+return standard <code>CosmWasm</code> errors and our own defined ones. For our business logic we will provide 
+the <code>CannotDecrementCount</code> variant. String inside of <code>error(..)</code> attribute will provide 
+<a href="https://doc.rust-lang.org/std/fmt/trait.Display.html"><code>Display</code></a> value for readability.</p>
+<p>Now let's add the <code>error</code> module to our project. In <code>src/lib.rs</code>:</p>
+<pre><code class="language-rust noplayground">pub mod contract;
+pub mod error;
+#[cfg(test)]
+pub mod multitest;
+pub mod responses;
+</code></pre>
+<h2 id="use-custom-error"><a class="header" href="#use-custom-error">Use custom error</a></h2>
+<p>Our error is defined. Now let's add a new <code>ExecMsg</code> variant.</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+use sylvia::{contract, entry_points};
+
+use crate::error::ContractError;
+use crate::responses::CountResponse;
+
+pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+}
+
+#[entry_points]
+#[contract]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+        self.count.save(ctx.deps.storage, &amp;count)?;
+        Ok(Response::default())
+    }
+
+    #[sv::msg(query)]
+    pub fn count(&amp;self, ctx: QueryCtx) -&gt; StdResult&lt;CountResponse&gt; {
+        let count = self.count.load(ctx.deps.storage)?;
+        Ok(CountResponse { count })
+    }
+
+    #[sv::msg(exec)]
+    pub fn increment_count(&amp;self, ctx: ExecCtx) -&gt; StdResult&lt;Response&gt; {
+        self.count
+            .update(ctx.deps.storage, |count| -&gt; StdResult&lt;u32&gt; {
+                Ok(count + 1)
+            })?;
+        Ok(Response::default())
+    }
+
+    #[sv::msg(exec)]
+    pub fn decrement_count(&amp;self, ctx: ExecCtx) -&gt; Result&lt;Response, ContractError&gt; {
+        let count = self.count.load(ctx.deps.storage)?;
+        if count == 0 {
+            return Err(ContractError::CannotDecrementCount);
+        }
+        self.count.save(ctx.deps.storage, &amp;(count - 1))?;
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<p>A little to explain here. We load the count, and check if it's equal to zero. If yes, then we return
+our newly defined error variant. If not, then we decrement its value.
+However, this won't work. If you would try to build this you will receive:</p>
+<pre><code>error[E0277]: the trait bound `cosmwasm_std::StdError: From&lt;ContractError&gt;` is not satisfied
+</code></pre>
+<p>It is because <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> by default generates <code>dispatch</code> returning <code>Result&lt;_, StdError&gt;</code>. To 
+inform <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> that it should be using a new type we add <code>#[sv::error(ContractError)]</code> attribute to 
+the <code>contract</code> macro call.</p>
+<pre><code class="language-rust noplayground">#[entry_points]
+#[contract]
+#[sv::error(ContractError)]
+impl CounterContract {
+...
+}
+</code></pre>
+<p>Now our contract should compile, and we are ready to test it.</p>
+<h2 id="testing-1"><a class="header" href="#testing-1">Testing</a></h2>
+<p>Let's create a new test expecting the proper error to be returned. In <code>src/multitest.rs</code>:</p>
+<pre><code class="language-rust noplayground">use sylvia::cw_multi_test::IntoAddr;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::error::ContractError;
+
+#[test]
+fn instantiate() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&amp;app);
+
+    let owner = &quot;owner&quot;.into_addr();
+
+    let contract = code_id.instantiate(42).call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 42);
+
+    contract.increment_count().call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 43);
+}
+
+#[test]
+fn decrement_below_zero() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&amp;app);
+
+    let owner = &quot;owner&quot;.into_addr();
+
+    let contract = code_id.instantiate(1).call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 1);
+
+    contract.decrement_count().call(&amp;owner).unwrap();
+
+    let count = contract.count().unwrap().count;
+    assert_eq!(count, 0);
+
+    let err = contract.decrement_count().call(&amp;owner).unwrap_err();
+    assert_eq!(err, ContractError::CannotDecrementCount);
+}
+</code></pre>
+<p>We instantiate our contract with <code>count</code> equal to 1. First <code>decrement_count</code> should pass as it is
+above 0. Then on the second <code>decrement_count</code> call, we will <code>unwrap_err</code> and check if it matches our 
+newly defined error variant.</p>
+<h1 id="next-step-6"><a class="header" href="#next-step-6">Next step</a></h1>
+<p>We introduced proper error handling to our contract. Now we will learn about <code>interfaces</code>. <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> feature allowing to
+split our contract into semantic parts. </p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="reusability"><a class="header" href="#reusability">Reusability</a></h1>
+<p>We have covered almost all the basics of writing smart contracts with <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>.
+In this last chapter of the <code>basics</code> section, I will tell you about the ability to define
+<a href="https://docs.rs/sylvia/latest/sylvia/attr.interface.html"><code>interface</code></a> in <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>.</p>
+<h2 id="problem"><a class="header" href="#problem">Problem</a></h2>
+<p>Let's say that after creating this contract we start working on another one. While planning its
+implementation, we notice that its functionality is just a superset of our <code>AdminContract</code>.
+We could copy all the code to our new contract, but it's creating unnecessary redundancy and would
+force us to maintain multiple implementations of the same functionality. It would also mean that 
+a bunch of functionality would be crammed together. A better solution would be to divide the code
+into semantically compatible parts.</p>
+<h2 id="solution"><a class="header" href="#solution">Solution</a></h2>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> has a feature to reuse already defined messages and apply them in new contracts.
+Clone and open <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> repository. Go to
+<code>contracts/cw1-subkeys/src/contract.rs</code>. You can notice that the <code>impl</code> block for
+the <code>Cw1SubkeysContract</code> is preceded by <code>#[sv::messages(...)]</code> attribute.</p>
+<pre><code class="language-rust noplayground">#[contract]
+#[sv::messages(cw1 as Cw1)]
+#[sv::messages(whitelist as Whitelist)]
+impl Cw1SubkeysContract&lt;'_&gt; {
+    ...
+}
+</code></pre>
+<p><code>contract</code> macro considers both interfaces marked as <code>messages</code>, which in our case
+are <code>cw1</code> and <code>whitelist</code>. It then generates <code>ContractQueryMsg</code> and <code>ContractExecMsg</code> as such:</p>
+<pre><code class="language-rust noplayground">#[allow(clippy::derive_partial_eq_without_eq)]
+#[serde(rename_all = &quot;snake_case&quot;, untagged)]
+pub enum ContractQueryMsg {
+    Cw1(cw1::Cw1QueryMsg),
+    Whitelist(whitelist::WhitelistQueryMsg),
+    Cw1SubkeysContract(QueryMsg),
+}
+
+impl ContractQueryMsg {
+    pub fn dispatch(
+        self,
+        contract: &amp;Cw1SubkeysContract,
+        ctx: (cosmwasm_std::Deps, cosmwasm_std::Env),
+    ) -&gt; std::result::Result&lt;sylvia::cw_std::Binary, ContractError&gt; {
+        const _: () = {
+            let msgs: [&amp;[&amp;str]; 3usize] = [
+                &amp;cw1::Cw1QueryMsg::messages(),
+                &amp;whitelist::WhitelistQueryMsg::messages(),
+                &amp;QueryMsg::messages(),
+            ];
+            sylvia::utils::assert_no_intersection(msgs);
+        };
+        match self {
+            ContractQueryMsg::Cw1(msg) =&gt; msg.dispatch(contract, ctx),
+            ContractQueryMsg::Whitelist(msg) =&gt; msg.dispatch(contract, ctx),
+            ContractQueryMsg::Cw1SubkeysContract(msg) =&gt; msg.dispatch(contract, ctx),
+        }
+    }
+}
+</code></pre>
+<p>We can finally see why we need these <code>ContractQueryMsg</code> and <code>ContractExecMsg</code> next to our
+regular message enums. <a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> generated three tuple variants:</p>
+<ul>
+<li>
+<p><code>Cw1</code> - which contains query msg defined in <code>cw1</code>;</p>
+</li>
+<li>
+<p><code>Whitelist</code>- which contains query msg defined in <code>whitelist</code>;</p>
+</li>
+<li>
+<p><code>Cw1SubkeysContract</code> - which contains query msg defined in our contract.</p>
+</li>
+</ul>
+<p>We use this wrapper to match with the proper variant and then call <code>dispatch</code> on this message.
+<a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> also ensure that no message overlaps between interfaces and contract so that
+contracts API won't break.</p>
+<h2 id="declaring-interface"><a class="header" href="#declaring-interface">Declaring interface</a></h2>
+<p>How are the <code>interface</code> messages implemented? <code>Cw1SubkeysContract</code> is an excellent example because
+it presents two situations:</p>
+<ul>
+<li><code>Cw1</code> - declares a set of functionality that should be supported in implementing this interface
+contract and forces the user to define behavior for them;</li>
+<li><code>Whitelist</code> - same as above, but being primarily implemented for the <code>Cw1Whitelist</code> contract, it
+has already implementation defined.</li>
+</ul>
+<p>For the latter one, we can either implement it ourselves or reuse it as it was done
+in <code>contract/cw1-subkeys/src/whitelist.rs</code>. As you can see, we only call a method on <code>whitelist</code>
+forwarding the arguments passed to the contract. To see the implementation,
+you can go to <code>contract/cw1-whitelist/src/whitelist.rs</code>. The interface has to be defined as a
+<code>trait</code> with a call to macro
+<a href="https://docs.rs/sylvia/latest/sylvia/attr.interface.html"><code>interface</code></a>.
+<code>Interface</code> macro supports <code>execute</code>, <code>query</code> and <code>sudo</code> messages. In this case, it is right away
+implemented on the <code>Cw1Whitelist</code> contract, and this implementation is being reused in
+<code>contract/cw1-subkeys/src/whitelist.rs</code>.</p>
+<p>You should also separate the functionalities of your contract in some sets. It is the case
+of <code>Cw1</code>. It is created as a separate crate and reused in both <code>Cw1WhitelistContract</code> and
+<code>Cw1SubkeysContract</code>. You can check the implementation in <code>contracts/cw1-subkeys/src/cw1.rs</code>.
+For interface declaration itself, take a look at <code>contracts/cw1/src/lib.rs</code>.</p>
+<h2 id="practice"><a class="header" href="#practice">Practice</a></h2>
+<p>We now have enough background to create an <code>interface</code> ourselves. Let's say we started
+working on some other contract and found out that we would like to restrict access to modify 
+the state of the contract. We will create a new <code>Whitelist</code> interface which only responsibility will be 
+managing a list of admins.
+Usually I would suggest switching from a single crate to a workspace repository, but to simplify this
+example, I will keep working on a single crate repository.</p>
+<p>We want to be able to access the list of <code>admins</code> via query. Let's create a new response type 
+in <code>src/responses.rs</code>:</p>
+<pre><code class="language-rust noplayground">use cosmwasm_schema::cw_serde;
+use cosmwasm_std::Addr;
+
+#[cw_serde]
+pub struct CountResponse {
+    pub count: u32,
+}
+
+#[cw_serde]
+pub struct AdminsResponse {
+    pub admins: Vec&lt;Addr&gt;,
+}
+</code></pre>
+<p>We are going to keep the admins as <a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.Addr.html"><code>Addr</code></a>
+which is a representation of a real address on the blockchain.</p>
+<p>Now we create a new module, <code>src/whitelist.rs</code> (remember to add it to <code>src/lib.rs</code> as public).</p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::responses::AdminsResponse;
+
+#[interface]
+pub trait Whitelist {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn add_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(exec)]
+    fn remove_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn admins(&amp;self, ctx: QueryCtx) -&gt; Result&lt;AdminsResponse, Self::Error&gt;;
+}
+</code></pre>
+<p>We annotate interfaces with <a href="https://docs.rs/sylvia/latest/sylvia/attr.interface.html"><code>interface</code></a>
+attribute macro. It expects us to declare the associated type <code>Error</code>. This will help us later as 
+otherwise we would have to either expect <code>StdError</code> or our custom error in the return type,
+but we don't know what contracts will use this interface.</p>
+<p>Our trait defines three methods. Let's implement them on our contract.</p>
+<p><code>src/whitelist.rs</code></p>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Addr, Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+use crate::contract::CounterContract;
+use crate::error::ContractError;
+use crate::responses::AdminsResponse;
+
+#[interface]
+pub trait Whitelist {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn add_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(exec)]
+    fn remove_admin(&amp;self, ctx: ExecCtx, address: String) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn admins(&amp;self, ctx: QueryCtx) -&gt; Result&lt;AdminsResponse, Self::Error&gt;;
+}
+
+impl Whitelist for CounterContract {
+    type Error = ContractError;
+
+    fn add_admin(&amp;self, ctx: ExecCtx, admin: String) -&gt; Result&lt;Response, Self::Error&gt; {
+        let deps = ctx.deps;
+        let admin = deps.api.addr_validate(&amp;admin)?;
+        self.admins.save(deps.storage, admin, &amp;())?;
+
+        Ok(Response::default())
+    }
+
+    fn remove_admin(&amp;self, ctx: ExecCtx, admin: String) -&gt; Result&lt;Response, Self::Error&gt; {
+        let deps = ctx.deps;
+        let admin = deps.api.addr_validate(&amp;admin)?;
+        self.admins.remove(deps.storage, admin);
+
+        Ok(Response::default())
+    }
+
+    fn admins(&amp;self, ctx: QueryCtx) -&gt; Result&lt;AdminsResponse, Self::Error&gt; {
+        let admins: Vec&lt;Addr&gt; = self
+            .admins
+            .keys(ctx.deps.storage, None, None, cosmwasm_std::Order::Ascending)
+            .collect::&lt;Result&lt;_, _&gt;&gt;()?;
+
+        Ok(AdminsResponse { admins })
+    }
+}
+</code></pre>
+<p>Nothing extra here. We just implement the <code>Whitelist</code> trait on our <code>CounterContract</code> like
+we would implement any other trait.</p>
+<p>The last thing we have to do is to add the <code>messages</code> attribute to our contract along with
+a new field <code>admins</code>:</p>
+<pre><code class="language-rust noplayground"><span class="boring">use cosmwasm_std::{Addr, Response, StdResult};
+</span><span class="boring">use cw_storage_plus::{Item, Map};
+</span><span class="boring">use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+</span><span class="boring">use sylvia::{contract, entry_points};
+</span><span class="boring">
+</span><span class="boring">use crate::error::ContractError;
+</span><span class="boring">use crate::responses::CountResponse;
+</span><span class="boring">
+</span>pub struct CounterContract {
+    pub(crate) count: Item&lt;u32&gt;,
+    pub(crate) admins: Map&lt;Addr, ()&gt;,
+}
+
+<span class="boring">
+</span>#[entry_points]
+#[contract]
+#[sv::error(ContractError)]
+#[sv::messages(crate::whitelist as Whitelist)]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self {
+            count: Item::new(&quot;count&quot;),
+            admins: Map::new(&quot;admins&quot;),
+        }
+    }
+    // [...]
+<span class="boring">
+</span><span class="boring">   #[sv::msg(instantiate)]
+</span><span class="boring">   pub fn instantiate(&amp;self, ctx: InstantiateCtx, count: u32) -&gt; StdResult&lt;Response&gt; {
+</span><span class="boring">       self.count.save(ctx.deps.storage, &amp;count)?;
+</span><span class="boring">       Ok(Response::default())
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(query)]
+</span><span class="boring">   pub fn count(&amp;self, ctx: QueryCtx) -&gt; StdResult&lt;CountResponse&gt; {
+</span><span class="boring">       let count = self.count.load(ctx.deps.storage)?;
+</span><span class="boring">       Ok(CountResponse { count })
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(exec)]
+</span><span class="boring">   pub fn increment_count(&amp;self, ctx: ExecCtx) -&gt; StdResult&lt;Response&gt; {
+</span><span class="boring">       self.count
+</span><span class="boring">           .update(ctx.deps.storage, |count| -&gt; StdResult&lt;u32&gt; {
+</span><span class="boring">               Ok(count + 1)
+</span><span class="boring">           })?;
+</span><span class="boring">       Ok(Response::default())
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   #[sv::msg(exec)]
+</span><span class="boring">   pub fn decrement_count(&amp;self, ctx: ExecCtx) -&gt; Result&lt;Response, ContractError&gt; {
+</span><span class="boring">       let count = self.count.load(ctx.deps.storage)?;
+</span><span class="boring">       if count == 0 {
+</span><span class="boring">           return Err(ContractError::CannotDecrementCount);
+</span><span class="boring">       }
+</span><span class="boring">       self.count.save(ctx.deps.storage, &amp;(count - 1))?;
+</span><span class="boring">       Ok(Response::default())
+</span><span class="boring">   }
+</span>}
+</code></pre>
+<p>Time to test if the new functionality works and is part of our contract.
+Here suggest splitting the tests semantically, but for simplicity of example, we will add those tests
+to the same test file.</p>
+<pre><code class="language-rust noplayground">use sylvia::cw_multi_test::IntoAddr;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CounterContractProxy};
+use crate::error::ContractError;
+use crate::whitelist::sv::mt::WhitelistProxy;
+
+<span class="boring">\#[test]
+</span><span class="boring">fn instantiate() {
+</span><span class="boring">   let app = App::default();
+</span><span class="boring">   let code_id = CodeId::store_code(&amp;app);
+</span><span class="boring">
+</span><span class="boring">   let owner = &quot;owner&quot;.into_addr();
+</span><span class="boring">
+</span><span class="boring">   let contract = code_id.instantiate(42).call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 42);
+</span><span class="boring">
+</span><span class="boring">   contract.increment_count().call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 43);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">\#[test]
+</span><span class="boring">fn decrement_below_zero() {
+</span><span class="boring">   let app = App::default();
+</span><span class="boring">   let code_id = CodeId::store_code(&amp;app);
+</span><span class="boring">
+</span><span class="boring">   let owner = &quot;owner&quot;.into_addr();
+</span><span class="boring">
+</span><span class="boring">   let contract = code_id.instantiate(1).call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 1);
+</span><span class="boring">
+</span><span class="boring">   contract.decrement_count().call(&amp;owner).unwrap();
+</span><span class="boring">
+</span><span class="boring">   let count = contract.count().unwrap().count;
+</span><span class="boring">   assert_eq!(count, 0);
+</span><span class="boring">
+</span><span class="boring">   let err = contract.decrement_count().call(&amp;owner).unwrap_err();
+</span><span class="boring">   assert_eq!(err, ContractError::CannotDecrementCount);
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[test]
+fn manage_admins() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&amp;app);
+
+    let owner = &quot;owner&quot;.into_addr();
+    let admin = &quot;admin&quot;.into_addr();
+
+    let contract = code_id.instantiate(1).call(&amp;owner).unwrap();
+
+    // Admins list is empty
+    let admins = contract.admins().unwrap().admins;
+    assert!(admins.is_empty());
+
+    // Admin can be added
+    contract.add_admin(admin.to_string()).call(&amp;owner).unwrap();
+
+    let admins = contract.admins().unwrap().admins;
+    assert_eq!(admins, vec![&amp;admin]);
+
+    // Admin can be removed
+    contract
+        .remove_admin(admin.to_string())
+        .call(&amp;owner)
+        .unwrap();
+
+    let admins = contract.admins().unwrap().admins;
+    assert!(admins.is_empty());
+}
+</code></pre>
+<p>As in case of the contract we have to import the proxy trait in this case called <code>WhitelistProxy</code>.
+Once that's done, we can call methods from the trait directly on the <code>contract</code>.</p>
+<p>We can add and remove admins. Now you can add the logic preventing users from incrementing and 
+decrementing the count. You can extract the sender address by calling 
+<a href="https://docs.rs/cosmwasm-std/1.3.1/cosmwasm_std/struct.MessageInfo.html"><code>ctx.info.sender</code></a>.
+It would also be nice if the owner was an admin by default and if adding admins required the status 
+of one.</p>
+<h1 id="next-step-7"><a class="header" href="#next-step-7">Next step</a></h1>
+<p>We have learned about almost all of the <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> features. The next chapter will be about talking
+to remote contracts.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="remote-type"><a class="header" href="#remote-type">Remote type</a></h1>
+<p>Your contract may rely on communication with another one. For example, it could
+<code>instantiate</code> a <code>CW20</code> contract and, during the workflow, send <code>Mint</code> messages to it. If <code>CW20</code> 
+contract was created using <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>, it would have a <code>Remote</code> type generated which would make this
+process more user friendly.
+It is possible to send queries and build <code>execute</code> messages by using <code>Remote</code>.</p>
+<p>To check some examples, checkout the <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> repository
+and go to <code>sylvia/tests/remote.rs</code> and <code>sylvia/tests/executor.rs</code>.</p>
+<h2 id="working-with-remote"><a class="header" href="#working-with-remote">Working with Remote</a></h2>
+<p><code>Remote</code> represents some contract instantiated on the blockchain. It aims to give contract
+developers a gateway to communicate with other contracts. It has only one field, which is a remote
+contract address.
+There are two main methods implemented for this type:</p>
+<ul>
+<li><code>querier</code>, which returns a <code>BoundQuerier</code> type,</li>
+<li><code>executor</code> that returns an <code>ExecutorBuilder</code> type.</li>
+</ul>
+<p><code>BoundQuerier</code> implements <code>Querier</code> traits of every sylvia contract and interface.
+<code>Querier</code> traits are auto-generated by <code>contract</code> and <code>interface</code> macros and consist
+of every query method of the given contract and interface.</p>
+<p>Similar to <code>BoundQuerier</code> and <code>Querier</code>, the <code>ExecutorBuilder</code> implements every
+<code>Executor</code> trait auto-generated for sylvia contracts and interfaces. <code>Executor</code>
+traits contain <code>exec</code> methods.</p>
+<p>If we create a contract relying on our <code>CounterContract</code>, it could query its state as below.</p>
+<pre><code class="language-rust noplayground">use sylvia::types::Remote;
+use crate::whitelist::sv::Querier as WhitelistQuerier;
+use crate::contract::sv::Querier as ContractQuerier;
+
+let count = Remote::&lt;CounterContract&gt;::new(addr)
+    .querier(&amp;ctx.deps.querier)
+    .count()?
+    .count;
+
+let admins = Remote::&lt;CounterContract&gt;::new(ctx.info.sender)
+    .querier(&amp;ctx.deps.querier)
+    .admins()?;
+</code></pre>
+<p>Important to note is that <code>Remote</code> is generic over the contract type. To use it in context
+of some contract, just initialize it generic over it.</p>
+<p>In case of contract initializing the <code>CW20</code> contract you might want to keep its address in the
+state.</p>
+<pre><code class="language-rust noplayground">use sylvia::types::Remote;
+
+struct Contract&lt;'a&gt; {
+    cw20: Item&lt;Remote&lt;'a, Cw20Contract&gt;&gt;,
+}
+</code></pre>
+<p>Then to query the contract load the remote, call <code>querier</code> on it which will return <code>BoundQuerier</code>
+and then call the query method on it.</p>
+<pre><code class="language-rust noplayground">self.cw20
+    .load(ctx.deps.storage)?
+    .querier(&amp;ctx.deps.querier)
+    .query_all_balances()?
+</code></pre>
+<p>Let's see an example for an <code>exec</code> method call:</p>
+<pre><code class="language-rust noplayground">use sylvia::types::Remote;
+use crate::contract::sv::Executor;
+
+let increment_msg: WasmMsg = Remote::&lt;CounterContract&gt;::new(addr)
+    .executor()
+    .increment_count()?
+    .build();
+</code></pre>
+<h1 id="next-step-8"><a class="header" href="#next-step-8">Next step</a></h1>
+<p>Phew.. that was a journey. We learned most of the <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> features and should be ready to create our first contracts.
+In the last chapter, we will learn about some of the best practices that will make our code more readable and maintainable.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="good-practices"><a class="header" href="#good-practices">Good practices</a></h1>
+<p>All the relevant basics are covered. Now let's talk about some good practices.</p>
+<h2 id="json-renaming"><a class="header" href="#json-renaming">JSON renaming</a></h2>
+<p>Due to Rust style, all our message variants are spelled in a camel case. It is standard practice,
+but it has a drawback - all messages are serialized and deserialized by the serde using those
+variants names. The problem is that it is more common to use snake cases for field names in the
+JSON world. Luckily there is an effortless way to tell the serde, to change the names casing for
+serialization purposes. I mentioned it earlier when talking about query messages -
+<code>#[serde(rename_all = &quot;snake_case&quot;)]</code>. Sylvia will automatically generate it for you in case of
+messages. Unfortunately, in case of responses to your messages, you will have to do it by yourself.
+Let's update our response with this attribute:</p>
+<pre><code class="language-rust noplayground">use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, schemars::JsonSchema, Debug, Default)]
+#[serde(rename_all = &quot;snake_case&quot;)]
+pub struct AdminListResp {
+    pub admins: Vec&lt;String&gt;,
+}
+</code></pre>
+<p>Looking at our <code>AdminListResp</code>, you might argue that all these derive look too clunky, and I agree.
+Luckily the <a href="https://docs.rs/cosmwasm-schema/latest/cosmwasm_schema/index.html"><code>cosmwasm-schema</code></a>
+crate delivers <code>cw_serde</code> macro, which we can use to reduce a boilerplate:</p>
+<pre><code class="language-rust noplayground">use cosmwasm_schema::cw_serde;
+
+#[cw_serde]
+pub struct AdminListResp {
+    pub admins: Vec&lt;String&gt;,
+}
+</code></pre>
+<h2 id="json-schema"><a class="header" href="#json-schema">JSON schema</a></h2>
+<p>Talking about JSON API, it is worth mentioning JSON Schema. It is a way of defining the shape of
+JSON messages. It is a good practice to provide a way to generate schemas for contract API.
+The problem is that writing JSON schemas by hand is a pain. The good news is that there is a crate
+that would help us with that. We have already used it before, and it is called
+<a href="https://docs.rs/schemars/latest/schemars/"><code>schemars</code></a>. Sylvia will force you to add this
+<code>derive</code> to your responses and will generate messages with it.</p>
+<p>The only thing missing is new a <code>crate-type</code> in our <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml noplayground">[package]
+name = &quot;contract&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[lib]
+crate-type = [&quot;cdylib&quot;, &quot;rlib&quot;]
+
+[features]
+library = []
+
+[dependencies]
+cosmwasm-std = { version = &quot;2.0.4&quot;, features = [&quot;staking&quot;] }
+cosmwasm-schema = &quot;2.0.4&quot;
+serde = { version = &quot;1.0.147&quot;, features = [&quot;derive&quot;] }
+sylvia = &quot;1.1.0&quot;
+schemars = &quot;0.8.16&quot;
+thiserror = &quot;1.0.37&quot;
+cw-storage-plus = &quot;2.0.0&quot;
+cw-utils = &quot;2.0.0&quot;
+
+[dev-dependencies]
+anyhow = &quot;1&quot;
+cw-multi-test = &quot;2.1.0&quot;
+</code></pre>
+<p>I added <code>rlib</code>. <code>cdylib</code> crates cannot be used as typical Rust dependencies. As a consequence, it is
+impossible to create examples for such crates.</p>
+<p>The next step is to create a tool generating actual schemas. We will do it by creating a binary in
+our crate. Create a new <code>bin/schema.rs</code> file:</p>
+<pre><code class="language-rust noplayground">use contract::contract::sv::{ContractExecMsg, ContractQueryMsg, InstantiateMsg};
+use cosmwasm_schema::write_api;
+
+fn main() {
+    write_api! {
+        instantiate: InstantiateMsg,
+        execute: ContractExecMsg,
+        query: ContractQueryMsg,
+    }
+}
+</code></pre>
+<p>Notice that I used here <code>ContractExecMsg</code> and <code>ContractQueryMsg</code> instead of <code>ExecMsg</code> and <code>QueryMsg</code>.
+It is important as the latter will not expose the <code>interface</code> messages.</p>
+<p>Cargo is smart enough to recognize files in the <code>src/bin</code> directory as utility binaries for the crate.
+Now we can generate our schemas:</p>
+<pre><code class="language-bash">cargo run schema
+   Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/schema schema`
+Exported the full API as /home/janw/workspace/confio/sylvia-book-contract/schema/contract.json
+</code></pre>
+<p>I encourage you to go to generated file to see what the schema looks like.</p>
+<p>The problem is that unfortunately creating this binary makes our project fail to compile on the Wasm
+target - which is the most important in the end. Hopefully, we don't need to build the schema
+binary for the Wasm target - let's align the <code>.cargo/config</code> file:</p>
+<pre><code class="language-toml noplayground">[alias]
+wasm = &quot;build --target wasm32-unknown-unknown --release --lib&quot;
+wasm-debug = &quot;build --target wasm32-unknown-unknown --lib&quot;
+schema = &quot;run schema&quot;
+</code></pre>
+<p>The <code>--lib</code> flag added to wasm cargo aliases tells the toolchain to build only the library target - it
+would skip building any binaries. Additionally, I added the convenience schema alias to
+generate schema calling simply cargo schema.</p>
+<h2 id="disabling-entry-points-for-libraries"><a class="header" href="#disabling-entry-points-for-libraries">Disabling entry points for libraries</a></h2>
+<p>Since we added the <code>rlib</code> target for the contract, it is, as mentioned before, usable as a
+dependency. The problem is that the contract depending on ours, would have Wasm entry points
+generated twice - once in the dependency and once in the final contract. We can work this around
+by disabling generating Wasm entry points for the contract if the crate is used as a dependency.
+We would use <a href="https://doc.rust-lang.org/cargo/reference/features.html"><code>feature flags</code></a> for that.</p>
+<p>Start with updating <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml noplayground">[package]
+name = &quot;contract&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[lib]
+crate-type = [&quot;cdylib&quot;, &quot;rlib&quot;]
+
+[features]
+library = []
+
+[dependencies]
+cosmwasm-std = { version = &quot;2.0.4&quot;, features = [&quot;staking&quot;] }
+sylvia = &quot;1.1.0&quot;
+schemars = &quot;0.8.16&quot;
+cosmwasm-schema = &quot;2.0.4&quot;
+serde = &quot;1.0.180&quot;
+cw-storage-plus = &quot;2.0.0&quot;
+thiserror = &quot;1.0.44&quot;
+
+[dev-dependencies]
+sylvia = { version = &quot;1.1.0&quot;, features = [&quot;mt&quot;] }
+cw-multi-test = &quot;2.1.0&quot;
+</code></pre>
+<p>This way, we created a new feature flag for our crate. Now we want to disable the <code>entry_points</code>
+attribute if our contract would be used as a dependency. We will do it by a slight update of our
+<code>src/contract.rs</code>:</p>
+<pre><code class="language-rust noplayground">#[cfg_attr(not(feature = &quot;library&quot;), entry_points)]
+#[contract]
+impl CounterContract {
+}
+</code></pre>
+<p>The <a href="https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute"><code>cfg_attr</code></a>
+is a conditional compilation attribute, similar to the <code>cfg</code> we used before for
+the test. It expands to the given attribute if the condition expands to true. In our case - it would
+expand to nothing if the feature &quot;library&quot; is enabled, or it would expand just to <code>#[entry_point]</code>
+in another case.</p>
+<p>Since now to add this contract as a dependency, don't forget to enable the feature like this:</p>
+<pre><code class="language-toml noplayground">[dependencies]
+my_contract = { version = &quot;0.1&quot;, features = [&quot;library&quot;] }
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="advanced"><a class="header" href="#advanced">Advanced</a></h1>
+<p>The previous chapter explained basics of <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>. If you read it you should be familiar
+with general usage of <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> framework.</p>
+<p>In this chapter we will go through some &quot;advanced&quot; features of <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> like ability
+to override entry points and creating custom messages.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="override-entry-point"><a class="header" href="#override-entry-point">Override entry point</a></h1>
+<p>It may happen that for any reason CosmWasm will start support some new
+entry point that is not yet implemented in <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>. There is a way to
+add it manually using <code>#[sv::override_entry_point(...)]</code> attribute.
+This feature can be used to override already implemented entry points
+like <code>execute</code> and <code>query</code>.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>To make <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> generate multitest helpers with <code>custom_entrypoint</code> support, you first need to define your
+<code>entry point</code>.</p>
+<pre><code class="language-rust noplayground">#[entry_point]
+pub fn custom_entrypoint(deps: DepsMut, _env: Env, _msg: SudoMsg) -&gt; StdResult&lt;Response&gt; {
+    CounterContract::new().counter.save(deps.storage, &amp;3)?;
+    Ok(Response::new())
+}
+</code></pre>
+<p>You have to define the <code>CustomEntrypointMsg</code> yourself, as it is not yet supported.</p>
+<pre><code class="language-rust noplayground">#[cfg_attr(not(feature = &quot;library&quot;), entry_points)]
+#[contract]
+#[sv::override_entry_point(custom=crate::entry_points::custom_entrypoint(crate::messages::CustomEntrypointMsg))]
+impl CounterContract {
+}
+</code></pre>
+<p>For every <code>entry point,</code> provide the path to the function in a separate attribute. You also have to
+provide the type of your custom msg, as multitest helpers need to deserialize an array of bytes.</p>
+<h1 id="next-step-9"><a class="header" href="#next-step-9">Next step</a></h1>
+<p>In the next chapter, we will learn about custom messages.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sudo-entry-point"><a class="header" href="#sudo-entry-point">Sudo entry point</a></h1>
+<p>Sylvia supports a <code>sudo</code> type entry point both in interfaces and in
+contracts. Those methods can be used as a part of the network's
+governance procedures. More informations can be found in official
+<a href="https://cosmwasm-docs.vercel.app/core/entrypoints/sudo">CosmWasm documentation</a>.
+From <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> user point of view there's no much difference between <code>sudo</code>
+and <code>exec</code> methods.</p>
+<h2 id="example-1"><a class="header" href="#example-1">Example</a></h2>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use sylvia::types::{InstantiateCtx, SudoCtx};
+use sylvia::{contract, entry_points};
+
+
+pub mod interface {
+    use cosmwasm_std::{Response, StdResult, StdError};
+    use sylvia::types::{SudoCtx};
+    use sylvia::interface;
+
+    #[interface]
+    pub trait Interface {
+        type Error: From&lt;StdError&gt;;
+
+        #[sv::msg(sudo)]
+        fn interface_sudo_msg(&amp;self, _ctx: SudoCtx) -&gt; StdResult&lt;Response&gt;;
+    }
+}
+
+pub struct CounterContract;
+
+#[entry_points]
+#[contract]
+#[sv::messages(interface)]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+
+    #[sv::msg(sudo)]
+    pub fn sudo_method(&amp;self, _ctx: SudoCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+
+impl interface::Interface for CounterContract {
+    fn interface_sudo_msg(&amp;self, _ctx: SudoCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="custom-messages"><a class="header" href="#custom-messages">Custom messages</a></h1>
+<p>Blockchain creators might define chain-specific logic triggered through defined by them messages.
+<code>CosmWasm</code> provides a way to send such messages through <code>cosmwasm_std::CosmosMsg::Custom(..)</code> variant.</p>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> supports this feature, allowing both custom interfaces and contracts.</p>
+<h2 id="custom-interface"><a class="header" href="#custom-interface">Custom interface</a></h2>
+<p>To make further code examples simpler to read, let's consider we have the custom query and exec defined as such:</p>
+<p><code>src/messages.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_schema::cw_serde;
+use cosmwasm_std::{CustomMsg, CustomQuery};
+
+#[cw_serde]
+pub enum ExternalMsg {
+    Poke,
+}
+
+#[cw_serde]
+pub enum ExternalQuery {
+    IsPoked,
+}
+
+impl CustomQuery for ExternalQuery {}
+impl CustomMsg for ExternalMsg {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Notice that query has to implement <code>cosmwasm_std::CustomQuery</code>, and the message has to implement <code>cosmwasm_std::CustomMsg</code>.</p>
+<p>Now that we have our messages defined, we should consider if our new interface is meant to work only on a specific chain
+or if the developer implementing it should be free to choose which chain it should support.</p>
+<p>To enforce support for the specific chain, the user has to use <code>#[sv::custom(msg=.., query=..)]</code> attribute.
+Once <code>msg</code> or <code>query</code> is defined, it will be enforced that all messages or queries used in the interface
+will use them. This is necessary for <code>dispatch</code> to work.</p>
+<p><code>src/sv_custom.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::{ExternalMsg, ExternalQuery};
+use cosmwasm_std::{Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[interface]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+pub trait SvCustom {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn sv_custom_exec(
+        &amp;self,
+        ctx: ExecCtx&lt;ExternalQuery&gt;,
+    ) -&gt; Result&lt;Response&lt;ExternalMsg&gt;, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn sv_custom_query(&amp;self, ctx: QueryCtx&lt;ExternalQuery&gt;) -&gt; Result&lt;String, Self::Error&gt;;
+}
+
+use crate::contract::CustomContract;
+
+impl SvCustom for CustomContract {
+    type Error = StdError;
+
+    fn sv_custom_exec(
+        &amp;self,
+        _ctx: ExecCtx&lt;ExternalQuery&gt;,
+    ) -&gt; Result&lt;Response&lt;ExternalMsg&gt;, Self::Error&gt; {
+        Ok(Response::new())
+    }
+
+    fn sv_custom_query(&amp;self, _ctx: QueryCtx&lt;ExternalQuery&gt;) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If, however, we would like to give the developers the freedom to choose which chain to support, we can use define
+the interface with the associated type instead.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{CustomMsg, CustomQuery, Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[interface]
+pub trait Associated {
+    type Error: From&lt;StdError&gt;;
+    type ExecC: CustomMsg;
+    type QueryC: CustomQuery;
+
+    #[sv::msg(exec)]
+    fn associated_exec(&amp;self, ctx: ExecCtx&lt;Self::QueryC&gt;)
+        -&gt; Result&lt;Response&lt;Self::ExecC&gt;, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn associated_query(&amp;self, ctx: QueryCtx&lt;Self::QueryC&gt;) -&gt; Result&lt;String, Self::Error&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>ExecC</code> and <code>QueryC</code> associated types are reserved for custom messages and queries, respectively, and should not
+be used in other contexts.</p>
+<h2 id="custom-contract"><a class="header" href="#custom-contract">Custom contract</a></h2>
+<p>Before we implement the interfaces, let's create the contract that will use them.
+In the case of a contract, there is only one way to define the custom <code>msg</code> and <code>query</code>. We do it through
+<code>#[sv::custom(..)]</code> attribute.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::{contract, types::InstantiateCtx};
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomContract;
+
+#[contract]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As in the case of interfaces, remember to make <code>Deps</code> and <code>Response</code> generic over custom <code>msg</code> and <code>query</code>, respectively.</p>
+<h2 id="implement-custom-interface-on-contract"><a class="header" href="#implement-custom-interface-on-contract">Implement custom interface on contract</a></h2>
+<p>Now that we have defined the interfaces, we can implement them on the contract. Because it would be impossible to
+cast <code>Response&lt;Custom&gt;</code> to <code>Response&lt;Empty&gt;</code> or <code>Deps&lt;Empty&gt;</code> to <code>Deps&lt;Custom&gt;</code>, implementation of the custom interface
+on non-custom contracts is not possible. It is possible, however, to implement a non-custom interface on a custom contract.</p>
+<p>To implement the interface with the associated type, we have to assign types for them.
+Because the type of <code>ExecC</code> and <code>QueryC</code> is defined by the user, the interface is reusable in the context of
+different chains.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [...]
+
+use crate::contract::CustomContract;
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+impl Associated for CustomContract {
+    type Error = StdError;
+    type ExecC = ExternalMsg;
+    type QueryC = ExternalQuery;
+
+    fn associated_exec(
+        &amp;self,
+        _ctx: ExecCtx&lt;Self::QueryC&gt;,
+    ) -&gt; Result&lt;Response&lt;Self::ExecC&gt;, Self::Error&gt; {
+        Ok(Response::new())
+    }
+
+    fn associated_query(&amp;self, _ctx: QueryCtx&lt;Self::QueryC&gt;) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="messages-attribute-on-main-contract-call"><a class="header" href="#messages-attribute-on-main-contract-call"><code>messages</code> attribute on main <code>contract</code> call</a></h2>
+<p>We implemented the custom interfaces on the contract. Now, we can use it in the contract itself.
+Because the contract is already defined as <code>custom,</code> we only need to use the <code>messages</code> attribute as in the case of
+non-custom interfaces.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::{contract, types::InstantiateCtx};
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomContract;
+
+#[contract]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Nice and easy, isn't it?
+Only one thing that needs to be added. I mentioned earlier that it is possible to implement a non-custom interface on a custom contract.
+Let's define a non-custom interface.</p>
+<p><code>src/non_custom.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError};
+use sylvia::interface;
+use sylvia::types::{ExecCtx, QueryCtx};
+
+#[interface]
+pub trait NonCustom {
+    type Error: From&lt;StdError&gt;;
+
+    #[sv::msg(exec)]
+    fn non_custom_exec(&amp;self, ctx: ExecCtx) -&gt; Result&lt;Response, Self::Error&gt;;
+
+    #[sv::msg(query)]
+    fn non_custom_query(&amp;self, ctx: QueryCtx) -&gt; Result&lt;String, Self::Error&gt;;
+}
+
+use crate::contract::CustomContract;
+
+
+impl NonCustom for CustomContract {
+    type Error = StdError;
+
+    fn non_custom_exec(&amp;self, _ctx: ExecCtx) -&gt; Result&lt;Response, Self::Error&gt; {
+        Ok(Response::new())
+    }
+
+    fn non_custom_query(&amp;self, _ctx: QueryCtx) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Let's add the last <code>messages</code> attribute to the contract. It has to end with <code>: custom(msg query)</code>. This way <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a>
+will know that it has to cast <code>Response&lt;Custom&gt;</code> to <code>Response&lt;Empty&gt;</code> for <code>msg</code> and <code>Deps&lt;Custom&gt;</code> to <code>Deps&lt;Empty&gt;</code> for <code>query</code>.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::{contract, types::InstantiateCtx};
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomContract;
+
+#[contract]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg, query))]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="test-custom-contract"><a class="header" href="#test-custom-contract">Test custom contract</a></h2>
+<p>Contract and interfaces implemented. We can finally test it. </p>
+<p>Before setting up the test environment, we have to add to our contract logic
+sending the custom messages. Let's add <code>query</code> and <code>exec</code> messages to our contract.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::{ExternalMsg, ExternalQuery};
+use cosmwasm_std::{CosmosMsg, QueryRequest, Response, StdResult};
+use sylvia::contract;
+use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
+
+#[cfg(not(feature = &quot;library&quot;))]
+use sylvia::entry_points;
+
+pub struct CustomContract;
+
+#[cfg_attr(not(feature = &quot;library&quot;), entry_points)]
+#[contract]
+#[sv::messages(crate::sv_custom as SvCustomInterface)]
+#[sv::messages(crate::associated as AssociatedInterface)]
+#[sv::messages(crate::non_custom as NonCustom: custom(msg, query))]
+#[sv::custom(msg=ExternalMsg, query=ExternalQuery)]
+impl CustomContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx&lt;ExternalQuery&gt;,
+    ) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        Ok(Response::new())
+    }
+
+    #[sv::msg(exec)]
+    pub fn poke(&amp;self, _ctx: ExecCtx&lt;ExternalQuery&gt;) -&gt; StdResult&lt;Response&lt;ExternalMsg&gt;&gt; {
+        let msg = CosmosMsg::Custom(ExternalMsg::Poke {});
+        let resp = Response::default().add_message(msg);
+        Ok(resp)
+    }
+
+    #[sv::msg(query)]
+    pub fn is_poked(&amp;self, ctx: QueryCtx&lt;ExternalQuery&gt;) -&gt; StdResult&lt;bool&gt; {
+        let resp = ctx
+            .deps
+            .querier
+            .query::&lt;bool&gt;(&amp;QueryRequest::Custom(ExternalQuery::IsPoked {}))?;
+        Ok(resp)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Message <code>poke</code> will return the <code>Response</code> with the <code>CosmosMsg::Custom(ExternalMsg::Poke {})</code> message.
+In <code>is_poked</code> we will trigger the custom module by sending <a href="https://docs.rs/cosmwasm-std/latest/cosmwasm_std/enum.QueryRequest.html"><code>QueryRequest::Custom</code></a> via <a href="https://docs.rs/cosmwasm-std/latest/cosmwasm_std/struct.QuerierWrapper.html#method.query"><code>cosmwasm_std::QuerierWrapper::query</code></a>.</p>
+<p>The contract is able to send our custom messages. We can start creating a test environment.
+First, we have to define a custom module that will handle our custom messages.
+It will be simple module tracking if it has received the <code>ExternalMsg::Poke</code> message.
+To add handling of custom messages, we have to implement <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/trait.Module.html"><code>cw_multi_test::Module</code></a> on it.
+We are only interested in <code>execute</code> and <code>query</code> methods in our example. In case of <code>sudo</code> we will return <code>Ok(..)</code> response.</p>
+<p><code>src/multitest/custom_module.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_schema::schemars::JsonSchema;
+use cosmwasm_std::{
+    to_json_binary, Addr, Api, Binary, BlockInfo, CustomQuery, Empty, Querier, StdResult, Storage
+};
+use cw_multi_test::{AppResponse, CosmosRouter, Module};
+use cw_storage_plus::Item;
+use serde::de::DeserializeOwned;
+use std::fmt::Debug;
+
+use crate::messages::{ExternalMsg, ExternalQuery};
+
+pub struct CustomModule {
+    pub is_poked: Item&lt;bool&gt;,
+}
+
+impl CustomModule {
+    pub fn new() -&gt; Self {
+        Self {
+            is_poked: Item::new(&quot;is_poked&quot;),
+        }
+    }
+
+    pub fn setup(&amp;self, storage: &amp;mut dyn Storage) -&gt; StdResult&lt;()&gt; {
+        self.is_poked.save(storage, &amp;true)
+    }
+}
+
+impl Module for CustomModule {
+    type ExecT = ExternalMsg;
+    type QueryT = ExternalQuery;
+    type SudoT = Empty;
+
+    fn execute&lt;ExecC, QueryC&gt;(
+        &amp;self,
+        _api: &amp;dyn Api,
+        storage: &amp;mut dyn Storage,
+        _router: &amp;dyn CosmosRouter&lt;ExecC = ExecC, QueryC = QueryC&gt;,
+        _block: &amp;BlockInfo,
+        _sender: Addr,
+        msg: Self::ExecT,
+    ) -&gt; anyhow::Result&lt;AppResponse&gt;
+    where
+        ExecC: Debug + Clone + PartialEq + JsonSchema + DeserializeOwned + 'static,
+        QueryC: CustomQuery + DeserializeOwned + 'static,
+    {
+        match msg {
+            ExternalMsg::Poke {} =&gt; {
+                self.is_poked.save(storage, &amp;true)?;
+                Ok(AppResponse::default())
+            }
+        }
+    }
+
+    fn sudo&lt;ExecC, QueryC&gt;(
+        &amp;self,
+        _api: &amp;dyn Api,
+        _storage: &amp;mut dyn Storage,
+        _router: &amp;dyn CosmosRouter&lt;ExecC = ExecC, QueryC = QueryC&gt;,
+        _block: &amp;BlockInfo,
+        _msg: Self::SudoT,
+    ) -&gt; anyhow::Result&lt;AppResponse&gt;
+    where
+        ExecC: Debug + Clone + PartialEq + JsonSchema + DeserializeOwned + 'static,
+        QueryC: CustomQuery + DeserializeOwned + 'static,
+    {
+        Ok(AppResponse::default())
+    }
+
+    fn query(
+        &amp;self,
+        _api: &amp;dyn Api,
+        storage: &amp;dyn Storage,
+        _querier: &amp;dyn Querier,
+        _block: &amp;BlockInfo,
+        request: Self::QueryT,
+    ) -&gt; anyhow::Result&lt;Binary&gt; {
+        match request {
+            ExternalQuery::IsPoked {} =&gt; {
+                let is_poked = self.is_poked.load(storage)?;
+                to_json_binary(&amp;is_poked).map_err(Into::into)
+            }
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>With this module, we can move to testing.
+We are going to use <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/type.BasicAppBuilder.html"><code>BasicAppBuilder</code></a> to save ourselves from typing the all the generics.
+It's fine as we are only interested in setting <code>ExecC</code> and <code>QueryC</code> types.
+Installing our module is done via <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/type.BasicAppBuilder.html"><code>with_custom</code></a> method.
+In case you need to initialize some values in your module, you can use <a href="https://docs.rs/cw-multi-test/latest/cw_multi_test/struct.AppBuilder.html#method.build"><code>build</code></a> method.
+Generics are set on <code>mt_app</code>, and there is no need to set them on <code>App</code>.
+Running <code>poke</code> on our contract will send the <code>ExternalMsg::Poke</code>, which <code>App</code> will dispatch to our custom module.</p>
+<p><code>src/multitest/tests.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cw_multi_test::IntoBech32;
+use sylvia::multitest::App;
+
+use crate::contract::sv::mt::{CodeId, CustomContractProxy};
+use crate::multitest::custom_module::CustomModule;
+
+#[test]
+fn test_custom() {
+    let owner = &quot;owner&quot;.into_bech32();
+
+    let mt_app = cw_multi_test::BasicAppBuilder::new_custom()
+        .with_custom(CustomModule::new())
+        .build(|router, _, storage| {
+            router.custom.setup(storage).unwrap();
+        });
+
+    let app = App::new(mt_app);
+
+    let code_id = CodeId::store_code(&amp;app);
+
+    let contract = code_id.instantiate().call(&amp;owner).unwrap();
+
+    contract.poke().call(&amp;owner).unwrap();
+
+    let count = contract.is_poked().unwrap();
+    assert!(count);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h1 id="next-step-10"><a class="header" href="#next-step-10">Next step</a></h1>
+<p>We now know how to trigger chain-specific functionality. In the next chapter, we will expand a little on that by
+exploring support for generics.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="generics"><a class="header" href="#generics">Generics</a></h1>
+<p>When implementing a contract, users might want to define some generic data it should store.
+One might even want the message to have some generic parameters or return type.
+<a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> supports generics in the contracts and interfaces.</p>
+<h2 id="prepare-project"><a class="header" href="#prepare-project">Prepare project</a></h2>
+<p>To improve readability and focus solely on the feature support in this chapter, paste this
+dependencies to your project <code>Cargo.toml</code>.
+It contains every dependency we will use in this chapter.</p>
+<pre><code class="language-toml">[package]
+name = &quot;generic&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+sylvia = &quot;1.1.0&quot;
+cosmwasm-std = &quot;2.0.4&quot;
+schemars = &quot;0.8.16&quot;
+serde = &quot;1&quot;
+cosmwasm-schema = &quot;2.0.4&quot;
+cw-storage-plus = &quot;2.0.0&quot;
+
+[dev-dependencies]
+anyhow = &quot;1.0&quot;
+cw-multi-test = &quot;2.1.0&quot;
+sylvia = { version = &quot;1.1.0&quot;, features = [&quot;mt&quot;] }
+</code></pre>
+<h2 id="generics-in-interface"><a class="header" href="#generics-in-interface">Generics in interface</a></h2>
+<p>Since <code>0.10.0</code> we no longer support generics in interfaces.
+Sylvia interfaces can be implemented only a single time per contract as otherwise
+the messages would overlap. Idiomatic approach in Rust is to use associated types
+to handle such cases.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdError, StdResult};
+use sylvia::interface;
+use sylvia::types::{CustomMsg, ExecCtx, QueryCtx};
+
+#[interface]
+pub trait Associated {
+    type Error: From&lt;StdError&gt;;
+    type ExecParam: CustomMsg;
+    type QueryParam: CustomMsg;
+
+    #[sv::msg(exec)]
+    fn generic_exec(&amp;self, ctx: ExecCtx, param: Self::ExecParam) -&gt; StdResult&lt;Response&gt;;
+
+    #[sv::msg(query)]
+    fn generic_query(&amp;self, ctx: QueryCtx, param: Self::QueryParam) -&gt; StdResult&lt;String&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Underhood <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> will parse the associated types and generate generic messages as we cannot
+use associated types in enums.</p>
+<h2 id="implement-interface-on-the-contract"><a class="header" href="#implement-interface-on-the-contract">Implement interface on the contract</a></h2>
+<p>Implementing an interface with associated types is the same as in case of implementing a regular interface.
+We first need to define the type we will assign to the associated type.</p>
+<p><code>src/messages.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_schema::cw_serde;
+use cosmwasm_std::CustomMsg;
+
+#[cw_serde]
+pub struct MyMsg;
+
+impl CustomMsg for MyMsg {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We also need a contract on which we will implement the interface.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::contract;
+use sylvia::types::InstantiateCtx;
+
+pub struct NonGenericContract;
+
+#[contract]
+impl NonGenericContract {
+    pub const fn new() -&gt; Self {
+        Self {}
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We are set and ready to implement the interface.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [...]
+
+use crate::contract::NonGenericContract;
+use crate::messages::MyMsg;
+
+impl Associated for NonGenericContract {
+    type Error = StdError;
+    type ExecParam = MyMsg;
+    type QueryParam = MyMsg;
+
+    fn generic_exec(&amp;self, _ctx: ExecCtx, _param: Self::ExecParam) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+
+    fn generic_query(&amp;self, _ctx: QueryCtx, _param: Self::QueryParam) -&gt; StdResult&lt;String&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="update-impl-contract"><a class="header" href="#update-impl-contract">Update impl contract</a></h2>
+<p>Now that we have implemented the interface on our contract, we can inform
+main <code>sylvia::contract</code> call about it.</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use sylvia::contract;
+use sylvia::types::InstantiateCtx;
+
+pub struct NonGenericContract;
+
+#[contract]
+#[sv::messages(crate::associated as Associated)]
+impl NonGenericContract {
+    pub const fn new() -&gt; Self {
+        Self {}
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As in case of regular interface, we have to add the <code>messages</code> attribute to the contract.</p>
+<h2 id="generic-contract"><a class="header" href="#generic-contract">Generic contract</a></h2>
+<p>We have covered how we can allow the users to define a types of an interface during
+an interface implementation.</p>
+<p>User might want to use a contract inside it's own contract.
+In such cases <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> supports the generics on the contracts.</p>
+<p>Let us define a new module in which we will define a generic contract.</p>
+<p><code>src/generic_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use serde::Deserialize;
+use std::marker::PhantomData;
+use sylvia::contract;
+use sylvia::types::{CustomMsg, InstantiateCtx};
+
+pub struct GenericContract&lt;DataType, InstantiateParam&gt; {
+    _data: Item&lt;DataType&gt;,
+    _phantom: PhantomData&lt;InstantiateParam&gt;,
+}
+
+#[contract]
+impl&lt;DataType, InstantiateParam&gt; GenericContract&lt;DataType, InstantiateParam&gt;
+where
+    for&lt;'msg_de&gt; InstantiateParam: CustomMsg + Deserialize&lt;'msg_de&gt; + 'msg_de,
+    for&lt;'data&gt; DataType: 'data,
+{
+    pub const fn new() -&gt; Self {
+        Self {
+            _data: Item::new(&quot;data&quot;),
+            _phantom: PhantomData,
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx,
+        _param: InstantiateParam,
+    ) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This example showcases two usages of generics in contract:</p>
+<ul>
+<li>Generic field </li>
+<li>Generic message parameter</li>
+</ul>
+<p><a href="https://github.com/CosmWasm/sylvia"><strong>Sylvia</strong></a> works in both cases, and you can expand your generics to every message type, return type,
+or <code>custom_queries</code> as shown in the case of the <code>interface</code>. For the readability of this example,
+we will keep just these two generic types.</p>
+<p><code>InstantiateParam</code> is passed as a field to the <code>InstantiateMsg</code>. This enforces some bounds
+to this type, which we pass in the <code>where</code> clause. 
+Just like that, we created a generic contract.</p>
+<h2 id="implement-interface-on-generic-contract"><a class="header" href="#implement-interface-on-generic-contract">Implement interface on generic contract</a></h2>
+<p>Now that we have the generic contract, let's implement an interface from previous paragraphs on it.</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [...]
+use crate::generic_contract::GenericContract;
+
+impl&lt;DataType, InstantiateParam&gt; Associated for GenericContract&lt;DataType, InstantiateParam&gt; {
+    type Error = StdError;
+    type ExecParam = MyMsg;
+    type QueryParam = MyMsg;
+
+    fn generic_exec(&amp;self, _ctx: ExecCtx, _param: Self::ExecParam) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+
+    fn generic_query(&amp;self, _ctx: QueryCtx, _param: Self::QueryParam) -&gt; StdResult&lt;String&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Implementing a generic interface on the generic contract is very similar to implementing it on a regular one.
+The only change is to pass the generics into the contract.</p>
+<p><code>src/generic_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[contract]
+#[sv::messages(crate::associated as Associated)]
+impl&lt;DataType, InstantiateParam&gt; GenericContract&lt;DataType, InstantiateParam&gt;
+where
+    for&lt;'msg_de&gt; InstantiateParam: CustomMsg + Deserialize&lt;'msg_de&gt; + 'msg_de,
+    for&lt;'data&gt; DataType: 'data,
+{
+    ..
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="forwarding-generics"><a class="header" href="#forwarding-generics">Forwarding generics</a></h2>
+<p>User might want to link the generics from the contract with associated types in implemented interface.
+To do so we have to simply assign the generics to appropriate associated types.</p>
+<p>Let's one more time define a new contract.</p>
+<p><code>src/forward_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use cosmwasm_std::{Response, StdResult};
+use std::marker::PhantomData;
+use sylvia::contract;
+use sylvia::types::{CustomMsg, InstantiateCtx};
+
+pub struct ForwardContract&lt;ExecParam, QueryParam&gt; {
+    _phantom: PhantomData&lt;(ExecParam, QueryParam)&gt;,
+}
+
+#[contract]
+impl&lt;ExecParam, QueryParam&gt; ForwardContract&lt;ExecParam, QueryParam&gt;
+where
+    ExecParam: CustomMsg + 'static,
+    QueryParam: CustomMsg + 'static,
+{
+    pub const fn new() -&gt; Self {
+        Self {
+            _phantom: PhantomData,
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The implementation of the interface should look like this:</p>
+<p><code>src/associated.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [...]
+use crate::forward_contract::ForwardContract;
+
+impl&lt;ExecParam, QueryParam&gt; Associated for ForwardContract&lt;ExecParam, QueryParam&gt;
+where
+    ExecParam: CustomMsg,
+    QueryParam: CustomMsg,
+{
+    type Error = StdError;
+    type ExecParam = ExecParam;
+    type QueryParam = QueryParam;
+
+    fn generic_exec(&amp;self, _ctx: ExecCtx, _param: Self::ExecParam) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+
+    fn generic_query(&amp;self, _ctx: QueryCtx, _param: Self::QueryParam) -&gt; StdResult&lt;String&gt; {
+        Ok(String::default())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>And as always, we have to add the <code>messages</code> attribute to the contract implementation.</p>
+<p><code>src/forward_contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[contract]
+#[sv::messages(crate::associated as Associated)]
+impl&lt;ExecParam, QueryParam&gt; ForwardContract&lt;ExecParam, QueryParam&gt;
+where
+    ExecParam: CustomMsg + 'static,
+    QueryParam: CustomMsg + 'static,
+{
+    ..
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As you can see <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> is very flexible with how the user might want to use it.</p>
+<h2 id="generate-entry-points-1"><a class="header" href="#generate-entry-points-1">Generate entry points</a></h2>
+<p>Without the entry points, our contract is just a library defining some message types.
+Let's make it a proper contract.
+We have to pass solid types to the <code>entry_points</code> macro, as the contract cannot have a generic
+types in the entry points.
+To achieve this, we pass the concrete types to the <code>entry_points</code> macro call.</p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::messages::MyMsg;
+use cosmwasm_std::{Response, StdResult};
+use cw_storage_plus::Item;
+use std::marker::PhantomData;
+use sylvia::types::{CustomMsg, InstantiateCtx};
+use sylvia::{contract, entry_points};
+
+pub struct GenericContract&lt;DataType, InstantiateParam&gt; {
+    _data: Item&lt;DataType&gt;,
+    _phantom: PhantomData&lt;InstantiateParam&gt;,
+}
+
+#[entry_points(generics&lt;String, MyMsg&gt;)]
+#[contract]
+#[sv::messages(crate::associated as Associated)]
+impl&lt;DataType, InstantiateParam&gt; GenericContract&lt;DataType, InstantiateParam&gt;
+where
+    InstantiateParam: CustomMsg + 'static,
+    for&lt;'data&gt; DataType: 'data,
+{
+    pub const fn new() -&gt; Self {
+        Self {
+            _data: Item::new(&quot;data&quot;),
+            _phantom: PhantomData,
+        }
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(
+        &amp;self,
+        _ctx: InstantiateCtx,
+        _param: InstantiateParam,
+    ) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::new())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Notice the <code>generics</code> attribute in the <code>entry_points</code> macro.
+It's goal is to provide us a way to declare the types we want to use in the entry points.
+Our contract is ready to use. We can test it in the last step of this chapter.</p>
+<h2 id="test-generic-contract"><a class="header" href="#test-generic-contract">Test generic contract</a></h2>
+<p>Similar to defining a contract, we have to create a <code>App</code> with the `cw_multi</p>
+<p><code>src/contract.rs</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// [...]
+
+#[cfg(test)]
+mod tests {
+    use sylvia::cw_multi_test::IntoAddr;
+    use sylvia::multitest::App;
+
+    use crate::messages::MyMsg;
+
+    use super::sv::mt::CodeId;
+    use super::GenericContract;
+
+    #[test]
+    fn instantiate_contract() {
+        let app = App::default();
+        let code_id: CodeId&lt;GenericContract&lt;String, MyMsg&gt;, _&gt; = CodeId::store_code(&amp;app);
+
+        let owner = &quot;owner&quot;.into_addr();
+
+        let _ = code_id
+            .instantiate(MyMsg {})
+            .with_label(&quot;GenericContract&quot;)
+            .with_admin(owner.as_str())
+            .call(&amp;owner)
+            .unwrap();
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>While creating the <code>CodeId</code> we have to pass the contract type as generic parameter.</p>
+<p>Perfect! We have learned how to create generic contracts and interfaces.
+Good luck applying this knowledge to your projects!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="attributes-forwarding"><a class="header" href="#attributes-forwarding">Attributes forwarding</a></h1>
+<p>This feature allows <a href="https://github.com/CosmWasm/sylvia"><strong>sylvia</strong></a> users to forward any attribute to any message
+type using <code>#[sv::msg_attr(msg_type, ...)]</code> attribute.
+For the messages that resolves to enum types it is possible to forward attributes to their specific variants by using <code>#[sv::attr(...)]</code> on top of the appropriate method - this works for <code>exec</code>, <code>query</code>
+and <code>sudo</code> methods.</p>
+<h2 id="example-2"><a class="header" href="#example-2">Example</a></h2>
+<pre><code class="language-rust noplayground">use cosmwasm_std::{Response, StdResult};
+use sylvia::types::{InstantiateCtx, ExecCtx};
+use sylvia::{contract, entry_points};
+
+
+pub mod interface {
+    use cosmwasm_std::{Response, StdResult, StdError};
+    use sylvia::types::QueryCtx;
+    use sylvia::interface;
+
+    #[interface]
+    #[sv::msg_attr(query, derive(PartialOrd))]
+    pub trait Interface {
+        type Error: From&lt;StdError&gt;;
+
+        #[sv::msg(query)]
+        #[sv::attr(serde(rename(serialize = &quot;QuErY&quot;)))]
+        fn interface_query_msg(&amp;self, _ctx: QueryCtx) -&gt; StdResult&lt;Response&gt;;
+    }
+}
+
+pub struct CounterContract;
+
+#[entry_points]
+#[contract]
+#[sv::msg_attr(exec, derive(PartialOrd))]
+impl CounterContract {
+    pub const fn new() -&gt; Self {
+        Self
+    }
+
+    #[sv::msg(instantiate)]
+    pub fn instantiate(&amp;self, _ctx: InstantiateCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+
+    #[sv::msg(exec)]
+    #[sv::attr(serde(rename(serialize = &quot;EXEC_METHOD&quot;)))]
+    pub fn exec_method(&amp;self, _ctx: ExecCtx) -&gt; StdResult&lt;Response&gt; {
+        Ok(Response::default())
+    }
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="legal-information"><a class="header" href="#legal-information">Legal Information</a></h1>
+<p>Infomation according to § 5 TMG</p>
+<h2 id="provider"><a class="header" href="#provider">Provider</a></h2>
+<p>Confio GmbH<br />
+7th Floor<br />
+Potsdamer Platz 1<br />
+10785 Berlin</p>
+<h2 id="managing-director"><a class="header" href="#managing-director">Managing Director</a></h2>
+<p>Simon Warta</p>
+<h2 id="contact"><a class="header" href="#contact">Contact</a></h2>
+<p><a href="mailto:hello@confio.gmbh">hello@confio.gmbh</a></p>
+<h2 id="commercial-register"><a class="header" href="#commercial-register">Commercial Register</a></h2>
+<p>HRB 221575, Amtsgericht Charlottenburg</p>
+<h2 id="vat-number"><a class="header" href="#vat-number">VAT number</a></h2>
+<p>DE339802279</p>
+<h2 id="responsible-for-the-content"><a class="header" href="#responsible-for-the-content">Responsible for the content</a></h2>
+<p>Simon Warta<br />
+c/o Confio GmbH<br />
+7th Floor<br />
+Potsdamer Platz 1<br />
+10785 Berlin</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+    </body>
+</html>
